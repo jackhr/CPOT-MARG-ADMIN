@@ -2,10 +2,10 @@
 
 namespace App\Controllers;
 
-class HttpErrorController
+class HttpErrorController extends Controller
 {
     public function render404Page()
     {
-        require_once __DIR__ . "/../views/errors/404.php";
+        $this->view("errors/404.php");
     }
 }
