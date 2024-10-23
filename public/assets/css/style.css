@@ -116,6 +116,52 @@ input {
     color: var(--secondary);
 }
 
+nav {
+    display   : flex;
+    position  : fixed;
+    top       : 0;
+    background: var(--white);
+    width     : 100vw;
+    box-shadow: 0 0 12px 0 #7171718f;
+    padding   : 12px;
+}
+
+nav>span {
+    margin     : auto 0;
+    font-weight: 500;
+}
+
+#ham-menu {
+    display         : flex;
+    flex-direction  : column;
+    position        : absolute;
+    background-color: var(--white);
+    right           : -200px;
+    top             : 48px;
+    padding         : 24px;
+    gap             : 12px;
+    transition      : all ease 0.5s;
+}
+
+#ham-menu.viewing {
+    right: 0;
+}
+
+#ham-menu li {
+    list-style-type: none;
+}
+
+#ham-btn {
+    margin-left: auto;
+    width      : 40px;
+    cursor     : pointer;
+    color      : var(--primary);
+}
+
+#ham-btn:hover {
+    color: var(--secondary);
+}
+
 .continue-btn {
     display         : flex;
     align-items     : center;

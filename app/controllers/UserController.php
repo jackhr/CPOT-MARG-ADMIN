@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\User;
 
-class UserController
+class UserController extends Controller
 {
     private $userModel;
 
@@ -15,14 +15,15 @@ class UserController
 
     public function index()
     {
-        // render dashboard here
+        $user = $_SESSION['user'];
+        $this->view("admin/dashboard.php", compact("user"));
     }
 
     // Method to handle displaying all users
     public function listUsers()
     {
         $users = $this->userModel->readAll();
-        require_once __DIR__ . '/../views/user_list.php'; // Pass data to the view for rendering
+        require_once __DIR__ . '/../views/user_list.php';
     }
 
     // Method to handle creating a user

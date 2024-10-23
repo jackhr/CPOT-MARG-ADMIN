@@ -34,9 +34,7 @@ $router->group('/admin', function (Router $router) {
 
 // Group routes under the "/admin" prefix
 $router->group('/admin', function (Router $router) {
-    $router->get('/dashboard', function () {
-        echo "Welcome to the Admin Dashboard!";
-    });
+    $router->get('/dashboard', [UserController::class, 'index']);
 
     $router->get('/users', function () {
         $userController = new UserController();
