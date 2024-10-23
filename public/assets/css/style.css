@@ -151,6 +151,13 @@ nav>span {
     list-style-type: none;
 }
 
+#ham-menu hr {
+    width        : 100%;
+    border       : solid 2px var(--grey-x-light);
+    border-bottom: none;
+    border-radius: 2px;
+}
+
 #ham-btn {
     margin-left: auto;
     width      : 40px;

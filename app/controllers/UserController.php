@@ -64,5 +64,10 @@ class UserController extends Controller
         header("Location: $location");
     }
 
-    public function logout() {}
+    public function logout()
+    {
+        session_start();
+        session_destroy();
+        header("Location: /admin/login");
+    }
 }
