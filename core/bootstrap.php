@@ -37,7 +37,7 @@ spl_autoload_register(function ($class) {
             }
 
             // Check if the current part is 'Controllers', or 'Models'
-            if ($part === 'Controllers' || $part === 'Models' || $part === 'Helpers') {
+            if ($part === "Controllers" || $part === "Models" || $part === "Helpers" || $part === "Middleware") {
                 // Set flag to leave the next part unchanged (i.e., the filename)
                 $leaveNextPart = true;
                 $part = strtolower($part);

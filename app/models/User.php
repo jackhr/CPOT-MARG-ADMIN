@@ -44,7 +44,7 @@ class User
     // Method to fetch all users
     public function readAll()
     {
-        $query = "SELECT id, username, email FROM " . $this->table_name;
+        $query = "SELECT * FROM " . $this->table_name;
         $stmt = $this->con->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -63,7 +63,7 @@ class User
     // Method to find a user by username
     public function findByEmail($email)
     {
-        $query = "SELECT id, username, email FROM " . $this->table_name . " WHERE email = :email";
+        $query = "SELECT * FROM " . $this->table_name . " WHERE email = :email";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->execute();

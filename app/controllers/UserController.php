@@ -15,7 +15,7 @@ class UserController
 
     public function index()
     {
-        require_once __DIR__ . '/../views/admin/login.php';
+        // render dashboard here
     }
 
     // Method to handle displaying all users
@@ -54,12 +54,13 @@ class UserController
     {
         $user = $this->userModel->findByEmail($email);
         if ($user && password_verify($password, $user['password_hash'])) {
-            $_SESSION['user_id'] = $user['user_id'];
-            $_SESSION['username'] = $user['username'];
-            echo json_encode(['success' => true, 'message' => 'Login successful.']);
+            session_start();
+            $_SESSION['user'] = $user;
+            $location = "/admin/dashboard";
         } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid username or password.']);
+            $location = "/admin/login?error=invalid_credentials";
         }
+        header("Location: $location");
     }
 
     public function logout() {}

@@ -1,9 +1,13 @@
 <?php include_once __DIR__ . "/../partials/header.php"; ?>
 
-<form id="login-form">
+<form id="login-form" method="post" action="/admin/login">
     <div>
         <img src="/assets/images/logo.png" alt="Main Logo">
     </div>
+
+    <?php if (isset($_GET['error']) && $_GET['error'] === "invalid_credentials") { ?>
+        <span class="err-msg">Invalid Credentials</span>
+    <?php } ?>
 
     <div class="input-container">
         <label for="email">Email</label>
