@@ -82,6 +82,40 @@ input {
     padding      : 8px;
 }
 
+#not-found-container {
+    position        : fixed;
+    display         : flex;
+    background-color: var(--primary);
+    top             : 0;
+    left            : 0;
+    height          : 100vh;
+    width           : 100vw;
+    color           : var(--white);
+    flex-direction  : column;
+    align-items     : center;
+    justify-content : center;
+    padding         : 24px;
+}
+
+#not-found-container h1 {
+    font-weight: bold;
+    font-size  : 200px;
+    margin     : 0;
+}
+
+#not-found-container h2 {
+    margin   : 0;
+    font-size: 48px;
+}
+
+#not-found-container p {
+    font-size: 24px;
+}
+
+#not-found-container a {
+    color: var(--secondary);
+}
+
 .continue-btn {
     display         : flex;
     align-items     : center;

@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use App\Controllers\HttpErrorController;
 use App\Helpers\GeneralHelper;
 
 class Router
@@ -106,7 +107,8 @@ class Router
             }
         } else {
             header("HTTP/1.0 404 Not Found");
-            echo "404 Not Found";
+            $controller = new HttpErrorController();
+            $controller->render404Page();
         }
     }
 }
