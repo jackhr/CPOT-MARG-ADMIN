@@ -9,7 +9,7 @@
     --grey-light      : #888888;
     --grey-dark       : #676767;
     --max-width       : 1140px;
-    --nav-height      : 135px;
+    --nav-height      : 64px;
     --primary-font    : 'Montserrat', sans-serif;
     --general-padding : 1rem;
 }
@@ -32,11 +32,14 @@ body {
     margin                 : 0;
     -webkit-font-smoothing : antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color       : var(--secondary);
-    display                : flex;
-    align-items            : center;
-    justify-content        : center;
-    height                 : 100vh;
+}
+
+#login-form-container {
+    background-color: var(--secondary);
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    height          : 100vh;
 }
 
 h1,
@@ -124,6 +127,8 @@ nav {
     width     : 100vw;
     box-shadow: 0 0 12px 0 #7171718f;
     padding   : 12px;
+    height    : var(--nav-height);
+    z-index   : 100;
 }
 
 nav>span {
@@ -248,4 +253,52 @@ span.err-msg {
 
 #login-form input {
     background-color: var(--grey-x-light);
+}
+
+#dashboard-container {
+    min-height: 100vh;
+    background: var(--secondary);
+    padding   : calc(var(--nav-height) * 2) 32px var(--nav-height);
+}
+
+#dashboard-main {
+    width          : 100%;
+    max-width      : 1200px;
+    display        : flex;
+    flex-wrap      : wrap;
+    gap            : 24px;
+    justify-content: space-evenly;
+}
+
+#dashboard-main a {
+    width          : 200px;
+    height         : 200px;
+    background     : var(--white);
+    border-radius  : 8px;
+    border         : solid 1px var(--primary);
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    font-weight    : 600;
+    font-size      : 18px;
+    text-align     : center;
+    box-shadow     : 0 0 0 0 #7373739c;
+    transform      : scale(1);
+    transition     : box-shadow ease 0.4s, transform ease 0.4s, color ease 0.4s;
+}
+
+#dashboard-main a:hover {
+    box-shadow: 0 0 12px 0 #7373739c;
+    transform : scale(1.025);
+}
+
+#dashboard-main a.ghost {
+    opacity       : 0;
+    pointer-events: none;
+}
+
+@media screen and (max-width: 726px) {
+    #dashboard-main a.ghost {
+        display: none;
+    }
 }
