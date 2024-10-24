@@ -32,14 +32,14 @@ body {
     margin                 : 0;
     -webkit-font-smoothing : antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color       : var(--secondary);
 }
 
 #login-form-container {
-    background-color: var(--secondary);
-    display         : flex;
-    align-items     : center;
-    justify-content : center;
-    height          : 100vh;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    height         : 100vh;
 }
 
 h1,
@@ -295,6 +295,16 @@ span.err-msg {
 #dashboard-main a.ghost {
     opacity       : 0;
     pointer-events: none;
+}
+
+#users-main {
+    height : 100vh;
+    padding: calc(var(--nav-height) * 2) 32px var(--nav-height);
+}
+
+#users-table-wrapper {
+    background: var(--white);
+    padding   : 12px;
 }
 
 @media screen and (max-width: 726px) {

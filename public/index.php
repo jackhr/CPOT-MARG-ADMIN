@@ -32,15 +32,10 @@ $router->group('/admin', function (Router $router) {
     });
 });
 
-// Group routes under the "/admin" prefix
 $router->group('/admin', function (Router $router) {
     $router->get('/dashboard', [UserController::class, 'index']);
     $router->get('/logout', [UserController::class, 'logout']);
-
-    $router->get('/users', function () {
-        $userController = new UserController();
-        $userController->listUsers();
-    });
+    $router->get('/users', [UserController::class, 'listUsers']);
 }, [AuthMiddleware::class]);
 
 // Dispatch the request to the appropriate route

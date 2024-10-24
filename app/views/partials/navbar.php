@@ -9,7 +9,7 @@
         <li><a href="/admin/dashboard">Orders</a></li>
         <li><a href="/admin/dashboard">Promotions</a></li>
         <li><a href="/admin/dashboard">Roles</a></li>
-        <li><a href="/admin/dashboard">Users</a></li>
+        <li><a href="/admin/users">Users</a></li>
         <li><a href="/admin/dashboard">Unique Ceramics</a></li>
         <hr>
         <li><a href="/admin/logout">Log Out</a></li>

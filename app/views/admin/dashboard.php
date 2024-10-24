@@ -11,7 +11,7 @@
         <a href="/admin/dashboard">Orders</a>
         <a href="/admin/dashboard">Promotions</a>
         <a href="/admin/dashboard">Roles</a>
-        <a href="/admin/dashboard">Users</a>
+        <a href="/admin/users">Users</a>
         <a href="/admin/dashboard">Unique Ceramics</a>
         <a class="ghost">Ghost</a>
         <a class="ghost">Ghost</a>

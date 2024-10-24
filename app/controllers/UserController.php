@@ -22,8 +22,9 @@ class UserController extends Controller
     // Method to handle displaying all users
     public function listUsers()
     {
+        $user = $_SESSION['user'];
         $users = $this->userModel->readAll();
-        require_once __DIR__ . '/../views/user_list.php';
+        $this->view("admin/users/list.php", compact("user", "users"));
     }
 
     // Method to handle creating a user
