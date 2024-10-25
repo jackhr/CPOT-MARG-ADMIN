@@ -47,4 +47,10 @@ class GeneralHelper
     {
         $this->dump($data, $split_values, $prettify, true);
     }
+
+    public function getSessionUser()
+    {
+        session_start();
+        return isset($_SESSION['user']) ? $_SESSION['user'] : null;
+    }
 }
