@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace App\Core;
 
 use App\Controllers\HttpErrorController;
 use App\Helpers\GeneralHelper;

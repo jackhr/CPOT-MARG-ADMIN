@@ -1,10 +1,9 @@
 <?php
-require_once __DIR__ . '/../core/bootstrap.php';
+require_once __DIR__ . '/../app/core/bootstrap.php';
 
 use App\Controllers\UserController;
-use App\Helpers\GeneralHelper;
 use App\Middleware\AuthMiddleware;
-use Core\Router;
+use App\Core\Router;
 
 $router = new Router();
 
