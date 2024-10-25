@@ -18,16 +18,20 @@ class UserController extends Controller
 
     public function index()
     {
-        $user = $this->helper->getSessionUser();
-        $this->view("admin/dashboard.php", compact("user"));
+        $this->view("admin/dashboard.php", [
+            "user" => $this->helper->getSessionUser(),
+            "title" => "Dashboard"
+        ]);
     }
 
     // Method to handle displaying all users
     public function listUsers()
     {
-        $user = $_SESSION['user'];
-        $users = $this->userModel->readAll();
-        $this->view("admin/users/list.php", compact("user", "users"));
+        $this->view("admin/users/list.php", [
+            "user" => $_SESSION['user'],
+            "users" => $this->userModel->readAll(),
+            "title" => "Users"
+        ]);
     }
 
     // Method to handle creating a user

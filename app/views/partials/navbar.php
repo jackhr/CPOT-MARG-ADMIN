@@ -1,5 +1,8 @@
 <nav id="nav">
     <span>Welcome, <?php echo $user['username']; ?>!</span>
+    <?php if (isset($title)) {
+        echo "<h1>$title</h1>";
+    } ?>
     <ul id="ham-menu">
         <li>
             <a href="/dashboard">
