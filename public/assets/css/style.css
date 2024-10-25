@@ -32,7 +32,7 @@ body {
     margin                 : 0;
     -webkit-font-smoothing : antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color       : var(--secondary);
+    background-color       : var(--grey-x-light);
 }
 
 #login-form-container {
@@ -120,32 +120,38 @@ input {
 }
 
 nav {
-    display   : flex;
-    position  : fixed;
-    top       : 0;
-    background: var(--white);
-    width     : 100vw;
-    box-shadow: 0 0 12px 0 #7171718f;
-    padding   : 12px;
-    height    : var(--nav-height);
-    z-index   : 100;
+    display      : flex;
+    position     : fixed;
+    top          : 0;
+    background   : var(--white);
+    width        : 100vw;
+    box-shadow   : 0 0 12px 0 #7171718f;
+    padding      : 12px;
+    height       : var(--nav-height);
+    z-index      : 100;
+    border-bottom: solid 1px var(--primary);
 }
 
 nav>span {
-    margin     : auto 0;
-    font-weight: 500;
+    color      : var(--primary);
+    margin     : auto 0 auto 12px;
+    font-weight: 700;
 }
 
 #ham-menu {
-    display         : flex;
-    flex-direction  : column;
-    position        : absolute;
-    background-color: var(--white);
-    right           : -200px;
-    top             : 48px;
-    padding         : 24px;
-    gap             : 12px;
-    transition      : all ease 0.5s;
+    display                  : flex;
+    flex-direction           : column;
+    position                 : absolute;
+    background-color         : var(--white);
+    right                    : -250px;
+    top                      : 48px;
+    padding                  : 24px;
+    gap                      : 4px;
+    transition               : all ease 0.5s;
+    border-bottom-left-radius: 8px;
+    border                   : solid 1px var(--primary);
+    border-right             : 0;
+    border-top               : 0;
 }
 
 #ham-menu.viewing {
@@ -154,6 +160,26 @@ nav>span {
 
 #ham-menu li {
     list-style-type: none;
+}
+
+#ham-menu a {
+    display         : flex;
+    align-items     : center;
+    gap             : 12px;
+    padding         : 8px;
+    border-radius   : 4px;
+    color           : var(--primary);
+    background-color: var(--white);
+    transition      : color ease 0.4s, background-color ease 0.4s;
+}
+
+#ham-menu a:hover {
+    color           : var(--white);
+    background-color: var(--primary);
+}
+
+#ham-menu a svg {
+    width: 24px;
 }
 
 #ham-menu hr {
@@ -168,10 +194,11 @@ nav>span {
     width      : 40px;
     cursor     : pointer;
     color      : var(--primary);
+    transition : color ease 0.4s;
 }
 
 #ham-btn:hover {
-    color: var(--secondary);
+    color: var(--grey-light);
 }
 
 .continue-btn {
@@ -257,7 +284,6 @@ span.err-msg {
 
 #dashboard-container {
     min-height: 100vh;
-    background: var(--secondary);
     padding   : calc(var(--nav-height) * 2) 32px var(--nav-height);
 }
 
@@ -268,33 +294,46 @@ span.err-msg {
     flex-wrap      : wrap;
     gap            : 24px;
     justify-content: space-evenly;
+    margin         : auto;
 }
 
 #dashboard-main a {
-    width          : 200px;
-    height         : 200px;
-    background     : var(--white);
-    border-radius  : 8px;
-    border         : solid 1px var(--primary);
-    display        : flex;
-    align-items    : center;
-    justify-content: center;
-    font-weight    : 600;
-    font-size      : 18px;
-    text-align     : center;
-    box-shadow     : 0 0 0 0 #7373739c;
-    transform      : scale(1);
-    transition     : box-shadow ease 0.4s, transform ease 0.4s, color ease 0.4s;
+    width           : 200px;
+    height          : 200px;
+    background-color: var(--white);
+    border-radius   : 8px;
+    border          : solid 1px var(--primary);
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    font-weight     : 600;
+    font-size       : 18px;
+    text-align      : center;
+    box-shadow      : 0 0 0 0 #7373739c;
+    flex-direction  : column;
+    gap             : 8px;
+    transform       : scale(1);
+    transition      :
+        color ease 0.4s,
+        transform ease 0.4s,
+        box-shadow ease 0.4s,
+        background-color ease 0.4s;
 }
 
 #dashboard-main a:hover {
-    box-shadow: 0 0 12px 0 #7373739c;
-    transform : scale(1.025);
+    background-color: var(--primary);
+    color           : var(--grey-x-light);
+    box-shadow      : 0 0 12px 0 #7373739c;
+    transform       : scale(1.025);
 }
 
 #dashboard-main a.ghost {
     opacity       : 0;
     pointer-events: none;
+}
+
+#dashboard-main a svg {
+    width: 72px;
 }
 
 #users-main {
