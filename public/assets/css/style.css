@@ -124,7 +124,7 @@ input {
     position     : fixed;
     top          : 0;
     background   : var(--white);
-    width        : 100vw;
+    width        : 100%;
     box-shadow   : 0 0 12px 0 #7171718f;
     padding      : 12px;
     height       : var(--nav-height);
