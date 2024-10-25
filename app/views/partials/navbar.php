@@ -1,4 +1,4 @@
-<nav>
+<nav id="nav">
     <span>Welcome, <?php echo $user['username']; ?>!</span>
     <ul id="ham-menu">
         <li>
