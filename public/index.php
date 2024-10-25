@@ -2,10 +2,13 @@
 require_once __DIR__ . '/../app/core/bootstrap.php';
 
 use App\Controllers\UserController;
+use App\Core\ControllerFactory;
 use App\Middleware\AuthMiddleware;
 use App\Core\Router;
+use App\Helpers\GeneralHelper;
 
-$router = new Router();
+$helper = new GeneralHelper();
+$router = new Router($helper);
 
 $router->group('/', function (Router $router) {
     $router->get('', function () use ($router) {
@@ -21,7 +24,7 @@ $router->group('/', function (Router $router) {
         $email = htmlspecialchars(strip_tags($_POST['email']));
         $password = htmlspecialchars(strip_tags($_POST['password']));
 
-        $userController = new UserController();
+        $userController = ControllerFactory::create(UserController::class);
         $userController->login($email, $password);
     });
 });

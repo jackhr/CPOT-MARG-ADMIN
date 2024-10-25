@@ -2,20 +2,23 @@
 
 namespace App\Controllers;
 
+use App\Helpers\GeneralHelper;
 use App\Models\User;
 
 class UserController extends Controller
 {
     private $userModel;
+    private $helper;
 
-    public function __construct()
+    public function __construct(GeneralHelper $helper)
     {
         $this->userModel = new User();
+        $this->helper = $helper;
     }
 
     public function index()
     {
-        $user = $_SESSION['user'];
+        $user = $this->helper->getSessionUser();
         $this->view("admin/dashboard.php", compact("user"));
     }
 

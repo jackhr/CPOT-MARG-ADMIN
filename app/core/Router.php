@@ -4,20 +4,21 @@ namespace App\Core;
 
 use App\Controllers\HttpErrorController;
 use App\Helpers\GeneralHelper;
+use Exception;
 
 class Router
 {
     private $routes;
     private $groupPrefix;
     private $middlewareStack;
-    private $helper;
+    public $helper;
 
-    public function __construct()
+    public function __construct(GeneralHelper $helper)
     {
         $this->routes = [];
         $this->groupPrefix = '';
         $this->middlewareStack = [];
-        $this->helper = new GeneralHelper();
+        $this->helper = $helper;
     }
 
     // redirects to the desired location
@@ -103,9 +104,18 @@ class Router
 
             // If callback is an array (controller and method)
             if (is_array($callback) && count($callback) == 2) {
-                // Instantiate the controller class and call the method
+                // Instantiate the controller class using the factory
                 list($controllerName, $methodName) = $callback;
-                $controller = new $controllerName();
+                
+                try {
+                    // Use the factory to create the controller instance
+                    $controller = ControllerFactory::create($controllerName);
+                } catch (\Exception $e) {
+                    // Fallback: Instantiate the controller without dependencies if not found in factory
+                    $controller = new $controllerName();
+                }
+
+                // Call the method on the instantiated controller
                 $controller->$methodName();
             } elseif (is_callable($callback)) {
                 // If it's a callable function

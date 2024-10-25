@@ -2,8 +2,17 @@
 
 namespace App\Helpers;
 
+use App\Core\Router;
+
 class GeneralHelper
 {
+    private $router;
+
+    public function __construct()
+    {
+        $this->router = new Router($this);
+    }
+
     public function dump($data = null, $split_values = true, $prettify = true, $die = false)
     {
         $style = $prettify ? "background-color: #ccc;padding: 12px;border-radius: 4px;" : "";
@@ -48,9 +57,14 @@ class GeneralHelper
         $this->dump($data, $split_values, $prettify, true);
     }
 
-    public function getSessionUser()
+    public function getSessionUser($logoutIfNull = true)
     {
         session_start();
-        return isset($_SESSION['user']) ? $_SESSION['user'] : null;
+        $user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
+        if (is_null($user) && $logoutIfNull) {
+            $this->router->redirect("/logout");
+            exit();
+        }
+        return $user;
     }
 }
