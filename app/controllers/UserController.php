@@ -58,9 +58,9 @@ class UserController extends Controller
         if ($user && password_verify($password, $user['password_hash'])) {
             session_start();
             $_SESSION['user'] = $user;
-            $location = "/admin/dashboard";
+            $location = "/dashboard";
         } else {
-            $location = "/admin/login?error=invalid_credentials";
+            $location = "/?error=invalid_credentials";
         }
         header("Location: $location");
     }
@@ -69,6 +69,6 @@ class UserController extends Controller
     {
         session_start();
         session_destroy();
-        header("Location: /admin/login");
+        header("Location: /");
     }
 }

@@ -20,6 +20,13 @@ class Router
         $this->helper = new GeneralHelper();
     }
 
+    // redirects to the desired location
+    public function redirect($location)
+    {
+        header("Location: $location");
+        exit();
+    }
+
     // Add middleware to the middleware stack
     public function middleware($middleware)
     {
@@ -35,6 +42,8 @@ class Router
         // Save the current prefix and middleware stack
         $previousPrefix = $this->groupPrefix;
         $previousMiddleware = $this->middlewareStack;
+
+        // $this->helper->dd([$previousPrefix, $prefix]);
 
         // Update prefix and merge new middleware with current stack
         $this->groupPrefix = $previousPrefix . $prefix;

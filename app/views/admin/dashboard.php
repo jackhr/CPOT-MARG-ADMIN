@@ -3,16 +3,16 @@
 
 <div id="dashboard-container">
     <div id="dashboard-main">
-        <a href="/admin/dashboard">Sconces</a>
-        <a href="/admin/dashboard">Covers</a>
-        <a href="/admin/dashboard">Cut Outs</a>
-        <a href="/admin/dashboard">Finishes</a>
-        <a href="/admin/dashboard">Lights</a>
-        <a href="/admin/dashboard">Orders</a>
-        <a href="/admin/dashboard">Promotions</a>
-        <a href="/admin/dashboard">Roles</a>
-        <a href="/admin/users">Users</a>
-        <a href="/admin/dashboard">Unique Ceramics</a>
+        <a href="/dashboard">Sconces</a>
+        <a href="/dashboard">Covers</a>
+        <a href="/dashboard">Cut Outs</a>
+        <a href="/dashboard">Finishes</a>
+        <a href="/dashboard">Lights</a>
+        <a href="/dashboard">Orders</a>
+        <a href="/dashboard">Promotions</a>
+        <a href="/dashboard">Roles</a>
+        <a href="/users">Users</a>
+        <a href="/dashboard">Unique Ceramics</a>
         <a class="ghost">Ghost</a>
         <a class="ghost">Ghost</a>
     </div>

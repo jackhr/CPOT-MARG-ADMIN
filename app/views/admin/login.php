@@ -1,7 +1,7 @@
 <?php include_once __DIR__ . "/../partials/header.php"; ?>
 
 <div id="login-form-container">
-    <form id="login-form" method="post" action="/admin/login">
+    <form id="login-form" method="post" action="/login">
         <div>
             <img src="/assets/images/logo.png" alt="Main Logo">
         </div>

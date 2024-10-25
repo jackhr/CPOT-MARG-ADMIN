@@ -28,9 +28,6 @@ spl_autoload_register(function ($namespace) {
     }
 });
 
-error_reporting(E_ALL);
-ini_set('display_errors', getenv('APP_ENV') === 'development' ? '1' : '0');
-
 // Load Environment Variables (Using a Simple Implementation)
 if (file_exists(__DIR__ . '/../config/.env')) {
     $lines = file(__DIR__ . '/../config/.env');

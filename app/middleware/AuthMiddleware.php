@@ -14,7 +14,7 @@ class AuthMiddleware
         if (!isset($_SESSION['user'])) {
             // Redirect to login page if not logged in
             session_destroy();
-            header('Location: /admin/login');
+            header('Location: /');
             exit();
         }
 
