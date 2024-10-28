@@ -119,6 +119,10 @@ input {
     color: var(--secondary);
 }
 
+#back-link {
+    cursor: pointer;
+}
+
 #nav {
     display      : flex;
     position     : fixed;
