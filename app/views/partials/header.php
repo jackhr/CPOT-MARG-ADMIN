@@ -7,6 +7,7 @@
     <title><?php echo getenv("COMPANY_NAME"); ?></title>
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/DataTables/datatables.min.css">
+    <link rel="stylesheet" href="/assets/css/DataTables/override.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
