@@ -15,6 +15,7 @@
     <script src="/assets/js/jquery/jquery-3.7.1.min.js"></script>
     <script src="/assets/js/DataTables/datatables.min.js" defer></script>
     <script src="/assets/js/hongymagic-jQuery.serializeObject/dist/jquery.serializeObject.min.js" defer></script>
+    <script src="/assets/js/sweetalert2/js/sweetalert2.all.min.js" defer></script>
     <script src="/assets/js/main.js" defer></script>
 </head>
 
