@@ -10,7 +10,7 @@ class User
     private $con;
     private $table_name = "users";
 
-    public $id;
+    public $user_id;
     public $username;
     public $email;
     public $password_hash;
@@ -41,6 +41,25 @@ class User
         return $stmt->execute();
     }
 
+    public function update()
+    {
+        $query = "UPDATE " . $this->table_name . " SET username = :username, email = :email WHERE user_id = :user_id";
+        $stmt = $this->con->prepare($query);
+
+        // Sanitize input
+        $this->username = htmlspecialchars(strip_tags($this->username));
+        $this->email = htmlspecialchars(strip_tags($this->email));
+        $this->user_id = htmlspecialchars($this->user_id);
+
+        // Bind parameters
+        $stmt->bindParam(":username", $this->username);
+        $stmt->bindParam(":email", $this->email);
+        $stmt->bindParam(":user_id", $this->user_id);
+
+        // Execute the query
+        return $stmt->execute();
+    }
+
     // Method to fetch all users
     public function readAll()
     {
@@ -51,12 +70,12 @@ class User
     }
 
     // Method to find a user by ID
-    public function findById($id, $with_password = false)
+    public function findById($user_id, $with_password = false)
     {
         $suffix = $with_password ? "" : "_without_password";
-        $query = "SELECT * FROM " . $this->table_name . $suffix . " WHERE id = :id";
+        $query = "SELECT * FROM " . $this->table_name . $suffix . " WHERE user_id = :user_id";
         $stmt = $this->con->prepare($query);
-        $stmt->bindParam(":id", $id);
+        $stmt->bindParam(":user_id", $user_id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
