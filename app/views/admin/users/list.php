@@ -50,15 +50,15 @@
                 <form id="create-user-form">
                     <div class="input-container">
                         <label for="username">Username</label>
-                        <input type="text" name="username" id="username" placeholder="NewUser1">
+                        <input type="text" name="username" id="username" placeholder="NewUser1" pattern="\w{5,}" required>
                     </div>
                     <div class="input-container">
                         <label for="email">Email</label>
-                        <input type="email" name="email" id="email" placeholder="new_user@gmail.com">
+                        <input type="email" name="email" id="email" placeholder="new_user@gmail.com" required>
                     </div>
                     <div class="input-container password-container">
                         <label for="new-password">New Password</label>
-                        <input type="password" name="new-password" id="new-password">
+                        <input type="password" name="new-password" id="new-password" required>
                         <div class="password-eye-container">
                             <svg class="show-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
@@ -74,7 +74,7 @@
                     </div>
                     <div class="input-container password-container">
                         <label for="confirm-new-password">Confirm New Password</label>
-                        <input type="password" name="confirm-new-password" id="confirm-new-password">
+                        <input type="password" name="confirm-new-password" id="confirm-new-password" required>
                         <div class="password-eye-container">
                             <svg class="show-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
@@ -123,15 +123,22 @@
 
     $("#create-user-modal input").on('input', () => checkFormIsValid());
 
-    $('button[form="create-user-form"]').on("click", function(e) {
+    $('button[form="create-user-form"]').off('click').on("click", function(e) {
         e.preventDefault();
 
         const data = $("#create-user-form").serializeObject();
 
-        if (!data.username.length || !data.email.length) return;
+        if (!data.username.length || !$("#username")[0].checkValidity()) {
+            return $("#username")[0].reportValidity(),
+                Swal.fire({
+                    icon: "error",
+                    title: "Username is Too Short",
+                    text: "A new user's username must be at least 5 characters"
+                });
+        }
 
-        if (!$("#create-user-form input#email")[0].checkValidity()) {
-            return $("#create-user-form input#email")[0].reportValidity();
+        if (!data.email.length || !$("#email")[0].checkValidity()) {
+            return $("#email")[0].reportValidity();
         }
 
         if ($(this).hasClass('disabled')) {
@@ -153,9 +160,23 @@
         $.ajax({
             url: "/users",
             method: "POST",
+            dataType: "JSON",
             data,
             success: res => {
-                console.log(res);
+                const {
+                    data,
+                    status,
+                    message
+                } = res;
+                const success = status === 200;
+
+                Swal.fire({
+                    icon: success ? "success" : "error",
+                    title: success ? "Success" : "Error",
+                    text: message,
+                }).then(() => {
+                    success && location.reload();
+                });
             },
             error: function() {
                 console.log("arguments:", arguments);

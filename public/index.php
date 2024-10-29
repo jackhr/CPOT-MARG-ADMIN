@@ -32,7 +32,11 @@ $router->group('/', function (Router $router) {
 $router->group('/', function (Router $router) {
     $router->get('dashboard', [UserController::class, 'index']);
     $router->get('logout', [UserController::class, 'logout']);
-    $router->get('users', [UserController::class, 'listUsers']);
+
+    $router->group('users', function (Router $router) {
+        $router->get('', [UserController::class, 'listUsers']);
+        $router->post('', [UserController::class, 'create']);
+    });
 }, [AuthMiddleware::class]);
 
 // Dispatch the request to the appropriate route

@@ -35,17 +35,39 @@ class UserController extends Controller
     }
 
     // Method to handle creating a user
-    public function createUser($username, $email, $password)
+    public function create()
     {
+        ['username' => $username, 'email' => $email, 'new-password' => $password] = $_POST;
+
+        $new_user = [];
+        $status = 200;
+        $message = "";
+        if ($this->userModel->findByUsername($username)) {
+            $status = 409;
+            $message = "There is already a user with that username.";
+        } else if ($this->userModel->findByEmail($email)) {
+            $status = 409;
+            $message = "There is already a user with that email.";
+        }
+
+        if ($status !== 200) {
+            $this->helper->respondToClient($new_user, $status, $message);
+        }
+
         $this->userModel->username = $username;
         $this->userModel->email = $email;
         $this->userModel->password_hash = $password;
 
         if ($this->userModel->create()) {
-            echo "User created successfully.";
+            $message = "User created successfully.";
+            $new_user = $this->userModel->findByEmail($email);
+            unset($new_user['password_hash']);
         } else {
-            echo "Error creating user.";
+            $status = 409;
+            $message = "Error creating user.";
         }
+
+        $this->helper->respondToClient($new_user, $status, $message);
     }
 
     // Method to handle viewing a specific user by ID
