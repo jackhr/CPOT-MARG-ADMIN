@@ -39,7 +39,7 @@ class GeneralHelper
             if ($split_values) {
                 if (is_array($data)) {
                     foreach ($data as $part) {
-                        var_dump($data);
+                        var_dump($part);
                         echo "<br>";
                     }
                 } else {
