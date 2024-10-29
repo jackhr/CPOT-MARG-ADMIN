@@ -60,6 +60,21 @@ class User
         return $stmt->execute();
     }
 
+    public function delete()
+    {
+        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP WHERE user_id = :user_id";
+        $stmt = $this->con->prepare($query);
+
+        // Sanitize input
+        $this->user_id = htmlspecialchars($this->user_id);
+
+        // Bind parameters
+        $stmt->bindParam(":user_id", $this->user_id, PDO::PARAM_INT);
+
+        // Execute the query
+        return $stmt->execute();
+    }
+
     // Method to fetch all users
     public function readAll()
     {

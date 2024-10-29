@@ -159,6 +159,9 @@
                 <button class="continue-btn cancel">Cancel</button>
                 <button form="edit-user-form" type="submit" class="continue-btn">Update</button>
             </div>
+            <div class="modal-footer" style="margin-top: 18px;">
+                <button class="continue-btn danger">Delete</button>
+            </div>
         </div>
     </div>
 </div>
@@ -333,6 +336,49 @@
 
     $("#edit-user-modal button.cancel").on("click", function() {
         $(this).closest('.modal').removeClass('showing');
+    });
+
+    $("#edit-user-modal button.danger").on("click", async function() {
+        const form = $("#edit-user-form");
+        const data = form.serializeObject();
+        data.user_id = $("#edit-user-id").text();
+
+        const res = await Swal.fire({
+            icon: "warning",
+            title: `Deleting "${data.username}"`,
+            text: "Are you sure that you would like to delete this user?",
+            showDenyButton: true,
+            confirmButtonText: 'Yes',
+            denyButtonText: 'No'
+        });
+
+        if (!res.isConfirmed) return;
+
+        $.ajax({
+            url: `/users/${data.user_id}`,
+            method: "DELETE",
+            dataType: "JSON",
+            data,
+            success: res => {
+                const {
+                    data,
+                    status,
+                    message
+                } = res;
+                const success = status === 200;
+
+                Swal.fire({
+                    icon: success ? "success" : "error",
+                    title: success ? "Success" : "Error",
+                    text: message,
+                }).then(() => {
+                    success && location.reload();
+                });
+            },
+            error: function() {
+                console.log("arguments:", arguments);
+            }
+        });
     });
 </script>
 

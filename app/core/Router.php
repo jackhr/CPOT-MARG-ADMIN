@@ -87,6 +87,14 @@ class Router
         ];
     }
 
+    public function delete($path, $callback)
+    {
+        $this->routes['DELETE'][$this->groupPrefix . $path] = [
+            'callback' => $callback,
+            'middleware' => $this->middlewareStack
+        ];
+    }
+
     public function dispatch()
     {
         $requestUri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');

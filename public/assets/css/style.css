@@ -8,6 +8,7 @@
     --grey-x-light    : #cdcdcd;
     --grey-light      : #888888;
     --grey-dark       : #676767;
+    --red             : #ea0c0c;
     --max-width       : 1140px;
     --nav-height      : 64px;
     --primary-font    : 'Montserrat', sans-serif;
@@ -241,7 +242,13 @@ input {
     border-color    : transparent;
 }
 
-.continue-btn:not(.disabled):not(.cancel):hover {
+.continue-btn.danger {
+    background-color: var(--red);
+    color           : var(--white);
+    border-color    : transparent;
+}
+
+.continue-btn:not(.disabled):not(.cancel):not(.danger):hover {
     background-color: var(--white);
     color           : var(--primary);
 }
@@ -290,7 +297,7 @@ input {
 }
 
 .input-container input.error {
-    border-color: red;
+    border-color: var(--red);
 }
 
 .input-container input:not(.error).success {
@@ -298,7 +305,7 @@ input {
 }
 
 span.err-msg {
-    color      : red;
+    color      : var(--red);
     font-weight: 600;
 }
 

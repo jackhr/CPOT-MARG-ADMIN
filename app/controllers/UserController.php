@@ -118,6 +118,36 @@ class UserController extends Controller
         $this->helper->respondToClient($updated_user, $status, $message);
     }
 
+    public function delete($user_id)
+    {
+        $logged_in_user = $_SESSION['user'];
+
+        $user_to_delete = $this->userModel->findById($user_id);
+        $status = 200;
+        $message = "";
+
+        if ($logged_in_user['user_id'] === (int)$user_id) {
+            $status = 409;
+            $message = "You cannot delete your own user.";
+        }
+
+        if ($status !== 200) {
+            $this->helper->respondToClient(null, $status, $message);
+        }
+
+        $this->userModel->user_id = $user_id;
+
+        if ($this->userModel->delete()) {
+            $message = "User deleted successfully.";
+            $user_to_delete = $this->userModel->findById($user_id);
+        } else {
+            $status = 409;
+            $message = "Error updating user.";
+        }
+
+        $this->helper->respondToClient($user_to_delete, $status, $message);
+    }
+
     // Method to handle viewing a specific user by ID
     public function viewUser($id)
     {

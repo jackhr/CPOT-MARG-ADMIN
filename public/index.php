@@ -37,6 +37,7 @@ $router->group('/', function (Router $router) {
         $router->get('', [UserController::class, 'listUsers']);
         $router->post('', [UserController::class, 'create']);
         $router->put('/{id}', [UserController::class, 'update']);
+        $router->delete('/{id}', [UserController::class, 'delete']);
     });
 }, [AuthMiddleware::class]);
 
