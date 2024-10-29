@@ -61,13 +61,46 @@ class UserController extends Controller
         if ($this->userModel->create()) {
             $message = "User created successfully.";
             $new_user = $this->userModel->findByEmail($email);
-            unset($new_user['password_hash']);
         } else {
             $status = 409;
             $message = "Error creating user.";
         }
 
         $this->helper->respondToClient($new_user, $status, $message);
+    }
+
+    public function update($user_id)
+    {
+        $inputData = file_get_contents('php://input');
+        $data = json_decode($inputData, true);
+
+        ['username' => $username, 'email' => $email, 'user_id' => $user_id] = $data;
+
+        $user = $this->userModel->findById($user_id);
+        $status = 200;
+        $message = "";
+        if (!$user) {
+            $status = 409;
+            $message = "There is no user with this id.";
+        }
+
+        if ($status !== 200) {
+            $this->helper->respondToClient($user, $status, $message);
+        }
+
+        $this->userModel->username = $username;
+        $this->userModel->email = $email;
+        $this->userModel->user_id = $user_id;
+
+        if ($this->userModel->update()) {
+            $message = "User updated successfully.";
+            $updated_user = $this->userModel->findByEmail($email);
+        } else {
+            $status = 409;
+            $message = "Error updating user.";
+        }
+
+        $this->helper->respondToClient($updated_user, $status, $message);
     }
 
     // Method to handle viewing a specific user by ID
@@ -83,7 +116,8 @@ class UserController extends Controller
 
     public function login($email, $password)
     {
-        $user = $this->userModel->findByEmail($email);
+        $user = $this->userModel->findByEmail($email, true);
+        // $this->helper->dd($user, false);
         if ($user && password_verify($password, $user['password_hash'])) {
             session_start();
             $_SESSION['user'] = $user;

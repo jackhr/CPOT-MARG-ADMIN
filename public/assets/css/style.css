@@ -235,7 +235,13 @@ input {
     cursor          : not-allowed;
 }
 
-.continue-btn:not(.disabled):hover {
+.continue-btn.cancel {
+    background-color: var(--grey-x-light);
+    color           : var(--black);
+    border-color    : transparent;
+}
+
+.continue-btn:not(.disabled):not(.cancel):hover {
     background-color: var(--white);
     color           : var(--primary);
 }
@@ -473,13 +479,14 @@ span.err-msg {
     justify-content: center;
     padding        : 18px 0 0;
     border-top     : solid 1px #d3d3d3;
+    gap            : 12px;
 }
 
-#create-user-modal .input-container {
+.input-container {
     margin: 0 0 12px !important;
 }
 
-#create-user-modal .input-container label {
+.input-container label {
     max-width: 140px;
     width    : 100%;
 }

@@ -25,11 +25,11 @@
             <tbody>
                 <?php foreach ($users as $u) { ?>
                     <tr data-id="<?php echo $u['user_id']; ?>">
-                        <th><?php echo $u['user_id']; ?></th>
-                        <th><?php echo $u['username']; ?></th>
-                        <th><?php echo $u['email']; ?></th>
-                        <th><?php echo $u['created_at']; ?></th>
-                        <th><?php echo $u['updated_at']; ?></th>
+                        <td><?php echo $u['user_id']; ?></td>
+                        <td><?php echo $u['username']; ?></td>
+                        <td><?php echo $u['email']; ?></td>
+                        <td><?php echo $u['created_at']; ?></td>
+                        <td><?php echo $u['updated_at']; ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -50,15 +50,15 @@
                 <form id="create-user-form">
                     <div class="input-container">
                         <label for="username">Username</label>
-                        <input type="text" name="username" id="username" placeholder="NewUser1" pattern="\w{5,}" required>
+                        <input type="text" name="username" placeholder="NewUser1" pattern="\w{5,}" required>
                     </div>
                     <div class="input-container">
                         <label for="email">Email</label>
-                        <input type="email" name="email" id="email" placeholder="new_user@gmail.com" required>
+                        <input type="email" name="email" placeholder="new_user@gmail.com" required>
                     </div>
                     <div class="input-container password-container">
                         <label for="new-password">New Password</label>
-                        <input type="password" name="new-password" id="new-password" required>
+                        <input type="password" name="new-password" required>
                         <div class="password-eye-container">
                             <svg class="show-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
@@ -74,7 +74,7 @@
                     </div>
                     <div class="input-container password-container">
                         <label for="confirm-new-password">Confirm New Password</label>
-                        <input type="password" name="confirm-new-password" id="confirm-new-password" required>
+                        <input type="password" name="confirm-new-password" required>
                         <div class="password-eye-container">
                             <svg class="show-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
@@ -92,6 +92,72 @@
             </div>
             <div class="modal-footer">
                 <button form="create-user-form" type="submit" class="continue-btn disabled">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="edit-user-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-options">
+                    <span class="modal-close">×</span>
+                </div>
+                <h1>Editing User</h1>
+            </div>
+            <div class="modal-body">
+                <form id="edit-user-form">
+                    <div class="input-container">
+                        <label>Id #</label>
+                        <span id="edit-user-id"></span>
+                    </div>
+                    <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
+                    <div class="input-container">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" placeholder="CurrentUser" pattern="\w{5,}" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" placeholder="current_user@gmail.com" required>
+                    </div>
+                    <!-- <div class="input-container password-container">
+                        <label for="new-password">New Password</label>
+                        <input type="password" name="new-password" required>
+                        <div class="password-eye-container">
+                            <svg class="show-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            <svg class="hide-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+                                <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+                                <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+                                <path d="m2 2 20 20" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="input-container password-container">
+                        <label for="confirm-new-password">Confirm New Password</label>
+                        <input type="password" name="confirm-new-password" required>
+                        <div class="password-eye-container">
+                            <svg class="show-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                <circle cx="12" cy="12" r="3" />
+                            </svg>
+                            <svg class="hide-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+                                <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+                                <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+                                <path d="m2 2 20 20" />
+                            </svg>
+                        </div>
+                    </div> -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="continue-btn cancel">Cancel</button>
+                <button form="edit-user-form" type="submit" class="continue-btn">Update</button>
             </div>
         </div>
     </div>
@@ -123,13 +189,62 @@
 
     $("#create-user-modal input").on('input', () => checkFormIsValid());
 
-    $('button[form="create-user-form"]').off('click').on("click", function(e) {
+    $('button[form="edit-user-form"]').on("click", function(e) {
         e.preventDefault();
 
-        const data = $("#create-user-form").serializeObject();
+        const form = $("#edit-user-form");
+        const data = form.serializeObject();
+        data.user_id = $("#edit-user-id").text();
 
-        if (!data.username.length || !$("#username")[0].checkValidity()) {
-            return $("#username")[0].reportValidity(),
+        if (!data.username.length || !form.find('input[name="username"]')[0].checkValidity()) {
+            return form.find('input[name="username"]')[0].reportValidity(),
+                Swal.fire({
+                    icon: "error",
+                    title: "Username is Too Short",
+                    text: "A username must be at least 5 characters"
+                });
+        }
+
+        if (!data.email.length || !form.find('input[name="email"]')[0].checkValidity()) {
+            return form.find('input[name="email"]')[0].reportValidity();
+        }
+
+        $.ajax({
+            url: `/users/${data.user_id}`,
+            method: "PUT",
+            dataType: "JSON",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: res => {
+                const {
+                    data,
+                    status,
+                    message
+                } = res;
+                const success = status === 200;
+
+                Swal.fire({
+                    icon: success ? "success" : "error",
+                    title: success ? "Success" : "Error",
+                    text: message,
+                }).then(() => {
+                    success && location.reload();
+                });
+            },
+            error: function() {
+                console.log("arguments:", arguments);
+            }
+        });
+    });
+
+    $('button[form="create-user-form"]').on("click", function(e) {
+        e.preventDefault();
+
+        const form = $("#create-user-form");
+        const data = form.serializeObject();
+
+        if (!data.username.length || !form.find('input[name="username"]')[0].checkValidity()) {
+            return form.find('input[name="username"]')[0].reportValidity(),
                 Swal.fire({
                     icon: "error",
                     title: "Username is Too Short",
@@ -137,8 +252,8 @@
                 });
         }
 
-        if (!data.email.length || !$("#email")[0].checkValidity()) {
-            return $("#email")[0].reportValidity();
+        if (!data.email.length || !form.find('input[name="email"]')[0].checkValidity()) {
+            return form.find('input[name="email"]')[0].reportValidity();
         }
 
         if ($(this).hasClass('disabled')) {
@@ -206,6 +321,19 @@
 
         return !disableTheBtn;
     }
+
+    $("#users-table tbody tr").on("click", function() {
+        const modal = $("#edit-user-modal");
+        modal.find('#edit-user-id').text($(this).find('td').eq(0).text());
+        modal.find('input[name="username"]').val($(this).find('td').eq(1).text());
+        modal.find('input[name="email"]').val($(this).find('td').eq(2).text());
+
+        modal.addClass("showing");
+    });
+
+    $("#edit-user-modal button.cancel").on("click", function() {
+        $(this).closest('.modal').removeClass('showing');
+    });
 </script>
 
 <?php include_once __DIR__ . "/../../partials/footer.php"; ?>

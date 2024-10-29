@@ -36,6 +36,7 @@ $router->group('/', function (Router $router) {
     $router->group('users', function (Router $router) {
         $router->get('', [UserController::class, 'listUsers']);
         $router->post('', [UserController::class, 'create']);
+        $router->put('/{id}', [UserController::class, 'update']);
     });
 }, [AuthMiddleware::class]);
 
