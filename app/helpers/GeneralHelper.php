@@ -67,4 +67,10 @@ class GeneralHelper
         }
         return $user;
     }
+
+    public function respondToClient($data = [], $status = 200, $message = "success")
+    {
+        echo json_encode(compact("data", "status", "message"));
+        die();
+    }
 }
