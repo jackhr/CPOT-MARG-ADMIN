@@ -79,55 +79,56 @@ class Router
         ];
     }
 
+    public function put($path, $callback)
+    {
+        $this->routes['PUT'][$this->groupPrefix . $path] = [
+            'callback' => $callback,
+            'middleware' => $this->middlewareStack
+        ];
+    }
+
     public function dispatch()
     {
         $requestUri = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
         $requestUri = $requestUri === '' ? '/' : $requestUri;
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-        if (isset($this->routes[$requestMethod][$requestUri])) {
-            $route = $this->routes[$requestMethod][$requestUri];
-            $callback = $route['callback'];
-            $middleware = array_merge($this->middlewareStack, $route['middleware']);
+        foreach ($this->routes[$requestMethod] as $route => $details) {
+            $pattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $route);
+            $pattern = '#^' . $pattern . '$#';
 
+            if (preg_match($pattern, $requestUri, $matches)) {
+                array_shift($matches); // Remove the full match
+                $callback = $details['callback'];
+                $middleware = $details['middleware'];
 
-            // Run through middleware stack before calling the callback
-            foreach ($middleware as $middlewareClass) {
-                $middlewareInstance = new $middlewareClass();
-
-                if (!$middlewareInstance->handle()) {
-                    // If middleware returns false, stop further processing
-                    $this->helper->dd('yup');
-                    return;
+                // Run middleware stack before executing the callback
+                foreach ($middleware as $middlewareClass) {
+                    $middlewareInstance = new $middlewareClass();
+                    if (!$middlewareInstance->handle()) {
+                        return; // Stop if middleware fails
+                    }
                 }
-            }
 
-            // If callback is an array (controller and method)
-            if (is_array($callback) && count($callback) == 2) {
-                // Instantiate the controller class using the factory
-                list($controllerName, $methodName) = $callback;
-                
-                try {
-                    // Use the factory to create the controller instance
+                // If callback is an array (controller and method)
+                if (is_array($callback) && count($callback) == 2) {
+                    list($controllerName, $methodName) = $callback;
                     $controller = ControllerFactory::create($controllerName);
-                } catch (\Exception $e) {
-                    // Fallback: Instantiate the controller without dependencies if not found in factory
-                    $controller = new $controllerName();
+                    $controller = $controller ?? new $controllerName();
+                    call_user_func_array([$controller, $methodName], $matches);
+                } elseif (is_callable($callback)) {
+                    call_user_func_array($callback, $matches);
+                } else {
+                    header("HTTP/1.0 500 Internal Server Error");
+                    echo "Invalid route callback.";
                 }
-
-                // Call the method on the instantiated controller
-                $controller->$methodName();
-            } elseif (is_callable($callback)) {
-                // If it's a callable function
-                call_user_func($callback);
-            } else {
-                header("HTTP/1.0 500 Internal Server Error");
-                echo "Invalid route callback.";
+                return;
             }
-        } else {
-            header("HTTP/1.0 404 Not Found");
-            $controller = new HttpErrorController();
-            $controller->render404Page();
         }
+
+        // If no route matches
+        header("HTTP/1.0 404 Not Found");
+        $controller = new HttpErrorController();
+        $controller->render404Page();
     }
 }
