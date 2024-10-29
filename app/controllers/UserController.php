@@ -77,11 +77,26 @@ class UserController extends Controller
         ['username' => $username, 'email' => $email, 'user_id' => $user_id] = $data;
 
         $user = $this->userModel->findById($user_id);
+        $user_with_same_username = $this->userModel->findByUsername($username);
+        $user_with_same_email = $this->userModel->findByEmail($email);
         $status = 200;
         $message = "";
+
         if (!$user) {
             $status = 409;
             $message = "There is no user with this id.";
+        } else if (
+            ($user_with_same_username['username'] === $username) &&
+            ($user_with_same_username['user_id'] !== $user['user_id'])
+        ) {
+            $status = 409;
+            $message = "There is already a user with that username.";
+        } else if (
+            ($user_with_same_email['email'] === $email) &&
+            ($user_with_same_email['user_id'] !== $user['user_id'])
+        ) {
+            $status = 409;
+            $message = "There is already a user with that email.";
         }
 
         if ($status !== 200) {
