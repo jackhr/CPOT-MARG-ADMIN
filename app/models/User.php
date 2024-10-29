@@ -51,9 +51,10 @@ class User
     }
 
     // Method to find a user by ID
-    public function findById($id)
+    public function findById($id, $with_password = false)
     {
-        $query = "SELECT id, username, email FROM " . $this->table_name . " WHERE id = :id";
+        $suffix = $with_password ? "" : "_without_password";
+        $query = "SELECT * FROM " . $this->table_name . $suffix . " WHERE id = :id";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(":id", $id);
         $stmt->execute();
@@ -61,9 +62,10 @@ class User
     }
 
     // Method to find a user by username
-    public function findByEmail($email)
+    public function findByEmail($email, $with_password = false)
     {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE email = :email";
+        $suffix = $with_password ? "" : "_without_password";
+        $query = "SELECT * FROM " . $this->table_name . $suffix . " WHERE email = :email";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->execute();
@@ -71,9 +73,10 @@ class User
     }
 
     // Method to find a user by username
-    public function findByUsername($username)
+    public function findByUsername($username, $with_password = false)
     {
-        $query = "SELECT id, username, email FROM " . $this->table_name . " WHERE username = :username";
+        $suffix = $with_password ? "" : "_without_password";
+        $query = "SELECT * FROM " . $this->table_name . $suffix . " WHERE username = :username";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(":username", $username);
         $stmt->execute();
