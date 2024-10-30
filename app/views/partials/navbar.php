@@ -99,7 +99,7 @@
         </li>
         <?php if ($user['role_id'] < 3) { ?>
             <li>
-                <a href="/dashboard">
+                <a href="/roles">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="18" cy="15" r="3" />
                         <circle cx="9" cy="7" r="4" />

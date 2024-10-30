@@ -389,26 +389,26 @@ span.err-msg {
     width: 72px;
 }
 
-#users-main {
+main {
     height : 100vh;
     padding: calc(var(--nav-height) * 2) 32px var(--nav-height);
 }
 
-#users-table-wrapper {
+.table-wrapper {
     background   : var(--white);
     padding      : 12px;
     border       : solid 1px var(--primary);
     border-radius: 4px;
 }
 
-#create-user-btn {
+.create-btn {
     width  : max-content;
     gap    : 8px;
     height : fit-content;
     padding: 8px;
 }
 
-#create-user-btn svg {
+.create-btn svg {
     width: 24px;
 }
 

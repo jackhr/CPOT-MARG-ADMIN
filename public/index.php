@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../app/core/bootstrap.php';
 
+use App\Controllers\RoleController;
 use App\Controllers\UserController;
 use App\Core\ControllerFactory;
 use App\Middleware\AuthMiddleware;
@@ -39,6 +40,13 @@ $router->group('/', function (Router $router) {
         $router->post('', [UserController::class, 'create']);
         $router->put('/{id}', [UserController::class, 'update']);
         $router->delete('/{id}', [UserController::class, 'delete']);
+    }, [AdminMiddleware::class]);
+
+    $router->group('roles', function (Router $router) {
+        $router->get('', [RoleController::class, 'listRoles']);
+        $router->post('', [RoleController::class, 'create']);
+        $router->put('/{id}', [RoleController::class, 'update']);
+        $router->delete('/{id}', [RoleController::class, 'delete']);
     }, [AdminMiddleware::class]);
 }, [AuthMiddleware::class]);
 

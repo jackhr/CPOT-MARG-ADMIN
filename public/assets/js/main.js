@@ -3,8 +3,6 @@ $(document).ready(function () {
         $("#ham-menu").toggleClass('viewing'); s
     });
 
-    const table = new DataTable("#users-table");
-
     $(".password-eye-container").on("click", function () {
         const passwordInput = $(this).closest('.password-container').children('input');
         const viewingPassWord = passwordInput.prop("type") === "text";

@@ -1,9 +1,9 @@
 <?php include_once __DIR__ . "/../../partials/header.php"; ?>
 <?php include_once __DIR__ . "/../../partials/navbar.php"; ?>
 
-<div id="users-main">
-    <div id="users-table-wrapper">
-        <button id="create-user-btn" class="continue-btn open-modal-btn">
+<main>
+    <div class="table-wrapper">
+        <button id="create-user-btn" class="create-btn continue-btn open-modal-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
@@ -43,7 +43,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</main>
 
 <div id="create-user-modal" class="modal">
     <div class="modal-dialog">
@@ -161,7 +161,11 @@
 </div>
 
 <script>
-    $("#create-user-btn").on("click", () => $("#create-user-modal").addClass("showing"))
+    $(document).ready(function() {
+        new DataTable("#users-table");
+    });
+
+    $(".create-btn").on("click", () => $("#create-user-modal").addClass("showing"))
 
     $(".password-container input").on("input", function() {
         const {
