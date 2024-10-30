@@ -18,6 +18,7 @@
                     <th>Id #</th>
                     <th>Username</th>
                     <th>Email</th>
+                    <th>Role</th>
                     <th>Created At</th>
                     <th>Updated At</th>
                 </tr>
@@ -28,6 +29,7 @@
                         <td><?php echo $u['user_id']; ?></td>
                         <td><?php echo $u['username']; ?></td>
                         <td><?php echo $u['email']; ?></td>
+                        <td data-id="<?php echo $u['role_id']; ?>"><?php echo $u['role_name']; ?></td>
                         <td><?php echo $u['created_at']; ?></td>
                         <td><?php echo $u['updated_at']; ?></td>
                     </tr>
@@ -55,6 +57,15 @@
                     <div class="input-container">
                         <label for="email">Email</label>
                         <input type="email" name="email" placeholder="new_user@gmail.com" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="role">Role</label>
+                        <select name="role" required>
+                            <option selected disabled value="">Select A Role</option>
+                            <?php foreach ($roles as $r) {
+                                echo "<option value=\"{$r['role_id']}\">{$r['role_name']}</option>";
+                            } ?>
+                        </select>
                     </div>
                     <div class="input-container password-container">
                         <label for="new-password">New Password</label>
@@ -121,38 +132,15 @@
                         <label for="email">Email</label>
                         <input type="email" name="email" placeholder="current_user@gmail.com" required>
                     </div>
-                    <!-- <div class="input-container password-container">
-                        <label for="new-password">New Password</label>
-                        <input type="password" name="new-password" required>
-                        <div class="password-eye-container">
-                            <svg class="show-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                            <svg class="hide-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
-                                <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
-                                <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
-                                <path d="m2 2 20 20" />
-                            </svg>
-                        </div>
+                    <div class="input-container">
+                        <label for="role">Role</label>
+                        <select name="role" required>
+                            <option disabled value="">Select A Role</option>
+                            <?php foreach ($roles as $r) {
+                                echo "<option value=\"{$r['role_id']}\">{$r['role_name']}</option>";
+                            } ?>
+                        </select>
                     </div>
-                    <div class="input-container password-container">
-                        <label for="confirm-new-password">Confirm New Password</label>
-                        <input type="password" name="confirm-new-password" required>
-                        <div class="password-eye-container">
-                            <svg class="show-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                            <svg class="hide-pass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
-                                <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
-                                <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
-                                <path d="m2 2 20 20" />
-                            </svg>
-                        </div>
-                    </div> -->
                 </form>
             </div>
             <div class="modal-footer">
@@ -212,6 +200,10 @@
             return form.find('input[name="email"]')[0].reportValidity();
         }
 
+        if (!data?.role?.length || !form.find('select[name="role"]')[0].checkValidity()) {
+            return form.find('select[name="role"]')[0].reportValidity();
+        }
+
         $.ajax({
             url: `/users/${data.user_id}`,
             method: "PUT",
@@ -257,6 +249,10 @@
 
         if (!data.email.length || !form.find('input[name="email"]')[0].checkValidity()) {
             return form.find('input[name="email"]')[0].reportValidity();
+        }
+
+        if (!data?.role?.length || !form.find('select[name="role"]')[0].checkValidity()) {
+            return form.find('select[name="role"]')[0].reportValidity();
         }
 
         if ($(this).hasClass('disabled')) {
@@ -327,9 +323,15 @@
 
     $("#users-table tbody tr").on("click", function() {
         const modal = $("#edit-user-modal");
-        modal.find('#edit-user-id').text($(this).find('td').eq(0).text());
-        modal.find('input[name="username"]').val($(this).find('td').eq(1).text());
-        modal.find('input[name="email"]').val($(this).find('td').eq(2).text());
+        const userId = $(this).find('td').eq(0).text();
+        const username = $(this).find('td').eq(1).text();
+        const email = $(this).find('td').eq(2).text();
+        const roleId = $(this).find('td').eq(3).data('id');
+
+        modal.find('#edit-user-id').text(userId);
+        modal.find('input[name="username"]').val(username);
+        modal.find('input[name="email"]').val(email);
+        modal.find('select[name="role"]').prop('selectedIndex', roleId);
 
         modal.addClass("showing");
     });

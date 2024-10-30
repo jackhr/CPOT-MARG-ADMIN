@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Helpers\GeneralHelper;
+use App\Models\Role;
 use App\Models\User;
 
 class UserController extends Controller
@@ -27,9 +28,11 @@ class UserController extends Controller
     // Method to handle displaying all users
     public function listUsers()
     {
+        $roleModel = new Role();
         $this->view("admin/users/list.php", [
             "user" => $_SESSION['user'],
             "users" => $this->userModel->readAll(),
+            "roles" => $roleModel->readAll(),
             "title" => "Users"
         ]);
     }
@@ -37,15 +40,20 @@ class UserController extends Controller
     // Method to handle creating a user
     public function create()
     {
-        ['username' => $username, 'email' => $email, 'new-password' => $password] = $_POST;
+        [
+            'username' => $username,
+            'email' => $email,
+            'new-password' => $password,
+            'role' => $role_id
+        ] = $_POST;
 
-        $new_user = [];
+        $new_user = new User();
         $status = 200;
         $message = "";
-        if ($this->userModel->findByUsername($username)) {
+        if ($new_user->findByUsername($username)) {
             $status = 409;
             $message = "There is already a user with that username.";
-        } else if ($this->userModel->findByEmail($email)) {
+        } else if ($new_user->findByEmail($email)) {
             $status = 409;
             $message = "There is already a user with that email.";
         }
@@ -54,13 +62,14 @@ class UserController extends Controller
             $this->helper->respondToClient($new_user, $status, $message);
         }
 
-        $this->userModel->username = $username;
-        $this->userModel->email = $email;
-        $this->userModel->password_hash = $password;
+        $new_user->username = $username;
+        $new_user->email = $email;
+        $new_user->password_hash = $password;
+        $new_user->role_id = $role_id;
 
-        if ($this->userModel->create()) {
+        if ($new_user->create()) {
             $message = "User created successfully.";
-            $new_user = $this->userModel->findByEmail($email);
+            $new_user = $new_user->findByEmail($email);
         } else {
             $status = 409;
             $message = "Error creating user.";
@@ -74,7 +83,12 @@ class UserController extends Controller
         $inputData = file_get_contents('php://input');
         $data = json_decode($inputData, true);
 
-        ['username' => $username, 'email' => $email, 'user_id' => $user_id] = $data;
+        [
+            'username' => $username,
+            'email' => $email,
+            'user_id' => $user_id,
+            'role' => $role_id
+        ] = $data;
 
         $user = $this->userModel->findById($user_id);
         $user_with_same_username = $this->userModel->findByUsername($username);
@@ -106,6 +120,7 @@ class UserController extends Controller
         $this->userModel->username = $username;
         $this->userModel->email = $email;
         $this->userModel->user_id = $user_id;
+        $this->userModel->role_id = $role_id;
 
         if ($this->userModel->update()) {
             $message = "User updated successfully.";
