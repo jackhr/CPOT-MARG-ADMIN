@@ -8,7 +8,7 @@ class AdminMiddleware
 {
     public function handle()
     {
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) session_start();
 
         $roleModel = new Role();
         $admin_role = $roleModel->findByRoleName("Admin");
