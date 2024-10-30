@@ -85,7 +85,8 @@ class User
     public function readAll($with_password = false)
     {
         $suffix = $with_password ? "" : "_without_password";
-        $query = "SELECT * FROM {$this->table_name}$suffix u JOIN roles r ON r.role_id = u.role_id";
+        $where = $_SESSION['user']['role_id'] > 1 ? "WHERE deleted_at IS NULL" : "";
+        $query = "SELECT * FROM {$this->table_name}$suffix u JOIN roles r ON r.role_id = u.role_id $where";
         $stmt = $this->con->prepare($query);
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);

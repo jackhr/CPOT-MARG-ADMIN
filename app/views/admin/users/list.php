@@ -21,6 +21,9 @@
                     <th>Role</th>
                     <th>Created At</th>
                     <th>Updated At</th>
+                    <?php if ($user['role_id'] === 1) { ?>
+                        <th>Deleted At</th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +35,9 @@
                         <td data-id="<?php echo $u['role_id']; ?>"><?php echo $u['role_name']; ?></td>
                         <td><?php echo $u['created_at']; ?></td>
                         <td><?php echo $u['updated_at']; ?></td>
+                        <?php if ($user['role_id'] === 1) { ?>
+                            <td><?php echo $u['deleted_at']; ?></td>
+                        <?php } ?>
                     </tr>
                 <?php } ?>
             </tbody>
