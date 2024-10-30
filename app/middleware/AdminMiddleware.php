@@ -14,7 +14,7 @@ class AdminMiddleware
         $admin_role = $roleModel->findByRoleName("Admin");
 
         // Check if user is not admin
-        if ($_SESSION['user']['role_id'] > $admin_role['rol_id']) {
+        if ($_SESSION['user']['role_id'] > $admin_role['role_id']) {
             return false;
         }
 
