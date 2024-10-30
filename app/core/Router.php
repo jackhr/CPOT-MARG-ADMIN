@@ -114,7 +114,13 @@ class Router
                 foreach ($middleware as $middlewareClass) {
                     $middlewareInstance = new $middlewareClass();
                     if (!$middlewareInstance->handle()) {
-                        return; // Stop if middleware fails
+                        // Redirect to the previous URL
+                        if (isset($_SERVER['HTTP_REFERER'])) {
+                            header("Location: {$_SERVER['HTTP_REFERER']}");
+                        } else {
+                            header("Location: /"); // Default to homepage if HTTP_REFERER is not available
+                        }
+                        exit(); // Make sure to exit after the redirect
                     }
                 }
 

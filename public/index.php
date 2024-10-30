@@ -6,6 +6,7 @@ use App\Core\ControllerFactory;
 use App\Middleware\AuthMiddleware;
 use App\Core\Router;
 use App\Helpers\GeneralHelper;
+use App\Middleware\AdminMiddleware;
 
 $helper = new GeneralHelper();
 $router = new Router($helper);
@@ -38,7 +39,7 @@ $router->group('/', function (Router $router) {
         $router->post('', [UserController::class, 'create']);
         $router->put('/{id}', [UserController::class, 'update']);
         $router->delete('/{id}', [UserController::class, 'delete']);
-    });
+    }, [AdminMiddleware::class]);
 }, [AuthMiddleware::class]);
 
 // Dispatch the request to the appropriate route
