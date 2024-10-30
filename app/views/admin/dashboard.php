@@ -3,7 +3,7 @@
 
 <div id="dashboard-container">
     <div id="dashboard-main">
-        <a href="/dashboard">
+        <a href="/sconces">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M11 4h6l3 7H8l3-7Z"></path>
                 <path d="M14 11v5a2 2 0 0 1-2 2H8"></path>

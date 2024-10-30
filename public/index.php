@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../app/core/bootstrap.php';
 
 use App\Controllers\RoleController;
+use App\Controllers\SconceController;
 use App\Controllers\UserController;
 use App\Core\ControllerFactory;
 use App\Middleware\AuthMiddleware;
@@ -48,6 +49,10 @@ $router->group('/', function (Router $router) {
         $router->put('/{id}', [RoleController::class, 'update']);
         $router->delete('/{id}', [RoleController::class, 'delete']);
     }, [AdminMiddleware::class]);
+
+    $router->group('sconces', function (Router $router) {
+        $router->get('', [SconceController::class, 'listSconces']);
+    });
 }, [AuthMiddleware::class]);
 
 // Dispatch the request to the appropriate route
