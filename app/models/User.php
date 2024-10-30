@@ -2,14 +2,10 @@
 
 namespace App\Models;
 
-use App\Config\Database;
 use PDO;
 
-class User
+class User extends Model
 {
-    private $con;
-    private $table_name = "users";
-
     public $user_id;
     public $username;
     public $email;
@@ -18,8 +14,8 @@ class User
 
     public function __construct()
     {
-        $database = new Database();
-        $this->con = $database->getConnection();
+        parent::__construct();
+        $this->table_name = "users";
         $this->role_id = 3; // Default role is Employee
     }
 
