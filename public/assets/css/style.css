@@ -324,7 +324,7 @@ span.err-msg {
 
 #login-form>div:first-child+.input-container,
 #login-form>span.err-msg+.input-container {
-    margin-top: auto;
+    margin-top: auto !important;
 }
 
 .input-container:last-of-type {
@@ -499,6 +499,10 @@ main {
 }
 
 .input-container {
+    margin: 0 0 12px;
+}
+
+#edit-user-form .input-container {
     margin: 0 0 12px !important;
 }
 
