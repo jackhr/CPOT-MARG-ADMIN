@@ -22,12 +22,17 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($roles as $r) { ?>
+                <?php foreach ($roles as $r) {
+                    $created_at = new DateTime($r['created_at']);
+                    $updated_at = new DateTime($r['updated_at']);
+                    $created_at = $created_at->format('M j, Y \@ g:i A T');
+                    $updated_at = $updated_at->format('M j, Y \@ g:i A T');
+                ?>
                     <tr data-id="<?php echo $r['role_id']; ?>">
                         <td><?php echo $r['role_id']; ?></td>
                         <td><?php echo $r['role_name']; ?></td>
-                        <td><?php echo $r['created_at']; ?></td>
-                        <td><?php echo $r['updated_at']; ?></td>
+                        <td class="dt-type-date"><?php echo $created_at; ?></td>
+                        <td class="dt-type-date"><?php echo $updated_at; ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -94,161 +99,163 @@
 
 <script>
     $(document).ready(function() {
-        new DataTable("#roles-table");
-    })
-
-    $(".create-btn").on("click", () => $("#create-role-modal").addClass("showing"));
-
-    $("#create-role-modal input").on('input', () => checkFormIsValid());
-
-    $('button[form="edit-role-form"]').on("click", function(e) {
-        e.preventDefault();
-
-        const form = $("#edit-role-form");
-        const data = form.serializeObject();
-        data.role_id = $("#edit-role-id").text();
-
-        if (!data.role_name.length || !form.find('input[name="role_name"]')[0].checkValidity()) {
-            return form.find('input[name="role_name"]')[0].reportValidity();
-        }
-
-        $.ajax({
-            url: `/roles/${data.role_id}`,
-            method: "PUT",
-            dataType: "JSON",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: res => {
-                const {
-                    data,
-                    status,
-                    message
-                } = res;
-                const success = status === 200;
-
-                Swal.fire({
-                    icon: success ? "success" : "error",
-                    title: success ? "Success" : "Error",
-                    text: message,
-                }).then(() => {
-                    success && location.reload();
-                });
-            },
-            error: function() {
-                console.log("arguments:", arguments);
-            }
-        });
-    });
-
-    $('button[form="create-role-form"]').on("click", function(e) {
-        e.preventDefault();
-
-        const form = $("#create-role-form");
-        const data = form.serializeObject();
-
-        if (!data.role_name.length || !form.find('input[name="role_name"]')[0].checkValidity()) {
-            return form.find('input[name="role_name"]')[0].reportValidity();
-        }
-
-        if (!checkFormIsValid()) return;
-
-        $.ajax({
-            url: "/roles",
-            method: "POST",
-            dataType: "JSON",
-            data,
-            success: res => {
-                const {
-                    data,
-                    status,
-                    message
-                } = res;
-                const success = status === 200;
-
-                Swal.fire({
-                    icon: success ? "success" : "error",
-                    title: success ? "Success" : "Error",
-                    text: message,
-                }).then(() => {
-                    success && location.reload();
-                });
-            },
-            error: function() {
-                console.log("arguments:", arguments);
-            }
-        });
-    });
-
-    function checkFormIsValid() {
-        const data = $("#create-role-form").serializeObject();
-        let disableTheBtn = false;
-        for (const key in data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                // check to see if any value has been at all for inputs
-                if (!data[key].length) disableTheBtn = true;
-            }
-        }
-
-        $('button[form="create-role-form"]').toggleClass('disabled', disableTheBtn);
-
-        return !disableTheBtn;
-    }
-
-    $("#roles-table tbody tr").on("click", function() {
-        const modal = $("#edit-role-modal");
-        const roleId = $(this).find('td').eq(0).text();
-        const roleName = $(this).find('td').eq(1).text();
-
-        modal.find('#edit-role-id').text(roleId);
-        modal.find('input[name="role_name"]').val(roleName);
-
-        modal.addClass("showing");
-    });
-
-    $("#edit-role-modal button.cancel").on("click", function() {
-        $(this).closest('.modal').removeClass('showing');
-    });
-
-    $("#edit-role-modal button.danger").on("click", async function() {
-        const form = $("#edit-role-form");
-        const data = form.serializeObject();
-        data.role_id = $("#edit-role-id").text();
-
-        const res = await Swal.fire({
-            icon: "warning",
-            title: `Deleting "${data.role_name}"`,
-            text: "Are you sure that you would like to delete this role?",
-            showDenyButton: true,
-            confirmButtonText: 'Yes',
-            denyButtonText: 'No'
+        new DataTable("#roles-table", {
+            ...STATE.dtDefaultOpts,
         });
 
-        if (!res.isConfirmed) return;
+        $(".create-btn").on("click", () => $("#create-role-modal").addClass("showing"));
 
-        $.ajax({
-            url: `/roles/${data.role_id}`,
-            method: "DELETE",
-            dataType: "JSON",
-            data,
-            success: res => {
-                const {
-                    data,
-                    status,
-                    message
-                } = res;
-                const success = status === 200;
+        $("#create-role-modal input").on('input', () => checkFormIsValid());
 
-                Swal.fire({
-                    icon: success ? "success" : "error",
-                    title: success ? "Success" : "Error",
-                    text: message,
-                }).then(() => {
-                    success && location.reload();
-                });
-            },
-            error: function() {
-                console.log("arguments:", arguments);
+        $('button[form="edit-role-form"]').on("click", function(e) {
+            e.preventDefault();
+
+            const form = $("#edit-role-form");
+            const data = form.serializeObject();
+            data.role_id = $("#edit-role-id").text();
+
+            if (!data.role_name.length || !form.find('input[name="role_name"]')[0].checkValidity()) {
+                return form.find('input[name="role_name"]')[0].reportValidity();
             }
+
+            $.ajax({
+                url: `/roles/${data.role_id}`,
+                method: "PUT",
+                dataType: "JSON",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        });
+
+        $('button[form="create-role-form"]').on("click", function(e) {
+            e.preventDefault();
+
+            const form = $("#create-role-form");
+            const data = form.serializeObject();
+
+            if (!data.role_name.length || !form.find('input[name="role_name"]')[0].checkValidity()) {
+                return form.find('input[name="role_name"]')[0].reportValidity();
+            }
+
+            if (!checkFormIsValid()) return;
+
+            $.ajax({
+                url: "/roles",
+                method: "POST",
+                dataType: "JSON",
+                data,
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        });
+
+        function checkFormIsValid() {
+            const data = $("#create-role-form").serializeObject();
+            let disableTheBtn = false;
+            for (const key in data) {
+                if (Object.prototype.hasOwnProperty.call(data, key)) {
+                    // check to see if any value has been at all for inputs
+                    if (!data[key].length) disableTheBtn = true;
+                }
+            }
+
+            $('button[form="create-role-form"]').toggleClass('disabled', disableTheBtn);
+
+            return !disableTheBtn;
+        }
+
+        $("#roles-table tbody tr").on("click", function() {
+            const modal = $("#edit-role-modal");
+            const roleId = $(this).find('td').eq(0).text();
+            const roleName = $(this).find('td').eq(1).text();
+
+            modal.find('#edit-role-id').text(roleId);
+            modal.find('input[name="role_name"]').val(roleName);
+
+            modal.addClass("showing");
+        });
+
+        $("#edit-role-modal button.cancel").on("click", function() {
+            $(this).closest('.modal').removeClass('showing');
+        });
+
+        $("#edit-role-modal button.danger").on("click", async function() {
+            const form = $("#edit-role-form");
+            const data = form.serializeObject();
+            data.role_id = $("#edit-role-id").text();
+
+            const res = await Swal.fire({
+                icon: "warning",
+                title: `Deleting "${data.role_name}"`,
+                text: "Are you sure that you would like to delete this role?",
+                showDenyButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: 'No'
+            });
+
+            if (!res.isConfirmed) return;
+
+            $.ajax({
+                url: `/roles/${data.role_id}`,
+                method: "DELETE",
+                dataType: "JSON",
+                data,
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
         });
     });
 </script>

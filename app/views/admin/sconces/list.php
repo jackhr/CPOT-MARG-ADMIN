@@ -41,7 +41,20 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($sconces as $s) { ?>
+                <?php foreach ($sconces as $s) {
+                    $created_at = new DateTime($s['created_at']);
+                    $updated_at = new DateTime($s['updated_at']);
+                    $created_at = $created_at->format('M j, Y \@ g:i A T');
+                    $updated_at = $updated_at->format('M j, Y \@ g:i A T');
+
+                    if ($user['role_id'] === 1) {
+                        $deleted_at = "-";
+                        if (isset($s['deleted_at'])) {
+                            $deleted_at = new DateTime($s['deleted_at']);
+                            $deleted_at = $deleted_at->format('M j, Y \@ g:i A T');
+                        }
+                    }
+                ?>
                     <tr data-id="<?php echo $s['sconce_id']; ?>">
                         <td><?php echo $s['sconce_id']; ?></td>
                         <td><?php echo $s['name']; ?></td>
@@ -61,9 +74,11 @@
                         <td><?php echo $s['care_instructions']; ?></td>
                         <td><?php echo $s['release_date']; ?></td>
                         <td><?php echo $s['custom_options']; ?></td>
-                        <td><?php echo $s['created_at']; ?></td>
-                        <td><?php echo $s['updated_at']; ?></td>
-                        <td><?php echo $s['deleted_at']; ?></td>
+                        <td class="dt-type-date"><?php echo $created_at; ?></td>
+                        <td class="dt-type-date"><?php echo $updated_at; ?></td>
+                        <?php if ($user['role_id'] === 1) { ?>
+                            <td class="dt-type-date"><?php echo $deleted_at; ?></td>
+                        <?php } ?>
                         <td><?php echo $s['created_by']; ?></td>
                         <td><?php echo $s['updated_by']; ?></td>
                     </tr>
@@ -132,161 +147,163 @@
 
 <script>
     $(document).ready(function() {
-        new DataTable("#sconces-table");
-    })
-
-    $(".create-btn").on("click", () => $("#create-sconce-modal").addClass("showing"));
-
-    $("#create-sconce-modal input").on('input', () => checkFormIsValid());
-
-    $('button[form="edit-sconce-form"]').on("click", function(e) {
-        e.preventDefault();
-
-        const form = $("#edit-sconce-form");
-        const data = form.serializeObject();
-        data.sconce_id = $("#edit-sconce-id").text();
-
-        if (!data.name.length || !form.find('input[name="name"]')[0].checkValidity()) {
-            return form.find('input[name="name"]')[0].reportValidity();
-        }
-
-        $.ajax({
-            url: `/sconces/${data.sconce_id}`,
-            method: "PUT",
-            dataType: "JSON",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: res => {
-                const {
-                    data,
-                    status,
-                    message
-                } = res;
-                const success = status === 200;
-
-                Swal.fire({
-                    icon: success ? "success" : "error",
-                    title: success ? "Success" : "Error",
-                    text: message,
-                }).then(() => {
-                    success && location.reload();
-                });
-            },
-            error: function() {
-                console.log("arguments:", arguments);
-            }
-        });
-    });
-
-    $('button[form="create-sconce-form"]').on("click", function(e) {
-        e.preventDefault();
-
-        const form = $("#create-sconce-form");
-        const data = form.serializeObject();
-
-        if (!data.name.length || !form.find('input[name="name"]')[0].checkValidity()) {
-            return form.find('input[name="name"]')[0].reportValidity();
-        }
-
-        if (!checkFormIsValid()) return;
-
-        $.ajax({
-            url: "/sconces",
-            method: "POST",
-            dataType: "JSON",
-            data,
-            success: res => {
-                const {
-                    data,
-                    status,
-                    message
-                } = res;
-                const success = status === 200;
-
-                Swal.fire({
-                    icon: success ? "success" : "error",
-                    title: success ? "Success" : "Error",
-                    text: message,
-                }).then(() => {
-                    success && location.reload();
-                });
-            },
-            error: function() {
-                console.log("arguments:", arguments);
-            }
-        });
-    });
-
-    function checkFormIsValid() {
-        const data = $("#create-sconce-form").serializeObject();
-        let disableTheBtn = false;
-        for (const key in data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                // check to see if any value has been at all for inputs
-                if (!data[key].length) disableTheBtn = true;
-            }
-        }
-
-        $('button[form="create-sconce-form"]').toggleClass('disabled', disableTheBtn);
-
-        return !disableTheBtn;
-    }
-
-    $("#sconces-table tbody tr").on("click", function() {
-        const modal = $("#edit-sconce-modal");
-        const sconceId = $(this).find('td').eq(0).text();
-        const sconceName = $(this).find('td').eq(1).text();
-
-        modal.find('#edit-sconce-id').text(sconceId);
-        modal.find('input[name="name"]').val(sconceName);
-
-        modal.addClass("showing");
-    });
-
-    $("#edit-sconce-modal button.cancel").on("click", function() {
-        $(this).closest('.modal').removeClass('showing');
-    });
-
-    $("#edit-sconce-modal button.danger").on("click", async function() {
-        const form = $("#edit-sconce-form");
-        const data = form.serializeObject();
-        data.sconce_id = $("#edit-sconce-id").text();
-
-        const res = await Swal.fire({
-            icon: "warning",
-            title: `Deleting "${data.name}"`,
-            text: "Are you sure that you would like to delete this sconce?",
-            showDenyButton: true,
-            confirmButtonText: 'Yes',
-            denyButtonText: 'No'
+        new DataTable("#sconces-table", {
+            ...STATE.dtDefaultOpts,
         });
 
-        if (!res.isConfirmed) return;
+        $(".create-btn").on("click", () => $("#create-sconce-modal").addClass("showing"));
 
-        $.ajax({
-            url: `/sconces/${data.sconce_id}`,
-            method: "DELETE",
-            dataType: "JSON",
-            data,
-            success: res => {
-                const {
-                    data,
-                    status,
-                    message
-                } = res;
-                const success = status === 200;
+        $("#create-sconce-modal input").on('input', () => checkFormIsValid());
 
-                Swal.fire({
-                    icon: success ? "success" : "error",
-                    title: success ? "Success" : "Error",
-                    text: message,
-                }).then(() => {
-                    success && location.reload();
-                });
-            },
-            error: function() {
-                console.log("arguments:", arguments);
+        $('button[form="edit-sconce-form"]').on("click", function(e) {
+            e.preventDefault();
+
+            const form = $("#edit-sconce-form");
+            const data = form.serializeObject();
+            data.sconce_id = $("#edit-sconce-id").text();
+
+            if (!data.name.length || !form.find('input[name="name"]')[0].checkValidity()) {
+                return form.find('input[name="name"]')[0].reportValidity();
             }
+
+            $.ajax({
+                url: `/sconces/${data.sconce_id}`,
+                method: "PUT",
+                dataType: "JSON",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        });
+
+        $('button[form="create-sconce-form"]').on("click", function(e) {
+            e.preventDefault();
+
+            const form = $("#create-sconce-form");
+            const data = form.serializeObject();
+
+            if (!data.name.length || !form.find('input[name="name"]')[0].checkValidity()) {
+                return form.find('input[name="name"]')[0].reportValidity();
+            }
+
+            if (!checkFormIsValid()) return;
+
+            $.ajax({
+                url: "/sconces",
+                method: "POST",
+                dataType: "JSON",
+                data,
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        });
+
+        function checkFormIsValid() {
+            const data = $("#create-sconce-form").serializeObject();
+            let disableTheBtn = false;
+            for (const key in data) {
+                if (Object.prototype.hasOwnProperty.call(data, key)) {
+                    // check to see if any value has been at all for inputs
+                    if (!data[key].length) disableTheBtn = true;
+                }
+            }
+
+            $('button[form="create-sconce-form"]').toggleClass('disabled', disableTheBtn);
+
+            return !disableTheBtn;
+        }
+
+        $("#sconces-table tbody tr").on("click", function() {
+            const modal = $("#edit-sconce-modal");
+            const sconceId = $(this).find('td').eq(0).text();
+            const sconceName = $(this).find('td').eq(1).text();
+
+            modal.find('#edit-sconce-id').text(sconceId);
+            modal.find('input[name="name"]').val(sconceName);
+
+            modal.addClass("showing");
+        });
+
+        $("#edit-sconce-modal button.cancel").on("click", function() {
+            $(this).closest('.modal').removeClass('showing');
+        });
+
+        $("#edit-sconce-modal button.danger").on("click", async function() {
+            const form = $("#edit-sconce-form");
+            const data = form.serializeObject();
+            data.sconce_id = $("#edit-sconce-id").text();
+
+            const res = await Swal.fire({
+                icon: "warning",
+                title: `Deleting "${data.name}"`,
+                text: "Are you sure that you would like to delete this sconce?",
+                showDenyButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: 'No'
+            });
+
+            if (!res.isConfirmed) return;
+
+            $.ajax({
+                url: `/sconces/${data.sconce_id}`,
+                method: "DELETE",
+                dataType: "JSON",
+                data,
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
         });
     });
 </script>

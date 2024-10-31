@@ -27,16 +27,29 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($users as $u) { ?>
+                <?php foreach ($users as $u) {
+                    $created_at = new DateTime($u['created_at']);
+                    $updated_at = new DateTime($u['updated_at']);
+                    $created_at = $created_at->format('M j, Y \@ g:i A T');
+                    $updated_at = $updated_at->format('M j, Y \@ g:i A T');
+
+                    if ($user['role_id'] === 1) {
+                        $deleted_at = "-";
+                        if (isset($u['deleted_at'])) {
+                            $deleted_at = new DateTime($u['deleted_at']);
+                            $deleted_at = $deleted_at->format('M j, Y \@ g:i A T');
+                        }
+                    }
+                ?>
                     <tr data-id="<?php echo $u['user_id']; ?>">
                         <td><?php echo $u['user_id']; ?></td>
                         <td><?php echo $u['username']; ?></td>
                         <td><?php echo $u['email']; ?></td>
                         <td data-id="<?php echo $u['role_id']; ?>"><?php echo $u['role_name']; ?></td>
-                        <td><?php echo $u['created_at']; ?></td>
-                        <td><?php echo $u['updated_at']; ?></td>
+                        <td class="dt-type-date"><?php echo $created_at; ?></td>
+                        <td class="dt-type-date"><?php echo $updated_at; ?></td>
                         <?php if ($user['role_id'] === 1) { ?>
-                            <td><?php echo $u['deleted_at']; ?></td>
+                            <td class="dt-type-date"><?php echo $deleted_at; ?></td>
                         <?php } ?>
                     </tr>
                 <?php } ?>
@@ -162,234 +175,236 @@
 
 <script>
     $(document).ready(function() {
-        new DataTable("#users-table");
-    });
-
-    $(".create-btn").on("click", () => $("#create-user-modal").addClass("showing"))
-
-    $(".password-container input").on("input", function() {
-        const {
-            "new-password": newPass,
-            "confirm-new-password": confirmNewPass,
-        } = $("#create-user-form").serializeObject();
-
-        if (!newPass.length || !confirmNewPass.length) {
-            // no need to validate if no value
-            $(".password-container input").removeClass("error success");
-            return;
-        }
-
-        const differentPasswords = newPass !== confirmNewPass;
-        const passwordIsTooShort = newPass.length < 5;
-        const toggleSuccess = !differentPasswords && !passwordIsTooShort;
-
-        $(".password-container input")
-            .toggleClass("error", (differentPasswords || passwordIsTooShort))
-            .toggleClass("success", toggleSuccess);
-    });
-
-    $("#create-user-modal input").on('input', () => checkFormIsValid());
-
-    $('button[form="edit-user-form"]').on("click", function(e) {
-        e.preventDefault();
-
-        const form = $("#edit-user-form");
-        const data = form.serializeObject();
-        data.user_id = $("#edit-user-id").text();
-
-        if (!data.username.length || !form.find('input[name="username"]')[0].checkValidity()) {
-            return form.find('input[name="username"]')[0].reportValidity(),
-                Swal.fire({
-                    icon: "error",
-                    title: "Username is Too Short",
-                    text: "A username must be at least 5 characters"
-                });
-        }
-
-        if (!data.email.length || !form.find('input[name="email"]')[0].checkValidity()) {
-            return form.find('input[name="email"]')[0].reportValidity();
-        }
-
-        if (!data?.role?.length || !form.find('select[name="role"]')[0].checkValidity()) {
-            return form.find('select[name="role"]')[0].reportValidity();
-        }
-
-        $.ajax({
-            url: `/users/${data.user_id}`,
-            method: "PUT",
-            dataType: "JSON",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: res => {
-                const {
-                    data,
-                    status,
-                    message
-                } = res;
-                const success = status === 200;
-
-                Swal.fire({
-                    icon: success ? "success" : "error",
-                    title: success ? "Success" : "Error",
-                    text: message,
-                }).then(() => {
-                    success && location.reload();
-                });
-            },
-            error: function() {
-                console.log("arguments:", arguments);
-            }
+        new DataTable("#users-table", {
+            ...STATE.dtDefaultOpts,
         });
-    });
 
-    $('button[form="create-user-form"]').on("click", function(e) {
-        e.preventDefault();
+        $(".create-btn").on("click", () => $("#create-user-modal").addClass("showing"))
 
-        const form = $("#create-user-form");
-        const data = form.serializeObject();
+        $(".password-container input").on("input", function() {
+            const {
+                "new-password": newPass,
+                "confirm-new-password": confirmNewPass,
+            } = $("#create-user-form").serializeObject();
 
-        if (!data.username.length || !form.find('input[name="username"]')[0].checkValidity()) {
-            return form.find('input[name="username"]')[0].reportValidity(),
-                Swal.fire({
-                    icon: "error",
-                    title: "Username is Too Short",
-                    text: "A new user's username must be at least 5 characters"
-                });
-        }
-
-        if (!data.email.length || !form.find('input[name="email"]')[0].checkValidity()) {
-            return form.find('input[name="email"]')[0].reportValidity();
-        }
-
-        if (!data?.role?.length || !form.find('select[name="role"]')[0].checkValidity()) {
-            return form.find('select[name="role"]')[0].reportValidity();
-        }
-
-        if ($(this).hasClass('disabled')) {
-            const icon = "error";
-            let title = "";
-            if ((data['new-password'] !== data['confirm-new-password'])) {
-                title = "Passwords must match.";
-            } else if (data['new-password'].length < 5) {
-                title = "Password must be at least 5 characters.";
+            if (!newPass.length || !confirmNewPass.length) {
+                // no need to validate if no value
+                $(".password-container input").removeClass("error success");
+                return;
             }
-            return Swal.fire({
-                icon,
-                title
+
+            const differentPasswords = newPass !== confirmNewPass;
+            const passwordIsTooShort = newPass.length < 5;
+            const toggleSuccess = !differentPasswords && !passwordIsTooShort;
+
+            $(".password-container input")
+                .toggleClass("error", (differentPasswords || passwordIsTooShort))
+                .toggleClass("success", toggleSuccess);
+        });
+
+        $("#create-user-modal input").on('input', () => checkFormIsValid());
+
+        $('button[form="edit-user-form"]').on("click", function(e) {
+            e.preventDefault();
+
+            const form = $("#edit-user-form");
+            const data = form.serializeObject();
+            data.user_id = $("#edit-user-id").text();
+
+            if (!data.username.length || !form.find('input[name="username"]')[0].checkValidity()) {
+                return form.find('input[name="username"]')[0].reportValidity(),
+                    Swal.fire({
+                        icon: "error",
+                        title: "Username is Too Short",
+                        text: "A username must be at least 5 characters"
+                    });
+            }
+
+            if (!data.email.length || !form.find('input[name="email"]')[0].checkValidity()) {
+                return form.find('input[name="email"]')[0].reportValidity();
+            }
+
+            if (!data?.role?.length || !form.find('select[name="role"]')[0].checkValidity()) {
+                return form.find('select[name="role"]')[0].reportValidity();
+            }
+
+            $.ajax({
+                url: `/users/${data.user_id}`,
+                method: "PUT",
+                dataType: "JSON",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
             });
-        }
-
-        if (!checkFormIsValid()) return;
-
-        $.ajax({
-            url: "/users",
-            method: "POST",
-            dataType: "JSON",
-            data,
-            success: res => {
-                const {
-                    data,
-                    status,
-                    message
-                } = res;
-                const success = status === 200;
-
-                Swal.fire({
-                    icon: success ? "success" : "error",
-                    title: success ? "Success" : "Error",
-                    text: message,
-                }).then(() => {
-                    success && location.reload();
-                });
-            },
-            error: function() {
-                console.log("arguments:", arguments);
-            }
-        });
-    });
-
-    function checkFormIsValid() {
-        const data = $("#create-user-form").serializeObject();
-        let disableTheBtn = false;
-        for (const key in data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                // check to see if any value has been at all for inputs
-                if (!data[key].length) disableTheBtn = true;
-            }
-        }
-
-        if (data['new-password'] !== data['confirm-new-password']) {
-            disableTheBtn = true;
-        }
-
-        if (data['new-password'].length < 5 || data['confirm-new-password'].length < 5) {
-            disableTheBtn = true;
-        }
-
-        $('button[form="create-user-form"]').toggleClass('disabled', disableTheBtn);
-
-        return !disableTheBtn;
-    }
-
-    $("#users-table tbody tr").on("click", function() {
-        const modal = $("#edit-user-modal");
-        const userId = $(this).find('td').eq(0).text();
-        const username = $(this).find('td').eq(1).text();
-        const email = $(this).find('td').eq(2).text();
-        const roleId = $(this).find('td').eq(3).data('id');
-
-        modal.find('#edit-user-id').text(userId);
-        modal.find('input[name="username"]').val(username);
-        modal.find('input[name="email"]').val(email);
-        modal.find('select[name="role"]').prop('selectedIndex', roleId);
-
-        modal.addClass("showing");
-    });
-
-    $("#edit-user-modal button.cancel").on("click", function() {
-        $(this).closest('.modal').removeClass('showing');
-    });
-
-    $("#edit-user-modal button.danger").on("click", async function() {
-        const form = $("#edit-user-form");
-        const data = form.serializeObject();
-        data.user_id = $("#edit-user-id").text();
-
-        const res = await Swal.fire({
-            icon: "warning",
-            title: `Deleting "${data.username}"`,
-            text: "Are you sure that you would like to delete this user?",
-            showDenyButton: true,
-            confirmButtonText: 'Yes',
-            denyButtonText: 'No'
         });
 
-        if (!res.isConfirmed) return;
+        $('button[form="create-user-form"]').on("click", function(e) {
+            e.preventDefault();
 
-        $.ajax({
-            url: `/users/${data.user_id}`,
-            method: "DELETE",
-            dataType: "JSON",
-            data,
-            success: res => {
-                const {
-                    data,
-                    status,
-                    message
-                } = res;
-                const success = status === 200;
+            const form = $("#create-user-form");
+            const data = form.serializeObject();
 
-                Swal.fire({
-                    icon: success ? "success" : "error",
-                    title: success ? "Success" : "Error",
-                    text: message,
-                }).then(() => {
-                    success && location.reload();
-                });
-            },
-            error: function() {
-                console.log("arguments:", arguments);
+            if (!data.username.length || !form.find('input[name="username"]')[0].checkValidity()) {
+                return form.find('input[name="username"]')[0].reportValidity(),
+                    Swal.fire({
+                        icon: "error",
+                        title: "Username is Too Short",
+                        text: "A new user's username must be at least 5 characters"
+                    });
             }
+
+            if (!data.email.length || !form.find('input[name="email"]')[0].checkValidity()) {
+                return form.find('input[name="email"]')[0].reportValidity();
+            }
+
+            if (!data?.role?.length || !form.find('select[name="role"]')[0].checkValidity()) {
+                return form.find('select[name="role"]')[0].reportValidity();
+            }
+
+            if ($(this).hasClass('disabled')) {
+                const icon = "error";
+                let title = "";
+                if ((data['new-password'] !== data['confirm-new-password'])) {
+                    title = "Passwords must match.";
+                } else if (data['new-password'].length < 5) {
+                    title = "Password must be at least 5 characters.";
+                }
+                return Swal.fire({
+                    icon,
+                    title
+                });
+            }
+
+            if (!checkFormIsValid()) return;
+
+            $.ajax({
+                url: "/users",
+                method: "POST",
+                dataType: "JSON",
+                data,
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        });
+
+        function checkFormIsValid() {
+            const data = $("#create-user-form").serializeObject();
+            let disableTheBtn = false;
+            for (const key in data) {
+                if (Object.prototype.hasOwnProperty.call(data, key)) {
+                    // check to see if any value has been at all for inputs
+                    if (!data[key].length) disableTheBtn = true;
+                }
+            }
+
+            if (data['new-password'] !== data['confirm-new-password']) {
+                disableTheBtn = true;
+            }
+
+            if (data['new-password'].length < 5 || data['confirm-new-password'].length < 5) {
+                disableTheBtn = true;
+            }
+
+            $('button[form="create-user-form"]').toggleClass('disabled', disableTheBtn);
+
+            return !disableTheBtn;
+        }
+
+        $("#users-table tbody tr").on("click", function() {
+            const modal = $("#edit-user-modal");
+            const userId = $(this).find('td').eq(0).text();
+            const username = $(this).find('td').eq(1).text();
+            const email = $(this).find('td').eq(2).text();
+            const roleId = $(this).find('td').eq(3).data('id');
+
+            modal.find('#edit-user-id').text(userId);
+            modal.find('input[name="username"]').val(username);
+            modal.find('input[name="email"]').val(email);
+            modal.find('select[name="role"]').prop('selectedIndex', roleId);
+
+            modal.addClass("showing");
+        });
+
+        $("#edit-user-modal button.cancel").on("click", function() {
+            $(this).closest('.modal').removeClass('showing');
+        });
+
+        $("#edit-user-modal button.danger").on("click", async function() {
+            const form = $("#edit-user-form");
+            const data = form.serializeObject();
+            data.user_id = $("#edit-user-id").text();
+
+            const res = await Swal.fire({
+                icon: "warning",
+                title: `Deleting "${data.username}"`,
+                text: "Are you sure that you would like to delete this user?",
+                showDenyButton: true,
+                confirmButtonText: 'Yes',
+                denyButtonText: 'No'
+            });
+
+            if (!res.isConfirmed) return;
+
+            $.ajax({
+                url: `/users/${data.user_id}`,
+                method: "DELETE",
+                dataType: "JSON",
+                data,
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
         });
     });
 </script>
