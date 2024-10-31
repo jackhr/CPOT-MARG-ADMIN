@@ -42,7 +42,7 @@ class RoleController extends Controller
             $this->helper->respondToClient($new_role, $status, $message);
         }
 
-        $this->roleModel->$role_name = $$role_name;
+        $this->roleModel->role_name = $role_name;
 
         if ($this->roleModel->create()) {
             $message = "Role created successfully.";
