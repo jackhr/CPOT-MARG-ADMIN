@@ -38,7 +38,7 @@ class SconceController extends Controller
             $fileType = $uploadedFile['type'];
             $extension = $this->helper->getFileExtension($fileType);
 
-            $public_directory = "/assets/images/";
+            $public_directory = "/assets/images/sconces/";
             $newFileName = $name . $extension;
             $image_url = $public_directory . $newFileName;
 
