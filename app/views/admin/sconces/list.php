@@ -15,6 +15,7 @@
             <thead>
                 <tr>
                     <th>Id #</th>
+                    <th>Thumb</th>
                     <th>Name</th>
                     <th>Dimensions</th>
                     <th>Material</th>
@@ -55,6 +56,9 @@
                 ?>
                     <tr data-id="<?php echo $s['sconce_id']; ?>">
                         <td><?php echo $s['sconce_id']; ?></td>
+                        <td>
+                            <img src="<?php echo $s['image_url']; ?>" alt="<?php echo $s['name']; ?>">
+                        </td>
                         <td><?php echo $s['name']; ?></td>
                         <td><?php echo $s['dimensions']; ?></td>
                         <td><?php echo $s['material']; ?></td>

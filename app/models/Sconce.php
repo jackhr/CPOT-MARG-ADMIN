@@ -42,7 +42,7 @@ class Sconce extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -55,6 +55,7 @@ class Sconce extends Model
         $this->stock_quantity = htmlspecialchars($this->stock_quantity);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
+        $this->image_url = htmlspecialchars($this->image_url);
 
         // Bind parameters
         $stmt->bindParam(":name", $this->name);
@@ -66,6 +67,7 @@ class Sconce extends Model
         $stmt->bindParam(":stock_quantity", $this->stock_quantity);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
+        $stmt->bindParam(":image_url", $this->image_url);
 
         // Execute the query
         return $stmt->execute();
