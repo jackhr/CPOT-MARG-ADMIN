@@ -52,6 +52,7 @@ $router->group('/', function (Router $router) {
 
     $router->group('sconces', function (Router $router) {
         $router->get('', [SconceController::class, 'listSconces']);
+        $router->post('', [SconceController::class, 'create']);
     });
 }, [AuthMiddleware::class]);
 

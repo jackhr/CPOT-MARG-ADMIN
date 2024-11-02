@@ -3,6 +3,7 @@
     --primary-rgb     : rgb(209, 110, 69);
     --primary-rgb-vals: 209, 110, 69;
     --secondary       : #17c8ff;
+    --blue            : #3a6ed3;
     --black           : #232628;
     --white           : #f5f5f5;
     --grey-x-light    : #cdcdcd;
@@ -253,13 +254,85 @@ select {
 
 .continue-btn.danger {
     background-color: var(--red);
-    color           : var(--white);
-    border-color    : transparent;
+    border-color    : var(--red);
 }
 
-.continue-btn:not(.disabled):not(.cancel):not(.danger):hover {
+.continue-btn.other {
+    background-color: var(--blue);
+    border-color    : var(--blue);
+}
+
+.continue-btn:not(.disabled):not(.cancel):hover {
     background-color: var(--white);
     color           : var(--primary);
+}
+
+.continue-btn.danger:hover {
+    color: var(--red) !important;
+}
+
+.continue-btn.other:hover {
+    color: var(--blue) !important;
+}
+
+.input-container.sconce-img-container {
+    flex-direction: column;
+    padding-bottom: 24px;
+    border-bottom : solid 1px var(--grey-x-light);
+    margin-bottom : 24px;
+}
+
+.input-container.sconce-img-container:not(:has(img)) #sconce-img-options .continue-btn.other,
+.input-container.sconce-img-container:not(:has(img)) #sconce-img-options .continue-btn.danger,
+.input-container.sconce-img-container:has(img) #sconce-img-options .continue-btn:not(.danger):not(.other) {
+    display: none;
+}
+
+.input-container.sconce-img-container:not(:has(img)) #sconce-preview-container::before {
+    content: "Image will preview here.";
+}
+
+#sconce-preview-container {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    width          : 100%;
+    min-height     : 100px;
+    max-width      : 300px;
+    margin-bottom  : 12px;
+}
+
+#sconce-preview-container img {
+    width     : 100%;
+    object-fit: contain;
+    height    : auto;
+    box-shadow: 0 0 13px 0 #9b9b9b;
+}
+
+#sconce-img-options {
+    display: flex;
+    gap    : 16px;
+    width  : 100%;
+}
+
+#sconce-drop-alert {
+    position       : absolute;
+    top            : -1px;
+    left           : -1px;
+    width          : calc(100% + 2px);
+    height         : calc(100% + 2px);
+    z-index        : 10;
+    border         : solid 4px var(--primary);
+    border-radius  : 5px;
+    background     : #e4e4e4f5;
+    align-items    : center;
+    justify-content: center;
+    font-size      : 38px;
+    display        : none;
+}
+
+#sconce-drop-alert.showing {
+    display: flex;
 }
 
 #login-form {
@@ -293,6 +366,11 @@ select {
     width: 100%;
 }
 
+.mutiple-input-container {
+    display: flex;
+    gap    : 30px;
+}
+
 .input-container {
     display    : flex;
     align-items: center;
@@ -301,8 +379,18 @@ select {
     position   : relative;
 }
 
-.input-container input {
+.input-container input,
+.input-container textarea {
     border: solid 2px transparent;
+}
+
+.input-container textarea {
+    width        : 100%;
+    resize       : vertical;
+    height       : 102px;
+    background   : #f5f5f5;
+    border-radius: 4px;
+    padding      : 8px;
 }
 
 .input-container input.error {
@@ -327,7 +415,7 @@ span.err-msg {
     margin-top: auto !important;
 }
 
-.input-container:last-of-type {
+#login-form .input-container:last-of-type {
     margin: 24px 0 52px;
 }
 
@@ -507,6 +595,10 @@ main {
 }
 
 .input-container label {
+    font-weight: 600;
+}
+
+.input-container label:not(#create-sconce-form .input-container label) {
     max-width: 140px;
     width    : 100%;
 }
