@@ -56,8 +56,10 @@
                 ?>
                     <tr data-id="<?php echo $s['sconce_id']; ?>">
                         <td><?php echo $s['sconce_id']; ?></td>
-                        <td>
-                            <img src="<?php echo $s['image_url']; ?>" alt="<?php echo $s['name']; ?>">
+                        <td class="sconce-thumb-td">
+                            <div>
+                                <img src="<?php echo $s['image_url']; ?>" alt="<?php echo $s['name']; ?>">
+                            </div>
                         </td>
                         <td><?php echo $s['name']; ?></td>
                         <td><?php echo $s['dimensions']; ?></td>
@@ -226,9 +228,11 @@
 
 <script>
     $(document).ready(function() {
-        new DataTable("#sconces-table", {
+        const dTable = new DataTable("#sconces-table", {
             ...STATE.dtDefaultOpts,
         });
+
+        setTimeout(() => dTable.draw(), 1000);
 
         $(".create-btn").on("click", () => $("#create-sconce-modal").addClass("showing"));
 

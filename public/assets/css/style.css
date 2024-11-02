@@ -401,6 +401,18 @@ select {
     border-color: forestgreen;
 }
 
+table .sconce-thumb-td div {
+    width : 100px;
+    height: 100px;
+}
+
+table .sconce-thumb-td div img {
+    object-fit     : contain;
+    object-position: center;
+    height         : 100%;
+    width          : 100%;
+}
+
 span.err-msg {
     color      : var(--red);
     font-weight: 600;
