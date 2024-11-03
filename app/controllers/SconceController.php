@@ -19,9 +19,16 @@ class SconceController extends Controller
 
     public function listSconces()
     {
+        $logged_in_user = $_SESSION['user'];
+        $sconces = $this->sconceModel->readAll();
+        if ($logged_in_user['role_id'] > 1) {
+            $sconces = array_filter($sconces, function ($sconce) {
+                return !isset($sconce['deleted_at']);
+            });
+        }
         $this->view("admin/sconces/list.php", [
-            "user" => $_SESSION['user'],
-            "sconces" => $this->sconceModel->readAll(),
+            "user" => $logged_in_user,
+            "sconces" => $sconces,
             "title" => "Sconces"
         ]);
     }
@@ -265,5 +272,24 @@ class SconceController extends Controller
         }
 
         $this->helper->respondToClient($updated_sconce, $status, $message);
+    }
+
+    public function delete($sconce_id)
+    {
+        $sconce_to_delete = $this->sconceModel->findById($sconce_id);
+        $status = 200;
+        $message = "";
+
+        $this->sconceModel->sconce_id = $sconce_id;
+
+        if ($this->sconceModel->delete()) {
+            $message = "Sconce deleted successfully.";
+            $sconce_to_delete = $this->sconceModel->findById($sconce_id);
+        } else {
+            $status = 500;
+            $message = "Error deleting sconce.";
+        }
+
+        $this->helper->respondToClient($sconce_to_delete, $status, $message);
     }
 }

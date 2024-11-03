@@ -54,6 +54,7 @@ $router->group('/', function (Router $router) {
         $router->get('', [SconceController::class, 'listSconces']);
         $router->post('', [SconceController::class, 'create']);
         $router->post('/{id}', [SconceController::class, 'update']);
+        $router->delete('/{id}', [SconceController::class, 'delete']);
     });
 }, [AuthMiddleware::class]);
 
