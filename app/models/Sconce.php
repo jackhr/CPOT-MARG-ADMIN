@@ -40,6 +40,41 @@ class Sconce extends Model
         $this->helper = new GeneralHelper();
     }
 
+    public function update()
+    {
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url WHERE sconce_id = :sconce_id";
+        $stmt = $this->con->prepare($query);
+
+        // Sanitize input
+        $this->sconce_id = htmlspecialchars($this->sconce_id);
+        $this->name = htmlspecialchars($this->name);
+        $this->dimensions = htmlspecialchars($this->dimensions);
+        $this->material = htmlspecialchars($this->material);
+        $this->color = htmlspecialchars($this->color);
+        $this->weight = htmlspecialchars($this->weight);
+        $this->base_price = htmlspecialchars($this->base_price);
+        $this->stock_quantity = htmlspecialchars($this->stock_quantity);
+        $this->status = htmlspecialchars($this->status);
+        $this->description = htmlspecialchars($this->description);
+        $this->image_url = htmlspecialchars($this->image_url);
+
+        // Bind parameters
+        $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":dimensions", $this->dimensions);
+        $stmt->bindParam(":material", $this->material);
+        $stmt->bindParam(":color", $this->color);
+        $stmt->bindParam(":weight", $this->weight);
+        $stmt->bindParam(":base_price", $this->base_price);
+        $stmt->bindParam(":stock_quantity", $this->stock_quantity);
+        $stmt->bindParam(":status", $this->status);
+        $stmt->bindParam(":description", $this->description);
+        $stmt->bindParam(":image_url", $this->image_url);
+        $stmt->bindParam(":sconce_id", $this->sconce_id, PDO::PARAM_INT);
+
+        // Execute the query
+        return $stmt->execute();
+    }
+
     public function create()
     {
         $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url";

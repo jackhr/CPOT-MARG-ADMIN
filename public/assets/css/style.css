@@ -282,17 +282,17 @@ select {
     margin-bottom : 24px;
 }
 
-.input-container.sconce-img-container:not(:has(img)) #sconce-img-options .continue-btn.other,
-.input-container.sconce-img-container:not(:has(img)) #sconce-img-options .continue-btn.danger,
-.input-container.sconce-img-container:has(img) #sconce-img-options .continue-btn:not(.danger):not(.other) {
+.input-container.sconce-img-container:not(:has(img)) .sconce-img-options .continue-btn.other,
+.input-container.sconce-img-container:not(:has(img)) .sconce-img-options .continue-btn.danger,
+.input-container.sconce-img-container:has(img) .sconce-img-options .continue-btn:not(.danger):not(.other) {
     display: none;
 }
 
-.input-container.sconce-img-container:not(:has(img)) #sconce-preview-container::before {
+.input-container.sconce-img-container:not(:has(img)) .sconce-preview-container::before {
     content: "Image will preview here.";
 }
 
-#sconce-preview-container {
+.sconce-preview-container {
     display        : flex;
     align-items    : center;
     justify-content: center;
@@ -302,14 +302,14 @@ select {
     margin-bottom  : 12px;
 }
 
-#sconce-preview-container img {
+.sconce-preview-container img {
     width     : 100%;
     object-fit: contain;
     height    : auto;
     box-shadow: 0 0 13px 0 #9b9b9b;
 }
 
-#sconce-img-options {
+.sconce-img-options {
     display: flex;
     gap    : 16px;
     width  : 100%;
@@ -610,7 +610,7 @@ main {
     font-weight: 600;
 }
 
-.input-container label:not(#create-sconce-form .input-container label) {
+.input-container label:not(#create-sconce-form .input-container label):not(#edit-sconce-form .input-container label) {
     max-width: 140px;
     width    : 100%;
 }

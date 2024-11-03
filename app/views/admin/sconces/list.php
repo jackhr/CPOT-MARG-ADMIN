@@ -103,11 +103,11 @@
             <div class="modal-body">
                 <form id="create-sconce-form">
                     <div class="input-container sconce-img-container">
-                        <input type="file" name="sconce-img" id="sconce-img-input" style="display: none;">
-                        <div id="sconce-preview-container"></div>
-                        <div id="sconce-img-options">
-                            <label for="sconce-img-input" class="continue-btn">Add Image</label>
-                            <label for="sconce-img-input" class="continue-btn other">Change Image</label>
+                        <input type="file" name="sconce-img" class="sconce-img-input" id="create-sconce-img-input" style="display: none;">
+                        <div class="sconce-preview-container"></div>
+                        <div class="sconce-img-options">
+                            <label for="create-sconce-img-input" class="continue-btn">Add Image</label>
+                            <label for="create-sconce-img-input" class="continue-btn other">Change Image</label>
                             <label class="continue-btn danger">Remove Image</label>
                         </div>
                     </div>
@@ -209,9 +209,84 @@
                         <span id="edit-sconce-id"></span>
                     </div>
                     <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
+                    <div class="input-container sconce-img-container">
+                        <input type="file" name="sconce-img" class="sconce-img-input" id="edit-sconce-img-input" style="display: none;">
+                        <div class="sconce-preview-container"></div>
+                        <div class="sconce-img-options">
+                            <label for="edit-sconce-img-input" class="continue-btn other">Change Image</label>
+                        </div>
+                    </div>
                     <div class="input-container">
                         <label for="name">Name</label>
-                        <input type="text" name="name" placeholder="Current sconce" required>
+                        <input type="text" name="name" placeholder="New Sconce" required>
+                    </div>
+                    <div class="mutiple-input-container">
+                        <div class="input-container">
+                            <label for="width">Width</label>
+                            <input type="text" name="width" placeholder="12" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="height">Height</label>
+                            <input type="text" name="height" placeholder="24" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="breadth">Breadth</label>
+                            <input type="text" name="breadth" placeholder="6" required>
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <label for="dimension-units">Units</label>
+                        <select name="dimension-units" id="dimension-units">
+                            <option value="cm">cm</option>
+                            <option value="mm">mm</option>
+                            <option value="in">in</option>
+                        </select>
+                    </div>
+                    <div class="mutiple-input-container">
+                        <div class="input-container">
+                            <label for="material">Material</label>
+                            <input type="text" name="material" placeholder="Porcelain" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="color">Color</label>
+                            <input type="text" name="color" placeholder="Pearl white" required>
+                        </div>
+                    </div>
+                    <div class="mutiple-input-container">
+                        <div class="input-container">
+                            <label for="weight">Weight</label>
+                            <input type="text" name="weight" placeholder="10" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="weight-units">Units</label>
+                            <select name="weight-units" id="weight-units">
+                                <option selected value="lbs">lbs</option>
+                                <option value="kgs">kgs</option>
+                                <option value="ozs">ozs</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mutiple-input-container">
+                        <div class="input-container">
+                            <label for="price">Price</label>
+                            <input type="number" name="base_price" placeholder="75" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="stock_quantity">Stock Quantity</label>
+                            <input type="number" name="stock_quantity" placeholder="100" required>
+                        </div>
+                        <div class="input-container">
+                            <label for="status">Status</label>
+                            <select name="status" id="status">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <label for="description">Description</label>
+                        <textarea name="description" id="description" placeholder="My most valuable sconce!" required aria-required /></textarea>
                     </div>
                 </form>
             </div>
@@ -245,19 +320,32 @@
             e.preventDefault();
 
             const form = $("#edit-sconce-form");
-            const data = form.serializeObject();
-            data.sconce_id = $("#edit-sconce-id").text();
+            const data = getJSONDataFromForm(form);
+            const sconceId = $("#edit-sconce-id").text();
 
-            if (!data.name.length || !form.find('input[name="name"]')[0].checkValidity()) {
-                return form.find('input[name="name"]')[0].reportValidity();
+            if (checkFormIsValid(form, data, true)) {
+                $(this).removeClass("disabled");
+            } else {
+                return $(this).addClass("disabled");
+            }
+
+            const formData = new FormData(form[0]);
+            if (STATE.imageToUpload) {
+                formData.set("sconce-img", STATE.imageToUpload);
+            } else {
+                formData.delete("sconce-img");
             }
 
             $.ajax({
-                url: `/sconces/${data.sconce_id}`,
-                method: "PUT",
+                url: `/sconces/${sconceId}`,
+                method: "POST",
                 dataType: "JSON",
-                contentType: "application/json",
-                data: JSON.stringify(data),
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    "X-HTTP-Method-Override": "PUT" // Set custom header to tell server it's a PUT request
+                },
                 success: res => {
                     const {
                         data,
@@ -293,7 +381,11 @@
             }
 
             const formData = new FormData(form[0]);
-            formData.set("sconce-img", STATE.imageToUpload)
+            if (STATE.imageToUpload) {
+                formData.set("sconce-img", STATE.imageToUpload);
+            } else {
+                formData.delete("sconce-img");
+            }
 
             $.ajax({
                 url: "/sconces",
@@ -327,10 +419,41 @@
         $("#sconces-table tbody tr").on("click", function() {
             const modal = $("#edit-sconce-modal");
             const sconceId = $(this).find('td').eq(0).text();
-            const sconceName = $(this).find('td').eq(1).text();
+            const imgSrc = $(this).find('td').eq(1).find('img').attr('src');
+            const name = $(this).find('td').eq(2).text();
+            const dimensions = $(this).find('td').eq(3).text()
+                .split(" x ").map(x => {
+                    let res = x.replace("mm", "");
+                    res = x.replace("in", "");
+                    res = x.replace("cm", "");
+                    return res;
+                });
+            const material = $(this).find('td').eq(4).text();
+            const color = $(this).find('td').eq(5).text();
+            const weight = $(this).find('td').eq(6).text()
+                .replace("lbs", "")
+                .replace("kgs", "")
+                .replace("ozs", "");
+            const base_price = $(this).find('td').eq(7).text();
+            const stock_quantity = $(this).find('td').eq(8).text();
+            const description = $(this).find('td').eq(13).text();
+
+            delete STATE.imageToUpload;
 
             modal.find('#edit-sconce-id').text(sconceId);
-            modal.find('input[name="name"]').val(sconceName);
+            modal.find('input[name="name"]').val(name);
+            modal.find('.sconce-preview-container').html(`
+                <img title="${name}" src="${imgSrc}" alt="${name}">
+            `);
+            modal.find('input[name="width"]').val(dimensions[0]);
+            modal.find('input[name="height"]').val(dimensions[1]);
+            modal.find('input[name="breadth"]').val(dimensions[2]);
+            modal.find('input[name="material"]').val(material);
+            modal.find('input[name="color"]').val(color);
+            modal.find('input[name="weight"]').val(weight);
+            modal.find('input[name="base_price"]').val(base_price);
+            modal.find('input[name="stock_quantity"]').val(stock_quantity);
+            modal.find('textarea[name="description"]').val(description);
 
             modal.addClass("showing");
         });
@@ -384,9 +507,7 @@
     });
 
     function getJSONDataFromForm(form) {
-        const data = form.serializeObject();
-        data["sconce-img"] = STATE.imageToUpload;
-        return data;
+        return form.serializeObject();
     }
 
     $("#sconce-img-options .continue-btn.danger").on("click", async function() {
@@ -400,13 +521,13 @@
 
         if (!choice.isConfirmed) return;
 
-        STATE.imageToUpload = undefined;
-        $("#sconce-preview-container").html("");
+        delete STATE.imageToUpload;
+        $(this).closest('.sconce-img-container').find(".sconce-preview-container").html("");
         const formIsValid = checkFormIsValid($("#create-sconce-form"));
         $('button[form="create-sconce-form"]').toggleClass("disabled", !formIsValid);
     });
 
-    $("#sconce-img-input").on('change', function() {
+    $(".sconce-img-input").on('change', function() {
         [...this.files].forEach(file => {
             if (file.type === 'application/pdf') {
                 return Swal.fire({
@@ -420,7 +541,7 @@
 
             const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
             const imgSrc = URL.createObjectURL(file);
-            $("#sconce-preview-container").html(`
+            $(this).siblings(".sconce-preview-container").html(`
                 <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
             `);
 
@@ -453,7 +574,7 @@
 
                     const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
                     const imgSrc = URL.createObjectURL(file);
-                    $("#sconce-preview-container").html(`
+                    $(this).find(".sconce-preview-container").html(`
                         <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                     `);
                 }
@@ -473,7 +594,7 @@
 
                 const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
                 const imgSrc = URL.createObjectURL(file);
-                $("#sconce-preview-container").html(`
+                $(this).find(".sconce-preview-container").html(`
                     <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                 `);
             });
@@ -494,11 +615,12 @@
         }
     }
 
-    function checkFormIsValid(form, data = null) {
+    function checkFormIsValid(form, data = null, editing = false) {
         data = data ? data : getJSONDataFromForm(form);
         let valid = true;
         for (const key in data) {
             if (Object.prototype.hasOwnProperty.call(data, key)) {
+                if (editing && key === "sconce-img") continue;
                 if (!data[key]?.length && !(data[key] instanceof File)) {
                     valid = false;
                     break;
