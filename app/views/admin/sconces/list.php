@@ -426,7 +426,7 @@
                 .replace("ozs", "");
             const base_price = $(this).find('td').eq(7).text();
             const stock_quantity = $(this).find('td').eq(8).text();
-            const description = $(this).find('td').eq(13).text();
+            const description = $(this).find('td').eq(10).text();
 
             delete STATE.imageToUpload;
 
