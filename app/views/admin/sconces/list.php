@@ -24,14 +24,8 @@
                     <th>Base Price</th>
                     <th>Stock Quantity</th>
                     <th>Status</th>
-                    <th>Installation Type</th>
-                    <th>Style</th>
-                    <th>Image Url</th>
                     <th>Description</th>
                     <th>Availability</th>
-                    <th>Care Instructions</th>
-                    <th>Release Date</th>
-                    <th>Custom Options</th>
                     <th>Created</th>
                     <th>Last updated</th>
                     <?php if ($user['role_id'] === 1) { ?>
@@ -71,14 +65,8 @@
                         <td><?php echo $s['base_price']; ?></td>
                         <td><?php echo $s['stock_quantity']; ?></td>
                         <td><?php echo $s['status']; ?></td>
-                        <td><?php echo $s['installation_type']; ?></td>
-                        <td><?php echo $s['style']; ?></td>
-                        <td><?php echo $s['image_url']; ?></td>
                         <td><?php echo $s['description']; ?></td>
                         <td><?php echo $s['availability']; ?></td>
-                        <td><?php echo $s['care_instructions']; ?></td>
-                        <td><?php echo $s['release_date']; ?></td>
-                        <td><?php echo $s['custom_options']; ?></td>
                         <td class="dt-type-date"><?php echo $created_at; ?></td>
                         <td class="dt-type-date"><?php echo $updated_at; ?></td>
                         <?php if ($user['role_id'] === 1) { ?>
