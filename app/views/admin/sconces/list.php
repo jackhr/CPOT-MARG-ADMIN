@@ -34,7 +34,9 @@
                     <th>Custom Options</th>
                     <th>Created</th>
                     <th>Last updated</th>
-                    <th>Deleted At</th>
+                    <?php if ($user['role_id'] === 1) { ?>
+                        <th>Deleted At</th>
+                    <?php } ?>
                     <th>Created By</th>
                     <th>Updated By</th>
                 </tr>
