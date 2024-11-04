@@ -3,6 +3,7 @@ require_once __DIR__ . '/../app/core/bootstrap.php';
 
 use App\Controllers\RoleController;
 use App\Controllers\SconceController;
+use App\Controllers\UniqueCeramicController;
 use App\Controllers\UserController;
 use App\Core\ControllerFactory;
 use App\Middleware\AuthMiddleware;
@@ -55,6 +56,13 @@ $router->group('/', function (Router $router) {
         $router->post('', [SconceController::class, 'create']);
         $router->post('/{id}', [SconceController::class, 'update']);
         $router->delete('/{id}', [SconceController::class, 'delete']);
+    });
+
+    $router->group('ceramics', function (Router $router) {
+        $router->get('', [UniqueCeramicController::class, 'listCeramics']);
+        $router->post('', [UniqueCeramicController::class, 'create']);
+        $router->post('/{id}', [UniqueCeramicController::class, 'update']);
+        $router->delete('/{id}', [UniqueCeramicController::class, 'delete']);
     });
 }, [AuthMiddleware::class]);
 

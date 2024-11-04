@@ -5,13 +5,16 @@
     <div class="table-wrapper">
         <button class="create-btn continue-btn open-modal-btn">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 4h6l3 7H8l3-7Z"></path>
-                <path d="M14 11v5a2 2 0 0 1-2 2H8"></path>
-                <path d="M4 15h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H4v-6Z"></path>
+                <path d="M10 2v5.632c0 .424-.272.795-.653.982A6 6 0 0 0 6 14c.006 4 3 7 5 8" />
+                <path d="M10 5H8a2 2 0 0 0 0 4h.68" />
+                <path d="M14 2v5.632c0 .424.272.795.652.982A6 6 0 0 1 18 14c0 4-3 7-5 8" />
+                <path d="M14 5h2a2 2 0 0 1 0 4h-.68" />
+                <path d="M18 22H6" />
+                <path d="M9 2h6" />
             </svg>
-            <span>Create Sconce</span>
+            <span>Create Ceramic</span>
         </button>
-        <table id="sconces-table">
+        <table id="ceramics-table">
             <thead>
                 <tr>
                     <th>Id #</th>
@@ -21,7 +24,7 @@
                     <th>Material</th>
                     <th>Color</th>
                     <th>Weight</th>
-                    <th>Base Price</th>
+                    <th>Price</th>
                     <th>Stock Quantity</th>
                     <th>Status</th>
                     <th>Description</th>
@@ -36,7 +39,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($sconces as $s) {
+                <?php foreach ($ceramics as $s) {
                     $created_at = new DateTime($s['created_at']);
                     $updated_at = new DateTime($s['updated_at']);
                     $created_at = $created_at->format('M j, Y \@ g:i A T');
@@ -50,9 +53,9 @@
                         }
                     }
                 ?>
-                    <tr data-id="<?php echo $s['sconce_id']; ?>">
-                        <td><?php echo $s['sconce_id']; ?></td>
-                        <td class="sconce-thumb-td">
+                    <tr data-id="<?php echo $s['ceramic_id']; ?>">
+                        <td><?php echo $s['ceramic_id']; ?></td>
+                        <td class="ceramic-thumb-td">
                             <div>
                                 <img src="<?php echo $s['image_url']; ?>" alt="<?php echo $s['name']; ?>">
                             </div>
@@ -62,7 +65,7 @@
                         <td><?php echo $s['material']; ?></td>
                         <td><?php echo $s['color']; ?></td>
                         <td><?php echo $s['weight']; ?></td>
-                        <td><?php echo $s['base_price']; ?></td>
+                        <td><?php echo $s['price']; ?></td>
                         <td><?php echo $s['stock_quantity']; ?></td>
                         <td><?php echo $s['status']; ?></td>
                         <td><?php echo $s['description']; ?></td>
@@ -81,29 +84,29 @@
     </div>
 </main>
 
-<div id="create-sconce-modal" class="modal">
+<div id="create-ceramic-modal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-options">
                     <span class="modal-close">×</span>
                 </div>
-                <h1>Adding Sconce</h1>
+                <h1>Adding Ceramic</h1>
             </div>
             <div class="modal-body">
-                <form id="create-sconce-form">
-                    <div class="input-container sconce-img-container">
-                        <input type="file" name="sconce-img" class="sconce-img-input" id="create-sconce-img-input" style="display: none;">
-                        <div class="sconce-preview-container"></div>
-                        <div class="sconce-img-options">
-                            <label for="create-sconce-img-input" class="continue-btn">Add Image</label>
-                            <label for="create-sconce-img-input" class="continue-btn other">Change Image</label>
+                <form id="create-ceramic-form">
+                    <div class="input-container ceramic-img-container">
+                        <input type="file" name="ceramic-img" class="ceramic-img-input" id="create-ceramic-img-input" style="display: none;">
+                        <div class="ceramic-preview-container"></div>
+                        <div class="ceramic-img-options">
+                            <label for="create-ceramic-img-input" class="continue-btn">Add Image</label>
+                            <label for="create-ceramic-img-input" class="continue-btn other">Change Image</label>
                             <label class="continue-btn danger">Remove Image</label>
                         </div>
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
-                        <input type="text" name="name" placeholder="New Sconce" required>
+                        <input type="text" name="name" placeholder="New Ceramic" required>
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
@@ -171,44 +174,44 @@
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
-                        <textarea name="description" id="description" placeholder="My most valuable sconce!" required aria-required /></textarea>
+                        <textarea name="description" id="description" placeholder="My most valuable ceramic!" required aria-required /></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button form="create-sconce-form" type="submit" class="continue-btn disabled">Submit</button>
+                <button form="create-ceramic-form" type="submit" class="continue-btn disabled">Submit</button>
             </div>
             <div id="drop-alert">Drop Image To Add</div>
         </div>
     </div>
 </div>
 
-<div id="edit-sconce-modal" class="modal">
+<div id="edit-ceramic-modal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-options">
                     <span class="modal-close">×</span>
                 </div>
-                <h1>Editing Sconce</h1>
+                <h1>Editing Ceramic</h1>
             </div>
             <div class="modal-body">
-                <form id="edit-sconce-form">
+                <form id="edit-ceramic-form">
                     <div class="input-container">
                         <label>Id #</label>
-                        <span id="edit-sconce-id"></span>
+                        <span id="edit-ceramic-id"></span>
                     </div>
                     <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
-                    <div class="input-container sconce-img-container">
-                        <input type="file" name="sconce-img" class="sconce-img-input" id="edit-sconce-img-input" style="display: none;">
-                        <div class="sconce-preview-container"></div>
-                        <div class="sconce-img-options">
-                            <label for="edit-sconce-img-input" class="continue-btn other">Change Image</label>
+                    <div class="input-container ceramic-img-container">
+                        <input type="file" name="ceramic-img" class="ceramic-img-input" id="edit-ceramic-img-input" style="display: none;">
+                        <div class="ceramic-preview-container"></div>
+                        <div class="ceramic-img-options">
+                            <label for="edit-ceramic-img-input" class="continue-btn other">Change Image</label>
                         </div>
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
-                        <input type="text" name="name" placeholder="New Sconce" required>
+                        <input type="text" name="name" placeholder="New Ceramic" required>
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
@@ -276,13 +279,13 @@
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
-                        <textarea name="description" id="description" placeholder="My most valuable sconce!" required aria-required /></textarea>
+                        <textarea name="description" id="description" placeholder="My most valuable ceramic!" required aria-required /></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="continue-btn cancel">Cancel</button>
-                <button form="edit-sconce-form" type="submit" class="continue-btn">Update</button>
+                <button form="edit-ceramic-form" type="submit" class="continue-btn">Update</button>
             </div>
             <div class="modal-footer" style="margin-top: 18px;">
                 <button class="continue-btn danger">Delete</button>
@@ -293,25 +296,25 @@
 
 <script>
     $(document).ready(function() {
-        const dTable = new DataTable("#sconces-table", {
+        const dTable = new DataTable("#ceramics-table", {
             ...STATE.dtDefaultOpts,
         });
 
         setTimeout(() => dTable.draw(), 1000);
 
-        $(".create-btn").on("click", () => $("#create-sconce-modal").addClass("showing"));
+        $(".create-btn").on("click", () => $("#create-ceramic-modal").addClass("showing"));
 
-        $("#create-sconce-modal input, #create-sconce-modal textarea").on('input', () => {
-            const formIsValid = checkFormIsValid($("#create-sconce-form"));
-            $('button[form="create-sconce-form"]').toggleClass("disabled", !formIsValid);
+        $("#create-ceramic-modal input, #create-ceramic-modal textarea").on('input', () => {
+            const formIsValid = checkFormIsValid($("#create-ceramic-form"));
+            $('button[form="create-ceramic-form"]').toggleClass("disabled", !formIsValid);
         });
 
-        $('button[form="edit-sconce-form"]').on("click", function(e) {
+        $('button[form="edit-ceramic-form"]').on("click", function(e) {
             e.preventDefault();
 
-            const form = $("#edit-sconce-form");
+            const form = $("#edit-ceramic-form");
             const data = getJSONDataFromForm(form);
-            const sconceId = $("#edit-sconce-id").text();
+            const ceramicId = $("#edit-ceramic-id").text();
 
             if (checkFormIsValid(form, data, true)) {
                 $(this).removeClass("disabled");
@@ -321,13 +324,13 @@
 
             const formData = new FormData(form[0]);
             if (STATE.imageToUpload) {
-                formData.set("sconce-img", STATE.imageToUpload);
+                formData.set("ceramic-img", STATE.imageToUpload);
             } else {
-                formData.delete("sconce-img");
+                formData.delete("ceramic-img");
             }
 
             $.ajax({
-                url: `/sconces/${sconceId}`,
+                url: `/ceramics/${ceramicId}`,
                 method: "POST",
                 dataType: "JSON",
                 data: formData,
@@ -358,10 +361,10 @@
             });
         });
 
-        $('button[form="create-sconce-form"]').on("click", function(e) {
+        $('button[form="create-ceramic-form"]').on("click", function(e) {
             e.preventDefault();
 
-            const form = $("#create-sconce-form");
+            const form = $("#create-ceramic-form");
             const data = getJSONDataFromForm(form);
 
             if (checkFormIsValid(form)) {
@@ -372,13 +375,13 @@
 
             const formData = new FormData(form[0]);
             if (STATE.imageToUpload) {
-                formData.set("sconce-img", STATE.imageToUpload);
+                formData.set("ceramic-img", STATE.imageToUpload);
             } else {
-                formData.delete("sconce-img");
+                formData.delete("ceramic-img");
             }
 
             $.ajax({
-                url: "/sconces",
+                url: "/ceramics",
                 method: "POST",
                 dataType: "JSON",
                 data: formData,
@@ -406,9 +409,9 @@
             });
         });
 
-        $("#sconces-table tbody tr").on("click", function() {
-            const modal = $("#edit-sconce-modal");
-            const sconceId = $(this).find('td').eq(0).text();
+        $("#ceramics-table tbody tr").on("click", function() {
+            const modal = $("#edit-ceramic-modal");
+            const ceramicId = $(this).find('td').eq(0).text();
             const imgSrc = $(this).find('td').eq(1).find('img').attr('src');
             const name = $(this).find('td').eq(2).text();
             const dimensions = $(this).find('td').eq(3).text()
@@ -430,9 +433,9 @@
 
             delete STATE.imageToUpload;
 
-            modal.find('#edit-sconce-id').text(sconceId);
+            modal.find('#edit-ceramic-id').text(ceramicId);
             modal.find('input[name="name"]').val(name);
-            modal.find('.sconce-preview-container').html(`
+            modal.find('.ceramic-preview-container').html(`
                 <img title="${name}" src="${imgSrc}" alt="${name}">
             `);
             modal.find('input[name="width"]').val(dimensions[0]);
@@ -448,19 +451,19 @@
             modal.addClass("showing");
         });
 
-        $("#edit-sconce-modal button.cancel").on("click", function() {
+        $("#edit-ceramic-modal button.cancel").on("click", function() {
             $(this).closest('.modal').removeClass('showing');
         });
 
-        $("#edit-sconce-modal button.danger").on("click", async function() {
-            const form = $("#edit-sconce-form");
+        $("#edit-ceramic-modal button.danger").on("click", async function() {
+            const form = $("#edit-ceramic-form");
             const data = form.serializeObject();
-            data.sconce_id = $("#edit-sconce-id").text();
+            data.ceramic_id = $("#edit-ceramic-id").text();
 
             const res = await Swal.fire({
                 icon: "warning",
                 title: `Deleting "${data.name}"`,
-                text: "Are you sure that you would like to delete this sconce?",
+                text: "Are you sure that you would like to delete this ceramic?",
                 showDenyButton: true,
                 confirmButtonText: 'Yes',
                 denyButtonText: 'No'
@@ -469,7 +472,7 @@
             if (!res.isConfirmed) return;
 
             $.ajax({
-                url: `/sconces/${data.sconce_id}`,
+                url: `/ceramics/${data.ceramic_id}`,
                 method: "DELETE",
                 dataType: "JSON",
                 data,
@@ -500,7 +503,7 @@
         return form.serializeObject();
     }
 
-    $(".sconce-img-options .continue-btn.danger").on("click", async function() {
+    $(".ceramic-img-options .continue-btn.danger").on("click", async function() {
         const choice = await Swal.fire({
             icon: "warning",
             title: "Removing Image",
@@ -512,12 +515,12 @@
         if (!choice.isConfirmed) return;
 
         delete STATE.imageToUpload;
-        $(this).closest('.sconce-img-container').find(".sconce-preview-container").html("");
-        const formIsValid = checkFormIsValid($("#create-sconce-form"));
-        $('button[form="create-sconce-form"]').toggleClass("disabled", !formIsValid);
+        $(this).closest('.ceramic-img-container').find(".ceramic-preview-container").html("");
+        const formIsValid = checkFormIsValid($("#create-ceramic-form"));
+        $('button[form="create-ceramic-form"]').toggleClass("disabled", !formIsValid);
     });
 
-    $(".sconce-img-input").on('change', function() {
+    $(".ceramic-img-input").on('change', function() {
         [...this.files].forEach(file => {
             if (file.type === 'application/pdf') {
                 return Swal.fire({
@@ -531,17 +534,17 @@
 
             const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
             const imgSrc = URL.createObjectURL(file);
-            $(this).siblings(".sconce-preview-container").html(`
+            $(this).siblings(".ceramic-preview-container").html(`
                 <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
             `);
 
         });
         $(this).val('');
-        const formIsValid = checkFormIsValid($("#create-sconce-form"));
-        $('button[form="create-sconce-form"]').toggleClass("disabled", !formIsValid);
+        const formIsValid = checkFormIsValid($("#create-ceramic-form"));
+        $('button[form="create-ceramic-form"]').toggleClass("disabled", !formIsValid);
     });
 
-    $("#create-sconce-modal").on('drop', async function(evt) {
+    $("#create-ceramic-modal").on('drop', async function(evt) {
         evt.preventDefault();
 
         const origEvt = evt.originalEvent;
@@ -564,7 +567,7 @@
 
                     const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
                     const imgSrc = URL.createObjectURL(file);
-                    $(this).find(".sconce-preview-container").html(`
+                    $(this).find(".ceramic-preview-container").html(`
                         <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                     `);
                 }
@@ -584,7 +587,7 @@
 
                 const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
                 const imgSrc = URL.createObjectURL(file);
-                $(this).find(".sconce-preview-container").html(`
+                $(this).find(".ceramic-preview-container").html(`
                     <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                 `);
             });
@@ -610,7 +613,7 @@
         let valid = true;
         for (const key in data) {
             if (Object.prototype.hasOwnProperty.call(data, key)) {
-                if (editing && key === "sconce-img") continue;
+                if (editing && key === "ceramic-img") continue;
                 if (!data[key]?.length && !(data[key] instanceof File)) {
                     valid = false;
                     break;
