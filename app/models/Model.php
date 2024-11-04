@@ -17,9 +17,9 @@ class Model
     }
 
     // Method to fetch all records
-    public function readAll()
+    public function readAll($override_query = "")
     {
-        $query = "SELECT * FROM {$this->table_name}";
+        $query = strlen($override_query) ? $override_query : "SELECT * FROM {$this->table_name}";
         $stmt = $this->con->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

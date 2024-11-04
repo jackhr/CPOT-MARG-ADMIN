@@ -72,8 +72,8 @@
                         <?php if ($user['role_id'] === 1) { ?>
                             <td class="dt-type-date"><?php echo $deleted_at; ?></td>
                         <?php } ?>
-                        <td><?php echo $s['created_by']; ?></td>
-                        <td><?php echo $s['updated_by']; ?></td>
+                        <td><?php echo $s['created_by_email']; ?></td>
+                        <td><?php echo $s['updated_by_email']; ?></td>
                     </tr>
                 <?php } ?>
             </tbody>

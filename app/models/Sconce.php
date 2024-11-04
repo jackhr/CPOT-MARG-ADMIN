@@ -42,7 +42,7 @@ class Sconce extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url WHERE sconce_id = :sconce_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, updated_by = :updated_by WHERE sconce_id = :sconce_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -57,6 +57,7 @@ class Sconce extends Model
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
         $this->image_url = htmlspecialchars($this->image_url);
+        $this->updated_by = htmlspecialchars($this->updated_by);
 
         // Bind parameters
         $stmt->bindParam(":name", $this->name);
@@ -70,6 +71,7 @@ class Sconce extends Model
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":image_url", $this->image_url);
         $stmt->bindParam(":sconce_id", $this->sconce_id, PDO::PARAM_INT);
+        $stmt->bindParam(":updated_by", $this->updated_by, PDO::PARAM_INT);
 
         // Execute the query
         return $stmt->execute();
@@ -77,7 +79,7 @@ class Sconce extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -91,6 +93,7 @@ class Sconce extends Model
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
         $this->image_url = htmlspecialchars($this->image_url);
+        $this->created_by = htmlspecialchars($this->created_by);
 
         // Bind parameters
         $stmt->bindParam(":name", $this->name);
@@ -103,6 +106,7 @@ class Sconce extends Model
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":image_url", $this->image_url);
+        $stmt->bindParam(":created_by", $this->created_by, PDO::PARAM_INT);
 
         // Execute the query
         return $stmt->execute();

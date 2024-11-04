@@ -20,7 +20,11 @@ class SconceController extends Controller
     public function listSconces()
     {
         $logged_in_user = $_SESSION['user'];
-        $sconces = $this->sconceModel->readAll();
+        $override_query = "SELECT sconces.*, users_c.email AS created_by_email, users_u.email AS updated_by_email 
+            FROM sconces
+            LEFT JOIN users users_c ON sconces.created_by = users_c.user_id
+            LEFT JOIN users users_u ON sconces.updated_by = users_u.user_id";
+        $sconces = $this->sconceModel->readAll($override_query);
         if ($logged_in_user['role_id'] > 1) {
             $sconces = array_filter($sconces, function ($sconce) {
                 return !isset($sconce['deleted_at']);
@@ -99,6 +103,7 @@ class SconceController extends Controller
         $this->sconceModel->status = $sconce_status;
         $this->sconceModel->description = $description;
         $this->sconceModel->image_url = $image_url;
+        $this->sconceModel->created_by = $_SESSION['user']['user_id'];
 
         if ($this->sconceModel->create()) {
             $message = "sconce created successfully.";
@@ -262,6 +267,7 @@ class SconceController extends Controller
         $this->sconceModel->status = $sconce_status;
         $this->sconceModel->description = $description;
         $this->sconceModel->image_url = isset($new_image_url) ? $new_image_url : $sconce['image_url'];
+        $this->sconceModel->updated_by = $_SESSION['user']['user_id'];
 
         if ($this->sconceModel->update()) {
             $message = "sconce updated successfully.";
