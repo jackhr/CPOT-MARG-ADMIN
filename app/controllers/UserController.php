@@ -29,10 +29,16 @@ class UserController extends Controller
     public function listUsers()
     {
         $roleModel = new Role();
+        $roles = $roleModel->readAll();
+        if ($_SESSION['user']['role_id'] > 1) {
+            $roles = array_filter($roles, function ($role) {
+                return $role['role_name'] !== "Developer";
+            });
+        }
         $this->view("admin/users/list.php", [
             "user" => $_SESSION['user'],
             "users" => $this->userModel->readAll(),
-            "roles" => $roleModel->readAll(),
+            "roles" => $roles,
             "title" => "Users"
         ]);
     }
