@@ -2,6 +2,7 @@
 
 namespace App\Core;
 
+use App\Controllers\CutoutController;
 use App\Controllers\UserController;
 use App\Controllers\HttpErrorController;
 use App\Controllers\RoleController;
@@ -15,6 +16,8 @@ class ControllerFactory
     public static function create($controllerName)
     {
         switch ($controllerName) {
+            case CutoutController::class:
+                return new CutoutController();
             case UniqueCeramicController::class:
                 return new UniqueCeramicController(new GeneralHelper());
             case SconceController::class:

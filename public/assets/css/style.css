@@ -276,7 +276,8 @@ select {
 }
 
 .input-container.sconce-img-container,
-.input-container.ceramic-img-container {
+.input-container.ceramic-img-container,
+.input-container.cutout-img-container {
     flex-direction: column;
     padding-bottom: 24px;
     border-bottom : solid 1px var(--grey-x-light);
@@ -288,17 +289,22 @@ select {
 .input-container.sconce-img-container:has(img) .sconce-img-options .continue-btn:not(.danger):not(.other),
 .input-container.ceramic-img-container:not(:has(img)) .ceramic-img-options .continue-btn.other,
 .input-container.ceramic-img-container:not(:has(img)) .ceramic-img-options .continue-btn.danger,
-.input-container.ceramic-img-container:has(img) .ceramic-img-options .continue-btn:not(.danger):not(.other) {
+.input-container.ceramic-img-container:has(img) .ceramic-img-options .continue-btn:not(.danger):not(.other),
+.input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.other,
+.input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.danger,
+.input-container.cutout-img-container:has(img) .cutout-img-options .continue-btn:not(.danger):not(.other) {
     display: none;
 }
 
 .input-container.sconce-img-container:not(:has(img)) .sconce-preview-container::before,
-.input-container.ceramic-img-container:not(:has(img)) .ceramic-preview-container::before {
+.input-container.ceramic-img-container:not(:has(img)) .ceramic-preview-container::before,
+.input-container.cutout-img-container:not(:has(img)) .cutout-preview-container::before {
     content: "Image will preview here.";
 }
 
 .sconce-preview-container,
-.ceramic-preview-container {
+.ceramic-preview-container,
+.cutout-preview-container {
     display        : flex;
     align-items    : center;
     justify-content: center;
@@ -309,7 +315,8 @@ select {
 }
 
 .sconce-preview-container img,
-.ceramic-preview-container img {
+.ceramic-preview-container img,
+.cutout-preview-container img {
     width     : 100%;
     object-fit: contain;
     height    : auto;
@@ -317,7 +324,8 @@ select {
 }
 
 .sconce-img-options,
-.ceramic-img-options {
+.ceramic-img-options,
+.cutout-img-options {
     display: flex;
     gap    : 16px;
     width  : 100%;
@@ -415,11 +423,13 @@ table .sconce-thumb-td div {
 }
 
 table .sconce-thumb-td div img,
-table .ceramic-thumb-td div img {
+table .ceramic-thumb-td div img,
+table .cutout-thumb-td div img {
     object-fit     : contain;
     object-position: center;
     height         : 100%;
     width          : 100%;
+    max-width      : 200px;
 }
 
 span.err-msg {
@@ -619,7 +629,7 @@ main {
     font-weight: 600;
 }
 
-.input-container label:not(#create-sconce-form .input-container label):not(#edit-sconce-form .input-container label):not(#create-ceramic-form .input-container label):not(#edit-ceramic-form .input-container label) {
+.input-container label:not(#create-sconce-form .input-container label):not(#edit-sconce-form .input-container label):not(#create-ceramic-form .input-container label):not(#edit-ceramic-form .input-container label):not(#create-cutout-form .input-container label):not(#edit-cutout-form .input-container label) {
     max-width: 140px;
     width    : 100%;
 }

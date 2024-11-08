@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../app/core/bootstrap.php';
 
+use App\Controllers\CutoutController;
 use App\Controllers\RoleController;
 use App\Controllers\SconceController;
 use App\Controllers\UniqueCeramicController;
@@ -63,6 +64,13 @@ $router->group('/', function (Router $router) {
         $router->post('', [UniqueCeramicController::class, 'create']);
         $router->post('/{id}', [UniqueCeramicController::class, 'update']);
         $router->delete('/{id}', [UniqueCeramicController::class, 'delete']);
+    });
+
+    $router->group('cutouts', function (Router $router) {
+        $router->get('', [CutoutController::class, 'listCutouts']);
+        $router->post('', [CutoutController::class, 'create']);
+        $router->post('/{id}', [CutoutController::class, 'update']);
+        $router->delete('/{id}', [CutoutController::class, 'delete']);
     });
 }, [AuthMiddleware::class]);
 
