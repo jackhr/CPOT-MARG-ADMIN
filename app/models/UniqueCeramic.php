@@ -34,6 +34,7 @@ class UniqueCeramic extends Model
     {
         parent::__construct();
         $this->table_name = "unique_ceramics";
+        $this->primary_key = "ceramic_id";
         $this->helper = new GeneralHelper();
     }
 
@@ -119,16 +120,6 @@ class UniqueCeramic extends Model
         $stmt->bindParam(":ceramic_id", $this->ceramic_id, PDO::PARAM_INT);
 
         return $stmt->execute();
-    }
-
-
-    public function findById($ceramic_id)
-    {
-        $query = "SELECT * FROM {$this->table_name} WHERE ceramic_id = :ceramic_id";
-        $stmt = $this->con->prepare($query);
-        $stmt->bindParam(":ceramic_id", $ceramic_id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     // Method to find a user by username

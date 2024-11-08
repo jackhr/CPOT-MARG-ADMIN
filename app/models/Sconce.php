@@ -37,6 +37,7 @@ class Sconce extends Model
     {
         parent::__construct();
         $this->table_name = "sconces";
+        $this->primary_key = "sconce_id";
         $this->helper = new GeneralHelper();
     }
 
@@ -122,16 +123,6 @@ class Sconce extends Model
         $stmt->bindParam(":sconce_id", $this->sconce_id, PDO::PARAM_INT);
 
         return $stmt->execute();
-    }
-
-
-    public function findById($sconce_id)
-    {
-        $query = "SELECT * FROM {$this->table_name} WHERE sconce_id = :sconce_id";
-        $stmt = $this->con->prepare($query);
-        $stmt->bindParam(":sconce_id", $sconce_id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     // Method to find a user by username

@@ -14,6 +14,7 @@ class Role extends Model
     {
         parent::__construct();
         $this->table_name = "roles";
+        $this->primary_key = "role_id";
     }
 
     public function update()
@@ -50,17 +51,7 @@ class Role extends Model
         return $stmt->execute();
     }
 
-    // Method to find a role by ID
-    public function findById($role_id)
-    {
-        $query = "SELECT * FROM {$this->table_name} WHERE role_id = :role_id";
-        $stmt = $this->con->prepare($query);
-        $stmt->bindParam(":role_id", $role_id);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    // Method to find a user by username
+    // Method to find a role by username
     public function findByRoleName($role_name)
     {
         $query = "SELECT * FROM {$this->table_name} WHERE role_name = :role_name";

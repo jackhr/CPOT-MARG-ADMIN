@@ -21,6 +21,7 @@ class Cutout extends Model
     {
         parent::__construct();
         $this->table_name = "cutouts";
+        $this->primary_key = "cutout_id";
     }
 
     public function create()
@@ -92,15 +93,6 @@ class Cutout extends Model
         $query = "SELECT * FROM {$this->table_name} WHERE name = :name";
         $stmt = $this->con->prepare($query);
         $stmt->bindParam(":name", $name);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function findById($cutout_id)
-    {
-        $query = "SELECT * FROM {$this->table_name} WHERE cutout_id = :cutout_id";
-        $stmt = $this->con->prepare($query);
-        $stmt->bindParam(":cutout_id", $cutout_id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

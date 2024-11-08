@@ -9,6 +9,7 @@ class Model
 {
     protected $con;
     protected $table_name;
+    protected $primary_key;
 
     public function __construct()
     {
@@ -23,5 +24,14 @@ class Model
         $stmt = $this->con->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function findById($id)
+    {
+        $query = "SELECT * FROM {$this->table_name} WHERE {$this->primary_key} = :{$this->primary_key}";
+        $stmt = $this->con->prepare($query);
+        $stmt->bindParam(":{$this->primary_key}", $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }
