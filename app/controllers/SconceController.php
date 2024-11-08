@@ -144,13 +144,14 @@ class SconceController extends Controller
         if (!$sconce) {
             $status = 409;
             $message = "There is no sconce with this id.";
-        } else if (
-            ($sconce_with_same_name !== false) &&
-            ($sconce_with_same_name['sconce_id'] !== $sconce['sconce_id']) &&
-            ($sconce_with_same_name['name'] === $name)
-        ) {
-            $status = 409;
-            $message = "There is already a sconce with that name.";
+        } else if ($sconce_with_same_name !== false) {
+            if (
+                ($sconce_with_same_name['sconce_id'] !== $sconce['sconce_id']) &&
+                ($sconce_with_same_name['name'] === $name)
+            ) {
+                $status = 409;
+                $message = "There is already a unique sconce with that name.";
+            }
         }
 
         try {
@@ -186,7 +187,7 @@ class SconceController extends Controller
                             $status = 500;
                             throw new Exception("Failed to overwrite the existing image.");
                         }
-                        
+
                         if (!rename($old_image_path, $public_directory . $new_image_url)) {
                             $status = 500;
                             throw new Exception("Failed to rename the updated image.");

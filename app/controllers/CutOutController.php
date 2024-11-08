@@ -127,13 +127,14 @@ class CutoutController extends Controller
         if (!$cutout) {
             $status = 409;
             $message = "There is no cutout with this id.";
-        } else if (
-            ($cutout_with_same_name !== false) &&
-            ($cutout_with_same_name['cutout_id'] !== $cutout['cutout_id']) &&
-            ($cutout_with_same_name['name'] === $name)
-        ) {
-            $status = 409;
-            $message = "There is already a cutout with that name.";
+        } else if ($cutout_with_same_name !== false) {
+            if (
+                ($cutout_with_same_name['cutout_id'] !== $cutout['cutout_id']) &&
+                ($cutout_with_same_name['name'] === $name)
+            ) {
+                $status = 409;
+                $message = "There is already a unique cutout with that name.";
+            }
         }
 
         try {

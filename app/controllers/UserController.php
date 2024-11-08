@@ -105,18 +105,20 @@ class UserController extends Controller
         if (!$user) {
             $status = 409;
             $message = "There is no user with this id.";
-        } else if (
-            ($user_with_same_username['username'] === $username) &&
-            ($user_with_same_username['user_id'] !== $user['user_id'])
-        ) {
-            $status = 409;
-            $message = "There is already a user with that username.";
-        } else if (
-            ($user_with_same_email['email'] === $email) &&
-            ($user_with_same_email['user_id'] !== $user['user_id'])
-        ) {
-            $status = 409;
-            $message = "There is already a user with that email.";
+        } else if ($user_with_same_username !== false) {
+            if (
+                ($user_with_same_username['username'] === $username) &&
+                ($user_with_same_username['user_id'] !== $user['user_id'])
+            ) {
+                $status = 409;
+                $message = "There is already a user with that username.";
+            } else if (
+                ($user_with_same_email['email'] === $email) &&
+                ($user_with_same_email['user_id'] !== $user['user_id'])
+            ) {
+                $status = 409;
+                $message = "There is already a user with that email.";
+            }
         }
 
         if ($status !== 200) {

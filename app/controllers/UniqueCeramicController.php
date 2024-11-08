@@ -144,13 +144,14 @@ class UniqueCeramicController extends Controller
         if (!$ceramic) {
             $status = 409;
             $message = "There is no unique ceramic with this id.";
-        } else if (
-            ($ceramic_with_same_name !== false) &&
-            ($ceramic_with_same_name['ceramic_id'] !== $ceramic['ceramic_id']) &&
-            ($ceramic_with_same_name['name'] === $name)
-        ) {
-            $status = 409;
-            $message = "There is already a unique ceramic with that name.";
+        } else if ($ceramic_with_same_name !== false) {
+            if (
+                ($ceramic_with_same_name['ceramic_id'] !== $ceramic['ceramic_id']) &&
+                ($ceramic_with_same_name['name'] === $name)
+            ) {
+                $status = 409;
+                $message = "There is already a unique ceramic with that name.";
+            }
         }
 
         try {
@@ -186,7 +187,7 @@ class UniqueCeramicController extends Controller
                             $status = 500;
                             throw new Exception("Failed to overwrite the existing image.");
                         }
-                        
+
                         if (!rename($old_image_path, $public_directory . $new_image_url)) {
                             $status = 500;
                             throw new Exception("Failed to rename the updated image.");
