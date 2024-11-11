@@ -90,6 +90,11 @@ class SconceController extends Controller
             "description" => $description,
         ] = $_POST;
 
+        $width = $this->helper->truncateToThreeDecimals($width);
+        $height = $this->helper->truncateToThreeDecimals($height);
+        $breadth = $this->helper->truncateToThreeDecimals($breadth);
+        $weight = $this->helper->truncateToThreeDecimals($weight);
+
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
@@ -98,8 +103,8 @@ class SconceController extends Controller
         $this->sconceModel->material = $material;
         $this->sconceModel->color = $color;
         $this->sconceModel->weight = $weight;
-        $this->sconceModel->base_price = $base_price;
-        $this->sconceModel->stock_quantity = $stock_quantity;
+        $this->sconceModel->base_price = $this->helper->truncateToThreeDecimals($base_price);
+        $this->sconceModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->sconceModel->status = $sconce_status;
         $this->sconceModel->description = $description;
         $this->sconceModel->image_url = $image_url;
@@ -259,6 +264,11 @@ class SconceController extends Controller
             "description" => $description,
         ] = $_POST;
 
+        $width = $this->helper->truncateToThreeDecimals($width);
+        $height = $this->helper->truncateToThreeDecimals($height);
+        $breadth = $this->helper->truncateToThreeDecimals($breadth);
+        $weight = $this->helper->truncateToThreeDecimals($weight);
+
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
@@ -268,8 +278,8 @@ class SconceController extends Controller
         $this->sconceModel->material = $material;
         $this->sconceModel->color = $color;
         $this->sconceModel->weight = $weight;
-        $this->sconceModel->base_price = $base_price;
-        $this->sconceModel->stock_quantity = $stock_quantity;
+        $this->sconceModel->base_price = $this->helper->truncateToThreeDecimals($base_price);
+        $this->sconceModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->sconceModel->status = $sconce_status;
         $this->sconceModel->description = $description;
         $this->sconceModel->image_url = isset($new_image_url) ? $new_image_url : $sconce['image_url'];
