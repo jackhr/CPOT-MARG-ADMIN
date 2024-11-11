@@ -1,19 +1,21 @@
 :root {
-    --primary         : #d16e45;
-    --primary-rgb     : rgb(209, 110, 69);
-    --primary-rgb-vals: 209, 110, 69;
-    --secondary       : #17c8ff;
-    --blue            : #3a6ed3;
-    --black           : #232628;
-    --white           : #f5f5f5;
-    --grey-x-light    : #cdcdcd;
-    --grey-light      : #888888;
-    --grey-dark       : #676767;
-    --red             : #ea0c0c;
-    --max-width       : 1140px;
-    --nav-height      : 64px;
-    --primary-font    : 'Montserrat', sans-serif;
-    --general-padding : 1rem;
+    --primary           : #ED6F35;
+    --primary-rgb       : rgb(237, 111, 53);
+    --primary-rgb-vals  : 209, 110, 69;
+    --secondary         : #2E4398;
+    --secondary-rgb     : rgb(46, 67, 152);
+    --secondary-rgb-vals: 46, 67, 152;
+    --blue              : #3a6ed3;
+    --black             : #232628;
+    --white             : #f5f5f5;
+    --grey-x-light      : #cdcdcd;
+    --grey-light        : #888888;
+    --grey-dark         : #676767;
+    --red               : #ea0c0c;
+    --max-width         : 1140px;
+    --nav-height        : 64px;
+    --primary-font      : 'Montserrat', sans-serif;
+    --general-padding   : 1rem;
 }
 
 *,
