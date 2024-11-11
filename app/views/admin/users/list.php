@@ -121,7 +121,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button form="create-user-form" type="submit" class="continue-btn disabled">Submit</button>
+                <button form="create-user-form" type="submit" class="continue-btn">Submit</button>
             </div>
         </div>
     </div>
@@ -381,7 +381,7 @@
         if (type === "create" || type === "edit") {
             if (data.username.length < 5) {
                 errMsg = "A user's username must be at least 5 characters.";
-            } else if (!data.email.length || data.email.match(STATE.regEx.email)) {
+            } else if (!data.email.length || !data.email.match(STATE.regEx.email)) {
                 errMsg = `Please provide your user with a valid email address. You entered "${data.email}".`;
             }
         }
