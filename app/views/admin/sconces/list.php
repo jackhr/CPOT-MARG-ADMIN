@@ -636,15 +636,15 @@
                 errMsg = "Please provide your ceramic with a name.";
             } else if (!data.width.length) {
                 errMsg = "Please provide your ceramic with a width.";
-            } else if (!data.width.match(STATE.decimalRegEx)) {
+            } else if (!data.width.match(STATE.regEx.decimal)) {
                 errMsg = `Width can only be a number. You entered: "${data.width}"`;
             } else if (!data.height.length) {
                 errMsg = "Please provide your ceramic with a height.";
-            } else if (!data.height.match(STATE.decimalRegEx)) {
+            } else if (!data.height.match(STATE.regEx.decimal)) {
                 errMsg = `Height can only be a number. You entered: "${data.height}"`;
             } else if (!data.breadth.length) {
                 errMsg = "Please provide your ceramic with a breadth.";
-            } else if (!data.breadth.match(STATE.decimalRegEx)) {
+            } else if (!data.breadth.match(STATE.regEx.decimal)) {
                 errMsg = `Breadth can only be a number. You entered: "${data.breadth}"`;
             } else if (!data.material.length) {
                 errMsg = "Please provide your ceramic with a material.";
@@ -652,15 +652,15 @@
                 errMsg = "Please provide your ceramic with a color.";
             } else if (!data.weight.length) {
                 errMsg = "Please provide your ceramic with a weight.";
-            } else if (!data.weight.match(STATE.decimalRegEx)) {
+            } else if (!data.weight.match(STATE.regEx.decimal)) {
                 errMsg = `Weight can only be a number. You entered: "${data.weight}"`;
             } else if (!data.base_price.length) {
                 errMsg = "Please provide your ceramic with a price.";
-            } else if (!data.base_price.match(STATE.decimalRegEx)) {
+            } else if (!data.base_price.match(STATE.regEx.decimal)) {
                 errMsg = `Price can only be a number. You entered: "${data.base_price}"`;
             } else if (!data.stock_quantity.length) {
                 errMsg = "Please provide your ceramic with a stock quantity.";
-            } else if (!data.stock_quantity.match(STATE.decimalRegEx)) {
+            } else if (!data.stock_quantity.match(STATE.regEx.decimal)) {
                 errMsg = `Stock quantity can only be a number. You entered: "${data.stock_quantity}"`;
             } else if (!data.name.length) {
                 errMsg = "Please provide your ceramic with a name.";
