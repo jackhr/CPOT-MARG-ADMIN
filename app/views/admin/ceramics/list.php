@@ -625,7 +625,6 @@
         let errMsg = "";
 
         if (type === "create" || type === "edit") {
-            console.log("data:", data);
             if (!STATE.imageToUpload && type === "create") {
                 errMsg = "You need to upload an image";
             } else if (!data.name.length) {

@@ -108,7 +108,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button form="create-cutout-form" type="submit" class="continue-btn disabled">Submit</button>
+                <button form="create-cutout-form" type="submit" class="continue-btn">Submit</button>
             </div>
             <div id="drop-alert">Drop Image To Add</div>
         </div>
@@ -175,23 +175,29 @@
 
         $(".create-btn").on("click", () => $("#create-cutout-modal").addClass("showing"));
 
-        $("#create-cutout-modal input, #create-cutout-modal textarea").on('input', () => {
-            const formIsValid = checkFormIsValid($("#create-cutout-form"));
-            $('button[form="create-cutout-form"]').toggleClass("disabled", !formIsValid);
-        });
-
         $('button[form="edit-cutout-form"]').on("click", function(e) {
             e.preventDefault();
 
             const form = $("#edit-cutout-form");
             const data = getJSONDataFromForm(form);
             const cutoutId = $("#edit-cutout-id").text();
+            const formValidationMsg = getFormValidationMsg(data, "edit");
 
-            if (checkFormIsValid(form, data, true)) {
-                $(this).removeClass("disabled");
-            } else {
-                return $(this).addClass("disabled");
+            if (formValidationMsg) {
+                return Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: formValidationMsg
+                });
             }
+
+            Swal.fire({
+                title: "Loading...",
+                html: `Updating cutout, <strong>"${data.name}"</strong>.`,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             const formData = new FormData(form[0]);
             if (STATE.imageToUpload) {
@@ -237,12 +243,23 @@
 
             const form = $("#create-cutout-form");
             const data = getJSONDataFromForm(form);
+            const formValidationMsg = getFormValidationMsg(data);
 
-            if (checkFormIsValid(form)) {
-                $(this).removeClass("disabled");
-            } else {
-                return $(this).addClass("disabled");
+            if (formValidationMsg) {
+                return Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: formValidationMsg
+                });
             }
+
+            Swal.fire({
+                title: "Loading...",
+                html: `Creating cutout, <strong>"${data.name}"</strong>.`,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             const formData = new FormData(form[0]);
             if (STATE.imageToUpload) {
@@ -321,6 +338,14 @@
 
             if (!res.isConfirmed) return;
 
+            Swal.fire({
+                title: "Loading...",
+                html: `Deleting cutout, <strong>"${data.name}"</strong>.`,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             $.ajax({
                 url: `/cutouts/${data.cutout_id}`,
                 method: "DELETE",
@@ -366,8 +391,6 @@
 
         delete STATE.imageToUpload;
         $(this).closest('.cutout-img-container').find(".cutout-preview-container").html("");
-        const formIsValid = checkFormIsValid($("#create-cutout-form"));
-        $('button[form="create-cutout-form"]').toggleClass("disabled", !formIsValid);
     });
 
     $(".cutout-img-input").on('change', function() {
@@ -390,8 +413,6 @@
 
         });
         $(this).val('');
-        const formIsValid = checkFormIsValid($("#create-cutout-form"));
-        $('button[form="create-cutout-form"]').toggleClass("disabled", !formIsValid);
     });
 
     $("#create-cutout-modal").on('drop', async function(evt) {
@@ -458,19 +479,21 @@
         }
     }
 
-    function checkFormIsValid(form, data = null, editing = false) {
-        data = data ? data : getJSONDataFromForm(form);
-        let valid = true;
-        for (const key in data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                if (editing && key === "cutout-img") continue;
-                if (!data[key]?.length && !(data[key] instanceof File)) {
-                    valid = false;
-                    break;
-                }
+    function getFormValidationMsg(data, type = "create") {
+        let errMsg = "";
+
+        if (type === "create" || type === "edit") {
+            console.log("data:", data);
+            if (!STATE.imageToUpload && type === "create") {
+                errMsg = "You need to upload an image";
+            } else if (!data.name.length) {
+                errMsg = "Please provide your cutout with a name.";
+            } else if (!data.cutout_type.length) {
+                errMsg = "Please provide your cutout with a type.";
             }
         }
-        return valid;
+
+        return errMsg || null;
     }
 </script>
 
