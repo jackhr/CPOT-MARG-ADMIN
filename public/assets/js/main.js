@@ -1,7 +1,9 @@
 const STATE = {
     dtDefaultOpts: {
         scrollX: true
-    }
+    },
+    doubleOrIntRegEx: /^\d*\.?\d{1,2}$/,
+    decimalRegEx: /^\d*\.?\d+$/,
 }
 
 $(document).ready(function () {

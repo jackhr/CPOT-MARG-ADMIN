@@ -90,6 +90,11 @@ class UniqueCeramicController extends Controller
             "description" => $description,
         ] = $_POST;
 
+        $width = $this->helper->truncateToThreeDecimals($width);
+        $height = $this->helper->truncateToThreeDecimals($height);
+        $breadth = $this->helper->truncateToThreeDecimals($breadth);
+        $weight = $this->helper->truncateToThreeDecimals($weight);
+
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
@@ -98,8 +103,8 @@ class UniqueCeramicController extends Controller
         $this->ceramicModel->material = $material;
         $this->ceramicModel->color = $color;
         $this->ceramicModel->weight = $weight;
-        $this->ceramicModel->price = $base_price;
-        $this->ceramicModel->stock_quantity = $stock_quantity;
+        $this->ceramicModel->price = $this->helper->truncateToThreeDecimals($base_price);
+        $this->ceramicModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->ceramicModel->status = $ceramic_status;
         $this->ceramicModel->description = $description;
         $this->ceramicModel->image_url = $image_url;
@@ -259,6 +264,11 @@ class UniqueCeramicController extends Controller
             "description" => $description,
         ] = $_POST;
 
+        $width = $this->helper->truncateToThreeDecimals($width);
+        $height = $this->helper->truncateToThreeDecimals($height);
+        $breadth = $this->helper->truncateToThreeDecimals($breadth);
+        $weight = $this->helper->truncateToThreeDecimals($weight);
+
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
@@ -268,8 +278,8 @@ class UniqueCeramicController extends Controller
         $this->ceramicModel->material = $material;
         $this->ceramicModel->color = $color;
         $this->ceramicModel->weight = $weight;
-        $this->ceramicModel->price = $base_price;
-        $this->ceramicModel->stock_quantity = $stock_quantity;
+        $this->ceramicModel->price = $this->helper->truncateToThreeDecimals($base_price);
+        $this->ceramicModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->ceramicModel->status = $ceramic_status;
         $this->ceramicModel->description = $description;
         $this->ceramicModel->image_url = isset($new_image_url) ? $new_image_url : $ceramic['image_url'];

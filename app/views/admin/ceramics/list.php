@@ -157,11 +157,11 @@
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="price">Price</label>
-                            <input type="number" name="base_price" placeholder="75" required>
+                            <input type="text" name="base_price" placeholder="75" required>
                         </div>
                         <div class="input-container">
                             <label for="stock_quantity">Stock Quantity</label>
-                            <input type="number" name="stock_quantity" placeholder="100" required>
+                            <input type="text" name="stock_quantity" placeholder="100" required>
                         </div>
                         <div class="input-container">
                             <label for="status">Status</label>
@@ -179,7 +179,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button form="create-ceramic-form" type="submit" class="continue-btn disabled">Submit</button>
+                <button form="create-ceramic-form" type="submit" class="continue-btn">Submit</button>
             </div>
             <div id="drop-alert">Drop Image To Add</div>
         </div>
@@ -262,11 +262,11 @@
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="price">Price</label>
-                            <input type="number" name="base_price" placeholder="75" required>
+                            <input type="text" name="base_price" placeholder="75" required>
                         </div>
                         <div class="input-container">
                             <label for="stock_quantity">Stock Quantity</label>
-                            <input type="number" name="stock_quantity" placeholder="100" required>
+                            <input type="text" name="stock_quantity" placeholder="100" required>
                         </div>
                         <div class="input-container">
                             <label for="status">Status</label>
@@ -304,23 +304,29 @@
 
         $(".create-btn").on("click", () => $("#create-ceramic-modal").addClass("showing"));
 
-        $("#create-ceramic-modal input, #create-ceramic-modal textarea").on('input', () => {
-            const formIsValid = checkFormIsValid($("#create-ceramic-form"));
-            $('button[form="create-ceramic-form"]').toggleClass("disabled", !formIsValid);
-        });
-
         $('button[form="edit-ceramic-form"]').on("click", function(e) {
             e.preventDefault();
 
             const form = $("#edit-ceramic-form");
             const data = getJSONDataFromForm(form);
             const ceramicId = $("#edit-ceramic-id").text();
+            const formValidationMsg = getFormValidationMsg(data, "edit");
 
-            if (checkFormIsValid(form, data, true)) {
-                $(this).removeClass("disabled");
-            } else {
-                return $(this).addClass("disabled");
+            if (formValidationMsg) {
+                return Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: formValidationMsg
+                });
             }
+
+            Swal.fire({
+                title: "Loading...",
+                html: `Updating unique ceramic, <strong>"${data.name}"</strong>.`,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             const formData = new FormData(form[0]);
             if (STATE.imageToUpload) {
@@ -366,12 +372,23 @@
 
             const form = $("#create-ceramic-form");
             const data = getJSONDataFromForm(form);
+            const formValidationMsg = getFormValidationMsg(data);
 
-            if (checkFormIsValid(form)) {
-                $(this).removeClass("disabled");
-            } else {
-                return $(this).addClass("disabled");
+            if (formValidationMsg) {
+                return Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: formValidationMsg
+                });
             }
+
+            Swal.fire({
+                title: "Loading...",
+                html: `Creating unique ceramic, <strong>"${data.name}"</strong>.`,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             const formData = new FormData(form[0]);
             if (STATE.imageToUpload) {
@@ -471,6 +488,14 @@
 
             if (!res.isConfirmed) return;
 
+            Swal.fire({
+                title: "Loading...",
+                html: `Deleting unique ceramic, <strong>"${data.name}"</strong>.`,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             $.ajax({
                 url: `/ceramics/${data.ceramic_id}`,
                 method: "DELETE",
@@ -516,8 +541,6 @@
 
         delete STATE.imageToUpload;
         $(this).closest('.ceramic-img-container').find(".ceramic-preview-container").html("");
-        const formIsValid = checkFormIsValid($("#create-ceramic-form"));
-        $('button[form="create-ceramic-form"]').toggleClass("disabled", !formIsValid);
     });
 
     $(".ceramic-img-input").on('change', function() {
@@ -540,8 +563,6 @@
 
         });
         $(this).val('');
-        const formIsValid = checkFormIsValid($("#create-ceramic-form"));
-        $('button[form="create-ceramic-form"]').toggleClass("disabled", !formIsValid);
     });
 
     $("#create-ceramic-modal").on('drop', async function(evt) {
@@ -600,27 +621,49 @@
         $("#drop-alert").addClass('showing');
     });
 
-    function validateForm(data, type = "create") {
-        if (type === "create") {
+    function getFormValidationMsg(data, type = "create") {
+        let errMsg = "";
 
-        } else {
-
-        }
-    }
-
-    function checkFormIsValid(form, data = null, editing = false) {
-        data = data ? data : getJSONDataFromForm(form);
-        let valid = true;
-        for (const key in data) {
-            if (Object.prototype.hasOwnProperty.call(data, key)) {
-                if (editing && key === "ceramic-img") continue;
-                if (!data[key]?.length && !(data[key] instanceof File)) {
-                    valid = false;
-                    break;
-                }
+        if (type === "create" || type === "edit") {
+            console.log("data:", data);
+            if (!STATE.imageToUpload && type === "create") {
+                errMsg = "You need to upload an image";
+            } else if (!data.name.length) {
+                errMsg = "Please provide your ceramic with a name.";
+            } else if (!data.width.length) {
+                errMsg = "Please provide your ceramic with a width.";
+            } else if (!data.width.match(STATE.decimalRegEx)) {
+                errMsg = `Width can only be a number. You entered: "${data.width}"`;
+            } else if (!data.height.length) {
+                errMsg = "Please provide your ceramic with a height.";
+            } else if (!data.height.match(STATE.decimalRegEx)) {
+                errMsg = `Height can only be a number. You entered: "${data.height}"`;
+            } else if (!data.breadth.length) {
+                errMsg = "Please provide your ceramic with a breadth.";
+            } else if (!data.breadth.match(STATE.decimalRegEx)) {
+                errMsg = `Breadth can only be a number. You entered: "${data.breadth}"`;
+            } else if (!data.material.length) {
+                errMsg = "Please provide your ceramic with a material.";
+            } else if (!data.color.length) {
+                errMsg = "Please provide your ceramic with a color.";
+            } else if (!data.weight.length) {
+                errMsg = "Please provide your ceramic with a weight.";
+            } else if (!data.weight.match(STATE.decimalRegEx)) {
+                errMsg = `Weight can only be a number. You entered: "${data.weight}"`;
+            } else if (!data.base_price.length) {
+                errMsg = "Please provide your ceramic with a price.";
+            } else if (!data.base_price.match(STATE.decimalRegEx)) {
+                errMsg = `Price can only be a number. You entered: "${data.base_price}"`;
+            } else if (!data.stock_quantity.length) {
+                errMsg = "Please provide your ceramic with a stock quantity.";
+            } else if (!data.stock_quantity.match(STATE.decimalRegEx)) {
+                errMsg = `Stock quantity can only be a number. You entered: "${data.stock_quantity}"`;
+            } else if (!data.name.length) {
+                errMsg = "Please provide your ceramic with a name.";
             }
         }
-        return valid;
+
+        return errMsg || null;
     }
 </script>
 
