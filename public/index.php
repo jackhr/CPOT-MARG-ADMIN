@@ -17,7 +17,7 @@ $router = new Router($helper);
 
 $router->group('/', function (Router $router) {
     $router->get('', function () use ($router) {
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) session_start();
         if (isset($_SESSION['user'])) {
             $router->redirect("/dashboard");
         } else {
