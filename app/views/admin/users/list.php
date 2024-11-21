@@ -304,7 +304,7 @@
             });
         });
 
-        $("#users-table tbody tr").on("click", function() {
+        $("#users-table").on("click", "tbody tr", function() {
             const modal = $("#edit-user-modal");
             const userId = $(this).find('td').eq(0).text();
             const username = $(this).find('td').eq(1).text();

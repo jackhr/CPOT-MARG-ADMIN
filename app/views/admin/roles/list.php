@@ -200,7 +200,7 @@
             return !disableTheBtn;
         }
 
-        $("#roles-table tbody tr").on("click", function() {
+        $("#roles-table").on("click", "tbody tr", function() {
             const modal = $("#edit-role-modal");
             const roleId = $(this).find('td').eq(0).text();
             const roleName = $(this).find('td').eq(1).text();

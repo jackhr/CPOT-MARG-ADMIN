@@ -426,7 +426,7 @@
             });
         });
 
-        $("#ceramics-table tbody tr").on("click", function() {
+        $("#ceramics-table").on("click", "tbody tr", function() {
             const modal = $("#edit-ceramic-modal");
             const ceramicId = $(this).find('td').eq(0).text();
             const imgSrc = $(this).find('td').eq(1).find('img').attr('src');
@@ -560,7 +560,7 @@
             $(this).siblings(".ceramic-preview-container").html(`
                 <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
             `);
-
+            $(this).closest('form').find('input[name="name"]').val(newFileName);
         });
         $(this).val('');
     });
@@ -591,6 +591,7 @@
                     $(this).find(".ceramic-preview-container").html(`
                         <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                     `);
+                    $(this).find('input[name="name"]').val(newFileName);
                 }
             });
         } else {
@@ -611,6 +612,7 @@
                 $(this).find(".ceramic-preview-container").html(`
                     <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                 `);
+                $(this).find('input[name="name"]').val(newFileName);
             });
         }
 

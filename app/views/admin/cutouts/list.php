@@ -297,7 +297,7 @@
             });
         });
 
-        $("#cutouts-table tbody tr").on("click", function() {
+        $("#cutouts-table").on("click", "tbody tr", function() {
             const modal = $("#edit-cutout-modal");
             const cutoutId = $(this).find('td').eq(0).text();
             const imgSrc = $(this).find('td').eq(1).find('img').attr('src');
@@ -410,7 +410,7 @@
             $(this).siblings(".cutout-preview-container").html(`
                 <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
             `);
-
+            $(this).closest('form').find('input[name="name"]').val(newFileName);
         });
         $(this).val('');
     });
@@ -441,6 +441,7 @@
                     $(this).find(".cutout-preview-container").html(`
                         <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                     `);
+                    $(this).find('input[name="name"]').val(newFileName);
                 }
             });
         } else {
@@ -461,6 +462,7 @@
                 $(this).find(".cutout-preview-container").html(`
                     <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                 `);
+                $(this).find('input[name="name"]').val(newFileName);
             });
         }
 

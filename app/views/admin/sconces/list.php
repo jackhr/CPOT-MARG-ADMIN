@@ -423,7 +423,7 @@
             });
         });
 
-        $("#sconces-table tbody tr").on("click", function() {
+        $("#sconces-table").on("click", "tbody tr", function() {
             const modal = $("#edit-sconce-modal");
             const sconceId = $(this).find('td').eq(0).text();
             const imgSrc = $(this).find('td').eq(1).find('img').attr('src');
@@ -557,7 +557,7 @@
             $(this).siblings(".sconce-preview-container").html(`
                 <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
             `);
-
+            $(this).closest('form').find('input[name="name"]').val(newFileName);
         });
         $(this).val('');
     });
@@ -588,6 +588,7 @@
                     $(this).find(".sconce-preview-container").html(`
                         <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                     `);
+                    $(this).find('input[name="name"]').val(newFileName);
                 }
             });
         } else {
@@ -608,6 +609,7 @@
                 $(this).find(".sconce-preview-container").html(`
                     <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                 `);
+                $(this).find('input[name="name"]').val(newFileName);
             });
         }
 
