@@ -78,7 +78,7 @@ class User extends Model
     }
 
     // Method to fetch all users
-    public function readAll($with_password = false)
+    public function readAll($with_password = false, $_ = null)
     {
         $suffix = $with_password ? "" : "_without_password";
         $where = $_SESSION['user']['role_id'] > 1 ? "WHERE deleted_at IS NULL" : "";
