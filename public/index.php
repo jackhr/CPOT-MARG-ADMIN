@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../app/core/bootstrap.php';
 
 use App\Controllers\CutoutController;
+use App\Controllers\OrderController;
 use App\Controllers\RoleController;
 use App\Controllers\SconceController;
 use App\Controllers\UniqueCeramicController;
@@ -71,6 +72,10 @@ $router->group('/', function (Router $router) {
         $router->post('', [CutoutController::class, 'create']);
         $router->post('/{id}', [CutoutController::class, 'update']);
         $router->delete('/{id}', [CutoutController::class, 'delete']);
+    });
+
+    $router->group('orders', function (Router $router) {
+        $router->get('', [OrderController::class, 'listOrders']);
     });
 }, [AuthMiddleware::class]);
 
