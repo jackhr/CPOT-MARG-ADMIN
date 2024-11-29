@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Config\Database;
+use Exception;
 use PDO;
 
 class Model
@@ -18,12 +19,25 @@ class Model
     }
 
     // Method to fetch all records
-    public function readAll($override_query = "")
+    public function readAll($override_query = "", $index_by = null)
     {
         $query = strlen($override_query) ? $override_query : "SELECT * FROM {$this->table_name}";
         $stmt = $this->con->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if ($index_by === null) return $results;
+
+        if (!isset($results[0][$index_by])) {
+            throw new Exception("Column '{$index_by}' does not exist in the result set.");
+        }
+
+        $indexed_results = [];
+        foreach ($results as $row) {
+            $indexed_results[$row[$index_by]] = $row;
+        }
+
+        return $indexed_results;
     }
 
     public function findById($id)
