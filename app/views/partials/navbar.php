@@ -1,4 +1,7 @@
 <nav id="nav">
+    <a href="/">
+        <img src="assets/images/logo.png" alt="">
+    </a>
     <span>Welcome, <?php echo $user['username']; ?>!</span>
     <?php if (isset($title)) {
         echo "<h1>$title</h1>";

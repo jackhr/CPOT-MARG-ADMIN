@@ -149,6 +149,15 @@ select {
     border-bottom: solid 1px var(--primary);
 }
 
+#nav>a {
+    width: calc(var(--nav-height) - 24px);
+}
+
+#nav>a img {
+    height: 100%;
+    width : 100%;
+}
+
 #nav>span {
     color      : var(--primary);
     margin     : auto 0 auto 12px;
