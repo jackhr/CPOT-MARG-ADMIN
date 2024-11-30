@@ -51,7 +51,7 @@ class CutoutController extends Controller
             $fileType = $uploadedFile['type'];
             $extension = $this->helper->getFileExtension($fileType);
 
-            $public_directory = "/assets/images/cutouts/";
+            $public_directory = "/assets/images/gallery/cutouts/";
             $newFileName = $name . $extension;
             $image_url = $public_directory . $newFileName;
 
@@ -153,7 +153,7 @@ class CutoutController extends Controller
 
                 // Prepare file paths
                 $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/cutouts/";
+                $relative_directory = "/assets/images/gallery/cutouts/";
                 $newFileName = $name . $extension;
                 $new_image_url = $relative_directory . $newFileName;
                 $uploadDirectory = $public_directory . $relative_directory;
@@ -201,7 +201,7 @@ class CutoutController extends Controller
                 $extension = $fileInfo['extension'];
 
                 $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/cutouts/";
+                $relative_directory = "/assets/images/gallery/cutouts/";
                 $newFileName = "$name.$extension";
                 $new_image_url = $relative_directory . $newFileName;
                 $uploadDirectory = $public_directory . $relative_directory;

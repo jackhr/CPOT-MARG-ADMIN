@@ -50,7 +50,7 @@ class SconceController extends Controller
             $fileType = $uploadedFile['type'];
             $extension = $this->helper->getFileExtension($fileType);
 
-            $public_directory = "/assets/images/sconces/";
+            $public_directory = "/assets/images/gallery/sconces/";
             $newFileName = $name . $extension;
             $image_url = $public_directory . $newFileName;
 
@@ -175,7 +175,7 @@ class SconceController extends Controller
 
                 // Prepare file paths
                 $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/sconces/";
+                $relative_directory = "/assets/images/gallery/sconces/";
                 $newFileName = $name . $extension;
                 $new_image_url = $relative_directory . $newFileName;
                 $uploadDirectory = $public_directory . $relative_directory;
@@ -223,7 +223,7 @@ class SconceController extends Controller
                 $extension = $fileInfo['extension'];
 
                 $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/sconces/";
+                $relative_directory = "/assets/images/gallery/sconces/";
                 $newFileName = "$name.$extension";
                 $new_image_url = $relative_directory . $newFileName;
                 $uploadDirectory = $public_directory . $relative_directory;
