@@ -406,6 +406,10 @@ select {
     position   : relative;
 }
 
+.input-container * {
+    margin: 0;
+}
+
 .input-container input,
 .input-container textarea {
     border: solid 2px transparent;
@@ -663,6 +667,21 @@ main {
 .password-container input[type="password"]+.password-eye-container .show-pass,
 .password-container input[type="text"]+.password-eye-container .hide-pass {
     display: block;
+}
+
+form h4 {
+    margin         : 0 0 24px;
+    text-decoration: underline;
+}
+
+form hr {
+    border: solid 0.5px #d3d3d3;
+    margin: 24px 0;
+}
+
+[data-order_type],
+[data-current_status] {
+    text-transform: capitalize;
 }
 
 @media screen and (max-width: 726px) {

@@ -76,6 +76,7 @@ $router->group('/', function (Router $router) {
 
     $router->group('orders', function (Router $router) {
         $router->get('', [OrderController::class, 'listOrders']);
+        $router->get('/getAll', [OrderController::class, 'getAll']);
     });
 }, [AuthMiddleware::class]);
 

@@ -17,11 +17,10 @@ class OrderController extends Controller
         $this->helper = new GeneralHelper();
     }
 
-    public function listOrders()
+    public function getAll()
     {
-        $logged_in_user = $_SESSION['user'];
         $table = "orders";
-        $override_query = "SELECT $table.*, contact.first_name, contact.last_name, contact.email 
+        $override_query = "SELECT $table.*, CONCAT(contact.first_name, ' ', contact.last_name) AS full_name, contact.email, contact.phone 
             FROM $table
             LEFT JOIN contact_info contact ON $table.contact_id = contact.contact_id";
         $orders = $this->orderModel->readAll($override_query, "order_id");
@@ -49,9 +48,14 @@ class OrderController extends Controller
             }
         }
 
+        $this->helper->respondToClient($orders);
+    }
+
+    public function listOrders()
+    {
+        $logged_in_user = $_SESSION['user'];
         $this->view("admin/orders/list.php", [
             "user" => $logged_in_user,
-            "orders" => $orders,
             "title" => "Orders"
         ]);
     }
