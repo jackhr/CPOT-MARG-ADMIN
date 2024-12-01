@@ -20,7 +20,7 @@ class OrderController extends Controller
     public function getAll()
     {
         $table = "orders";
-        $override_query = "SELECT $table.*, CONCAT(contact.first_name, ' ', contact.last_name) AS full_name, contact.email, contact.phone 
+        $override_query = "SELECT $table.*, contact.*, CONCAT(contact.first_name, ' ', contact.last_name) AS full_name 
             FROM $table
             LEFT JOIN contact_info contact ON $table.contact_id = contact.contact_id";
         $orders = $this->orderModel->readAll($override_query, "order_id");

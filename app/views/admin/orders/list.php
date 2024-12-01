@@ -33,7 +33,7 @@
             <div class="modal-body">
                 <form id="order-details-form">
                     <div class="mutiple-input-container">
-                        <h4>General Info</h4>
+                        <h4>Order Info</h4>
                         <button id="view-items-btn" class="continue-btn">View Items</button>
                     </div>
                     <div class="mutiple-input-container">
@@ -75,6 +75,22 @@
                     <div class="input-container">
                         <label for="phone">Phone</label>
                         <span data-phone></span>
+                    </div>
+                    <div class="input-container">
+                        <label for="address_1">Street Address</label>
+                        <span data-address_1></span>
+                    </div>
+                    <div class="input-container">
+                        <label for="town_or_city">Town / City</label>
+                        <span data-town_or_city></span>
+                    </div>
+                    <div class="input-container">
+                        <label for="state">State</label>
+                        <span data-state></span>
+                    </div>
+                    <div class="input-container">
+                        <label for="country">Country</label>
+                        <span data-country></span>
                     </div>
                     <div class="input-container">
                         <label for="message">Message</label>
@@ -196,6 +212,10 @@
                         .text(data.email)
                         .attr('href', `mailto:${data.email}`);
                     modal.find('[data-phone]').text(data.phone);
+                    modal.find('[data-address_1]').text(data.address_1);
+                    modal.find('[data-town_or_city]').text(data.town_or_city);
+                    modal.find('[data-state]').text(data.state);
+                    modal.find('[data-country]').text(data.country);
                     modal.find('[data-message]').text(data.message);
 
                     modal.addClass('showing');
