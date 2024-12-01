@@ -215,13 +215,13 @@
 
             activeOrder.order_items.forEach((orderItem, idx) => {
                 const item = formatResource(orderItem[orderType]);
+                orderItem.cutout && (orderItem.cutout = formatResource(orderItem.cutout));
                 const itemPrice = Number(item.base_price);
-                const cutoutPrice = Number(item?.cutout?.base_price) || 0;
+                const cutoutPrice = Number(orderItem?.cutout?.base_price) || 0;
                 const quantity = Number(orderItem.quantity);
                 const itemSubTotal = (itemPrice + cutoutPrice) * quantity;
                 const formattedItemSubTotal = formatPrice(itemSubTotal)
                 const idKey = `${item.type}_id`;
-                item.cutout && (item.cutout = formatResource(item.cutout));
                 item.type = parseType(item);
 
                 const lineItemContainer = `
@@ -287,20 +287,20 @@
                                 </div>
                                 <div>
                                     <div class="img-container">
-                                        <img src="${item?.cutout?.image_url || ""}" alt="">
+                                        <img src="${orderItem?.cutout?.image_url || ""}" alt="">
                                     </div>
                                     <div class="line-item-info">
                                         <div>
-                                            <h5>${item?.cutout?.name || "No Cutout"}</h5>
+                                            <h5>${orderItem?.cutout?.name || "No Cutout"}</h5>
                                             <div>
-                                                <span>$${item?.cutout?.base_price || 0}</span>
+                                                <span>$${orderItem?.cutout?.base_price || 0}</span>
                                                 <sub>(usd)</sub>
                                             </div>
                                         </div>
                                         <div class="bottom">
-                                            ${item?.cutout?.description ? (
+                                            ${orderItem?.cutout?.description ? (
                                                 `<div>
-                                                    <span>${item.cutout.description}</span>
+                                                    <span>${orderItem.cutout.description}</span>
                                                 </div>`
                                             ) : ""}
                                         </div>
