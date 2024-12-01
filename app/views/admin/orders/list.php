@@ -32,7 +32,10 @@
             </div>
             <div class="modal-body">
                 <form id="order-details-form">
-                    <h4>General Info</h4>
+                    <div class="mutiple-input-container">
+                        <h4>General Info</h4>
+                        <button id="view-items-btn" class="continue-btn">View Items</button>
+                    </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="total_amount">Total</label>
@@ -53,12 +56,9 @@
                             <span data-created_at></span>
                         </div>
                     </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="items">Items</label>
-                            <span data-order_item_count></span>
-                        </div>
-                        <button id="view-items-btn" class="continue-btn">View Items</button>
+                    <div class="input-container">
+                        <label for="items">Items</label>
+                        <span data-order_item_count></span>
                     </div>
                     <hr>
                     <h4>Client Info</h4>

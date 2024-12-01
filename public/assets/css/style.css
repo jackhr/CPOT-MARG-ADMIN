@@ -874,6 +874,18 @@ form hr {
     margin: 0;
 }
 
+#view-items-btn {
+    width      : max-content;
+    white-space: nowrap;
+    height     : 32px;
+    padding    : 0 8px;
+    margin     : 0 0 24px auto;
+}
+
+#order-items-modal .modal-content {
+    width: 800px;
+}
+
 @media screen and (max-width: 726px) {
     #dashboard-main a.ghost {
         display: none;
