@@ -684,6 +684,196 @@ form hr {
     text-transform: capitalize;
 }
 
+#cart-list {
+    width    : 100%;
+    max-width: 800px;
+}
+
+.line-item-container {
+    box-shadow   : 0 0 48px 0px #31313114;
+    border       : solid 1px var(--grey-light);
+    overflow     : hidden;
+    margin-bottom: 48px;
+}
+
+.line-item-container hr {
+    border-top: solid 1px var(--grey-light);
+}
+
+.line-item {
+    display       : flex;
+    flex-direction: column;
+    padding       : 12px;
+    gap           : 12px;
+}
+
+.line-item>div:first-child {
+    display        : flex;
+    justify-content: space-between;
+    border-bottom  : solid 1px var(--grey-x-light);
+    padding-bottom : 12px;
+    align-items    : center;
+}
+
+.line-item>div:first-child>h3 {
+    margin        : 0;
+    font-size     : 32px;
+    font-weight   : 400;
+    text-transform: capitalize;
+}
+
+.line-item>div:first-child>div {
+    display: flex;
+    height : fit-content;
+    gap    : 12px;
+}
+
+.line-item>div:first-child svg {
+    width     : 18px;
+    color     : var(--primary);
+    transition: transform ease 0.2s;
+    transform : scale(1);
+    cursor    : pointer;
+}
+
+.line-item>div:first-child svg:hover {
+    transform: scale(1.25);
+}
+
+.line-item>div:first-child svg.edit {
+    color: var(--primary);
+}
+
+.line-item>div:first-child svg.delete {
+    color: var(--red-darker);
+}
+
+.line-item>div:last-child {
+    display: flex;
+    gap    : 12px;
+}
+
+.line-item .img-container {
+    width    : 100%;
+    height   : 200px;
+    max-width: 200px;
+}
+
+.line-item.cutout .img-container {
+    border: solid 1px rgba(var(--secondary-rgb-vals), 0.5);
+}
+
+.line-item .img-container img {
+    width     : 100%;
+    height    : 100%;
+    object-fit: cover;
+}
+
+.line-item.cutout .img-container:has(img[src=""]) img {
+    display: none;
+}
+
+.line-item-info {
+    display       : flex;
+    width         : 100%;
+    flex-direction: column;
+}
+
+.line-item .line-item-info>div:first-child {
+    display        : flex;
+    height         : fit-content;
+    width          : 100%;
+    justify-content: space-between;
+    align-items    : center;
+    margin-bottom  : 12px;
+    border-bottom  : solid 1px var(--grey-x-light);
+    padding-bottom : 6px;
+}
+
+.line-item.cutout .line-item-info>div:first-child h5+div,
+.line-item-quantity>div {
+    display    : flex;
+    align-items: baseline;
+    font-size  : 28px;
+    font-weight: 500;
+}
+
+.line-item-quantity>div~* {
+    display: none;
+}
+
+.line-item .line-item-info>div:first-child h5+div sub,
+.line-item-quantity sub {
+    font-size: 14px;
+}
+
+.line-item-info>div:first-child h5 {
+    margin     : 0;
+    font-size  : 36px;
+    font-weight: 500;
+}
+
+.line-item-quantity {
+    display    : flex;
+    align-items: center;
+    gap        : 12px;
+}
+
+.line-item-quantity>span {
+    font-size  : 20px;
+    font-weight: 500;
+}
+
+.line-item-quantity>input {
+    width        : 40px;
+    padding      : 12px;
+    border       : solid 1px var(--black);
+    border-radius: 12px;
+}
+
+.line-item-quantity+[data-dimensions] {
+    font-size  : 14px;
+    margin     : 0 0 12px;
+    display    : block;
+    line-height: 24px;
+}
+
+
+.line-item-info .bottom {
+    display       : flex;
+    flex-direction: column;
+    gap           : 12px;
+    align-items   : flex-end;
+}
+
+.line-item-info .bottom>div {
+    width          : 100%;
+    display        : flex;
+    justify-content: space-between;
+    font-size      : 14px;
+    font-weight    : 500;
+    color          : var(--grey-light);
+    gap            : 24px;
+}
+
+.line-item-info .bottom>div span:last-child {
+    text-align: right;
+}
+
+.line-item-total {
+    display        : flex;
+    align-items    : center;
+    padding        : 24px;
+    border-top     : solid 1px var(--grey-light);
+    justify-content: space-between;
+    font-size      : 24px;
+    font-weight    : 600;
+}
+
+.line-item-total p {
+    margin: 0;
+}
+
 @media screen and (max-width: 726px) {
     #dashboard-main a.ghost {
         display: none;
