@@ -74,7 +74,7 @@
                     </div>
                     <div class="input-container">
                         <label for="phone">Phone</label>
-                        <span data-phone></span>
+                        <a data-phone></a>
                     </div>
                     <div class="mutiple-input-container" style="margin-top: 36px;">
                         <div class="input-container">
@@ -209,13 +209,15 @@
                     modal.find('[data-order_type]').text(data.order_type);
                     modal.find('[data-order_item_count]').text(data.order_item_count);
                     modal.find('[data-created_at]').text(data.created_at);
-                    modal.find('[data-total_amount]').text(`$${data.total_amount}`);
+                    modal.find('[data-total_amount]').text(`$${formatPrice(data.total_amount)}`);
                     modal.find('[data-current_status]').text(data.current_status);
                     modal.find('[data-full_name]').text(data.full_name);
                     modal.find('[data-email]')
                         .text(data.email)
                         .attr('href', `mailto:${data.email}`);
-                    modal.find('[data-phone]').text(data.phone);
+                    modal.find('[data-phone]')
+                        .text(data.phone)
+                        .attr('href', `tel:${data.phone}`);
                     modal.find('[data-address_1]').text(data.address_1);
                     modal.find('[data-town_or_city]').text(data.town_or_city);
                     modal.find('[data-state]').text(data.state);
