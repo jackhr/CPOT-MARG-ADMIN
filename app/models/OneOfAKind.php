@@ -8,6 +8,7 @@ use PDO;
 class OneOfAKind extends Model
 {
     public $one_of_a_kind_id;
+    public $primary_image_id;
     public $name;
     public $slug;
     public $dimensions;
@@ -40,11 +41,12 @@ class OneOfAKind extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id, name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
         $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
+        $this->primary_image_id = htmlspecialchars($this->primary_image_id);
         $this->name = htmlspecialchars($this->name);
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
@@ -58,6 +60,7 @@ class OneOfAKind extends Model
         $this->updated_by = htmlspecialchars($this->updated_by);
 
         // Bind parameters
+        $stmt->bindParam(":primary_image_id", $this->primary_image_id, PDO::PARAM_INT);
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":dimensions", $this->dimensions);
         $stmt->bindParam(":material", $this->material);
@@ -77,7 +80,7 @@ class OneOfAKind extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, created_by = :created_by";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -90,7 +93,6 @@ class OneOfAKind extends Model
         $this->stock_quantity = htmlspecialchars($this->stock_quantity);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
-        $this->image_url = htmlspecialchars($this->image_url);
         $this->created_by = htmlspecialchars($this->created_by);
 
         // Bind parameters

@@ -4,16 +4,19 @@ namespace App\Controllers;
 
 use App\Helpers\GeneralHelper;
 use App\Models\OneOfAKind;
+use App\Models\OneOfAKindImage;
 use Exception;
 
 class OneOfAKindController extends Controller
 {
     private $oneOfAKindModel;
+    private $oneOfAKindImageModel;
     private $helper;
 
     public function __construct(GeneralHelper $helper)
     {
         $this->oneOfAKindModel = new OneOfAKind();
+        $this->oneOfAKindImageModel = new OneOfAKindImage();
         $this->helper = $helper;
     }
 
@@ -40,26 +43,26 @@ class OneOfAKindController extends Controller
     public function create()
     {
         $name = $_POST['name'];
-        $uploadedFile = null;
         $new_one_of_a_kind = [];
         $status = 200;
         $message = "";
+        $file_data = [];
+        $public_directory = "/assets/images/gallery/one-of-a-kind/";
 
-        if (isset($_FILES['one-of-a-kind-img'])) {
-            $uploadedFile = $_FILES['one-of-a-kind-img'];
-            $fileType = $uploadedFile['type'];
-            $extension = $this->helper->getFileExtension($fileType);
+        if (isset($_FILES['one-of-a-kind-imgs'])) {
+            foreach ($_FILES['one-of-a-kind-imgs']['name'] as $index => $file_name) {
+                $tmpName = $_FILES['one-of-a-kind-imgs']['tmp_name'][$index];
+                $fileType = $_FILES['one-of-a-kind-imgs']['type'][$index];
+                $extension = $this->helper->getFileExtension($fileType);
+                $file_data['extension'][$index] = $extension;
 
-            $public_directory = "/assets/images/gallery/one-of-a-kind/";
-            $newFileName = $name . $extension;
-            $image_url = $public_directory . $newFileName;
-
-            if (!strlen($extension)) {
-                $status = 415;
-                $message = "The file type was not recognized. Please use jpeg, png, webp, avif, or tiff.";
-            } else if (!$this->helper->checkIfFileTypeIsAcceptable($fileType)) {
-                $status = 409;
-                $message = "The file type is not acceptable. Please use jpeg, png, webp, avif, or tiff.";
+                if (!strlen($extension)) {
+                    $status = 415;
+                    $message = "The file type was not recognized. Please use jpeg, png, webp, avif, or tiff.";
+                } else if (!$this->helper->checkIfFileTypeIsAcceptable($fileType)) {
+                    $status = 409;
+                    $message = "The file type is not acceptable. Please use jpeg, png, webp, avif, or tiff.";
+                }
             }
         } else {
             $status = 409;
@@ -79,7 +82,7 @@ class OneOfAKindController extends Controller
             "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
-            "breadth" => $breadth,
+            "depth" => $depth,
             "material" => $material,
             "color" => $color,
             "weight" => $weight,
@@ -88,14 +91,15 @@ class OneOfAKindController extends Controller
             "stock_quantity" => $stock_quantity,
             "status" => $one_of_a_kind_status,
             "description" => $description,
+            "primary_image_idx" => $primary_image_idx,
         ] = $_POST;
 
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
-        $breadth = $this->helper->truncateToThreeDecimals($breadth);
+        $depth = $this->helper->truncateToThreeDecimals($depth);
         $weight = $this->helper->truncateToThreeDecimals($weight);
 
-        $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
+        $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
         $this->oneOfAKindModel->name = $name;
@@ -107,23 +111,42 @@ class OneOfAKindController extends Controller
         $this->oneOfAKindModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->oneOfAKindModel->status = $one_of_a_kind_status;
         $this->oneOfAKindModel->description = $description;
-        $this->oneOfAKindModel->image_url = $image_url;
         $this->oneOfAKindModel->created_by = $_SESSION['user']['user_id'];
 
         if ($this->oneOfAKindModel->create()) {
             $message = "One of a kind created successfully.";
             $new_one_of_a_kind = $this->oneOfAKindModel->findByName($name);
-            $tmpName = $uploadedFile['tmp_name'];
 
-            $uploadDirectory = __DIR__ . '/../../public' . $public_directory;
-            $destination = $uploadDirectory . $newFileName;
+            foreach ($_FILES['one-of-a-kind-imgs']['name'] as $index => $name) {
+                $one_of_a_kind_id = $new_one_of_a_kind['one_of_a_kind_id'];
+                $this->oneOfAKindImageModel->one_of_a_kind_id = $one_of_a_kind_id;
+                $image_id = $this->oneOfAKindImageModel->create();
 
-            // Move the uploaded file to the target directory
-            if (move_uploaded_file($tmpName, $destination)) {
-                $message = "File uploaded successfully.";
-            } else {
-                $status = 500;
-                $message = "One of a kind was created but the file upload failed.";
+                if ((int)$index == (int)$primary_image_idx) {
+                    $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
+                    $this->oneOfAKindModel->primary_image_id = $image_id;
+                    $this->oneOfAKindModel->update();
+                }
+
+                $tmpName = $_FILES['one-of-a-kind-imgs']['tmp_name'][$index];
+                $extension = $file_data['extension'][$index];
+                $newFileName = sprintf("%s_%d_%d%s", $name, $one_of_a_kind_id, $image_id, $extension);
+                $image_url = $public_directory . $newFileName;
+
+                $this->oneOfAKindImageModel->image_id = $image_id;
+                $this->oneOfAKindImageModel->image_url = $image_url;
+                $this->oneOfAKindImageModel->update();
+
+                $uploadDirectory = __DIR__ . '/../../public' . $public_directory;
+                $destination = $uploadDirectory . $newFileName;
+
+                // Move the uploaded file to the target directory
+                if (move_uploaded_file($tmpName, $destination)) {
+                    $message = "File uploaded successfully.";
+                } else {
+                    $status = 500;
+                    $message = "One of a kind was created but the file upload failed.";
+                }
             }
         } else {
             $status = 409;

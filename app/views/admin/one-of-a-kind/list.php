@@ -96,12 +96,12 @@
             <div class="modal-body">
                 <form id="create-one-of-a-kind-form">
                     <div class="input-container one-of-a-kind-img-container">
-                        <input multiple type="file" name="one-of-a-kind-img" class="one-of-a-kind-img-input" id="create-one-of-a-kind-img-input" style="display: none;">
+                        <input multiple type="file" name="one-of-a-kind-imgs" class="one-of-a-kind-img-input" id="create-one-of-a-kind-img-input" style="display: none;">
                         <div class="one-of-a-kind-preview-container">
                             <div class="carousel"></div>
                         </div>
                         <div class="one-of-a-kind-img-options">
-                            <label for="create-one-of-a-kind-img-input" class="continue-btn">Add Image</label>
+                            <label for="create-one-of-a-kind-img-input" class="continue-btn">Add Images</label>
                         </div>
                     </div>
                     <div class="input-container">
@@ -201,7 +201,7 @@
                     </div>
                     <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
                     <div class="input-container one-of-a-kind-img-container">
-                        <input multiple type="file" name="one-of-a-kind-img" class="one-of-a-kind-img-input" id="edit-one-of-a-kind-img-input" style="display: none;">
+                        <input multiple type="file" name="one-of-a-kind-imgs" class="one-of-a-kind-img-input" id="edit-one-of-a-kind-img-input" style="display: none;">
                         <div class="one-of-a-kind-preview-container"></div>
                         <div class="one-of-a-kind-img-options">
                             <label for="edit-one-of-a-kind-img-input" class="continue-btn other">Change Image</label>
@@ -395,14 +395,15 @@
             });
 
             const formData = new FormData(form[0]);
-            formData.delete("one-of-a-kind-img");
+            formData.delete("one-of-a-kind-imgs");
             if (STATE.upload.imageCount) {
                 for (const idx in STATE.upload.images) {
                     const file = STATE.upload.images[idx];
-                    formData.append("one-of-a-kind-img[]", file);
+                    formData.append(`one-of-a-kind-imgs[${idx}]`, file);
+                    if ($(`.carousel-cell[data-idx="${idx}"] .make-primary-button`).hasClass("is-primary")) {
+                        formData.append('primary_image_idx', idx);
+                    }
                 }
-            } else {
-                formData.delete("one-of-a-kind-img[]");
             }
 
             $.ajax({

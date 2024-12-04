@@ -308,7 +308,7 @@ select {
 .input-container.sconce-img-container:not(:has(img)) .sconce-preview-container::before,
 .input-container.one-of-a-kind-img-container:not(:has(img)) .one-of-a-kind-preview-container::before,
 .input-container.cutout-img-container:not(:has(img)) .cutout-preview-container::before {
-    content: "Image will preview here.";
+    content: "Images will preview here.";
 }
 
 .sconce-preview-container,
