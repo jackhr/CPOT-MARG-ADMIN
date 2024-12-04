@@ -6,7 +6,8 @@ const STATE = {
         doubleOrInt: /^\d*\.?\d{1,2}$/,
         decimal: /^\d*\.?\d+$/,
         email: /[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/,
-    }
+    },
+    modalDelay: 400
 }
 
 function formatPrice(price) {
@@ -42,7 +43,7 @@ $(document).ready(function () {
 
     $(document).off('click').on("click", function (e) {
         const target = $(e.target);
-        const modal = $(".modal");
+        const modal = $(".modal.showing");
 
         if (
             modal.hasClass("showing") // Modal is showing
@@ -53,7 +54,7 @@ $(document).ready(function () {
             && !target.closest(".modal-dialog").length // Click is not inside modal dialog
             && !target.closest(".open-modal-btn").length // CLick is not inside open modal button
         ) {
-            modal.removeClass("showing");
+            modal.find(".modal-close").trigger("click");
         }
     });
 });

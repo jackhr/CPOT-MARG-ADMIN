@@ -224,10 +224,18 @@
             });
 
         }
+        $("#order-items-modal .modal-close").on("click", function() {
+            setTimeout(() => {
+                $("#order-details-modal").addClass("showing");
+            }, STATE.modalDelay);
+        });
 
         $("#view-items-btn").on('click', function(e) {
             e.preventDefault();
-            $("#order-items-modal").addClass("showing");
+            $("#order-details-modal .modal-close").trigger("click");
+            setTimeout(() => {
+                $("#order-items-modal").addClass("showing");
+            }, STATE.modalDelay);
             $("#cart-list").html("");
 
             const activeOrder = STATE.activeOrder;
