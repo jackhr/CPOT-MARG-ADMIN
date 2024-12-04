@@ -298,12 +298,10 @@ select {
 .input-container.sconce-img-container:not(:has(img)) .sconce-img-options .continue-btn.other,
 .input-container.sconce-img-container:not(:has(img)) .sconce-img-options .continue-btn.danger,
 .input-container.sconce-img-container:has(img) .sconce-img-options .continue-btn:not(.danger):not(.other),
-.input-container.one-of-a-kind-img-container:not(:has(img)) .one-of-a-kind-img-options .continue-btn.other,
-.input-container.one-of-a-kind-img-container:not(:has(img)) .one-of-a-kind-img-options .continue-btn.danger,
-.input-container.one-of-a-kind-img-container:has(img) .one-of-a-kind-img-options .continue-btn:not(.danger):not(.other),
 .input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.other,
 .input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.danger,
-.input-container.cutout-img-container:has(img) .cutout-img-options .continue-btn:not(.danger):not(.other) {
+.input-container.cutout-img-container:has(img) .cutout-img-options .continue-btn:not(.danger):not(.other),
+.input-container.one-of-a-kind-img-container:not(:has(img)) .carousel {
     display: none;
 }
 
@@ -331,7 +329,6 @@ select {
     width     : 100%;
     object-fit: contain;
     height    : auto;
-    box-shadow: 0 0 13px 0 #9b9b9b;
 }
 
 .sconce-img-options,
@@ -881,6 +878,132 @@ form hr {
 
 #order-items-modal .modal-content {
     width: 800px;
+}
+
+.carousel {
+    width        : 100%;
+    height       : 300px;
+    margin-bottom: 24px;
+}
+
+.carousel-cell {
+    width          : 100%;
+    height         : 300px;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    margin-right   : 200px;
+    overflow       : hidden;
+    border         : solid 2px transparent;
+    transition     : border-color ease 0.3s;
+}
+
+.flickity-prev-next-button {
+    padding   : 0;
+    background: var(--primary);
+    border    : solid 1px var(--primary);
+    transition: background-color ease 0.3s;
+}
+
+.flickity-prev-next-button.next {
+    right: -56px;
+}
+
+.flickity-prev-next-button.previous {
+    left: -56px;
+}
+
+.flickity-prev-next-button .flickity-button-icon {
+    fill           : none;
+    stroke         : currentColor;
+    stroke-linecap : round;
+    stroke-linejoin: round;
+    stroke-width   : 8;
+    width          : 100%;
+    height         : 100%;
+    color          : var(--white);
+    position       : static;
+    transition     : color ease 0.3s;
+}
+
+.flickity-prev-next-button:hover .flickity-button-icon {
+    color: var(--primary);
+}
+
+.flickity-button:focus {
+    box-shadow: 0 0 0 5px var(--secondary);
+}
+
+.make-primary-button {
+    position      : absolute;
+    top           : 6px;
+    left          : 6px;
+    width         : max-content;
+    height        : auto;
+    font-size     : 12px;
+    transition    : opacity ease 0.3s;
+    opacity       : 0;
+    pointer-events: none;
+}
+
+.make-primary-button.is-primary {
+    background-color: var(--white);
+    color           : var(--primary);
+    opacity         : 1;
+}
+
+.make-primary-button::before {
+    content: "make primary";
+}
+
+.make-primary-button.is-primary::before {
+    content: "primary";
+}
+
+.carousel-cell:has(.make-primary-button.is-primary) {
+    border-color: var(--primary);
+}
+
+.remove-image-btn {
+    position        : absolute;
+    top             : 6px;
+    right           : 6px;
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    padding         : 2px;
+    width           : 24px;
+    height          : 24px;
+    border-radius   : 50%;
+    background-color: var(--white);
+    transition      : opacity ease 0.3s;
+    opacity         : 0;
+    pointer-events  : none;
+    cursor          : pointer;
+}
+
+.remove-image-btn svg {
+    width : 100%;
+    height: 100%;
+}
+
+.carousel-cell:hover .make-primary-button,
+.carousel-cell:hover .remove-image-btn {
+    opacity       : 1;
+    pointer-events: all;
+}
+
+.flickity-page-dots .dot {
+    background: #3333;
+    opacity   : 1;
+}
+
+.flickity-page-dots .dot.is-selected {
+    background-color: var(--primary);
+}
+
+.flickity-page-dots .dot.is-primary {
+    border: solid 1px var(--primary);
 }
 
 @media screen and (max-width: 1256px) {
