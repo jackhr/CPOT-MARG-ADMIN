@@ -89,7 +89,7 @@
                 <span>Users</span>
             </a>
         <?php } ?>
-        <a href="/ceramics">
+        <a href="/one-of-a-kind">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M10 2v5.632c0 .424-.272.795-.653.982A6 6 0 0 0 6 14c.006 4 3 7 5 8" />
                 <path d="M10 5H8a2 2 0 0 0 0 4h.68" />
@@ -98,7 +98,7 @@
                 <path d="M18 22H6" />
                 <path d="M9 2h6" />
             </svg>
-            <span>Unique Ceramics</span>
+            <span>One of a Kind</span>
         </a>
     </div>
 </div>

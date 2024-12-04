@@ -287,7 +287,7 @@ select {
 }
 
 .input-container.sconce-img-container,
-.input-container.ceramic-img-container,
+.input-container.one-of-a-kind-img-container,
 .input-container.cutout-img-container {
     flex-direction: column;
     padding-bottom: 24px;
@@ -298,9 +298,9 @@ select {
 .input-container.sconce-img-container:not(:has(img)) .sconce-img-options .continue-btn.other,
 .input-container.sconce-img-container:not(:has(img)) .sconce-img-options .continue-btn.danger,
 .input-container.sconce-img-container:has(img) .sconce-img-options .continue-btn:not(.danger):not(.other),
-.input-container.ceramic-img-container:not(:has(img)) .ceramic-img-options .continue-btn.other,
-.input-container.ceramic-img-container:not(:has(img)) .ceramic-img-options .continue-btn.danger,
-.input-container.ceramic-img-container:has(img) .ceramic-img-options .continue-btn:not(.danger):not(.other),
+.input-container.one-of-a-kind-img-container:not(:has(img)) .one-of-a-kind-img-options .continue-btn.other,
+.input-container.one-of-a-kind-img-container:not(:has(img)) .one-of-a-kind-img-options .continue-btn.danger,
+.input-container.one-of-a-kind-img-container:has(img) .one-of-a-kind-img-options .continue-btn:not(.danger):not(.other),
 .input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.other,
 .input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.danger,
 .input-container.cutout-img-container:has(img) .cutout-img-options .continue-btn:not(.danger):not(.other) {
@@ -308,13 +308,13 @@ select {
 }
 
 .input-container.sconce-img-container:not(:has(img)) .sconce-preview-container::before,
-.input-container.ceramic-img-container:not(:has(img)) .ceramic-preview-container::before,
+.input-container.one-of-a-kind-img-container:not(:has(img)) .one-of-a-kind-preview-container::before,
 .input-container.cutout-img-container:not(:has(img)) .cutout-preview-container::before {
     content: "Image will preview here.";
 }
 
 .sconce-preview-container,
-.ceramic-preview-container,
+.one-of-a-kind-preview-container,
 .cutout-preview-container {
     display        : flex;
     align-items    : center;
@@ -326,7 +326,7 @@ select {
 }
 
 .sconce-preview-container img,
-.ceramic-preview-container img,
+.one-of-a-kind-preview-container img,
 .cutout-preview-container img {
     width     : 100%;
     object-fit: contain;
@@ -335,7 +335,7 @@ select {
 }
 
 .sconce-img-options,
-.ceramic-img-options,
+.one-of-a-kind-img-options,
 .cutout-img-options {
     display: flex;
     gap    : 16px;
@@ -438,7 +438,7 @@ table .sconce-thumb-td div {
 }
 
 table .sconce-thumb-td div img,
-table .ceramic-thumb-td div img,
+table .one-of-a-kind-thumb-td div img,
 table .cutout-thumb-td div img {
     object-fit     : contain;
     object-position: center;
@@ -641,7 +641,7 @@ main {
     font-weight: 600;
 }
 
-.input-container label:not(#create-sconce-form .input-container label):not(#edit-sconce-form .input-container label):not(#create-ceramic-form .input-container label):not(#edit-ceramic-form .input-container label):not(#create-cutout-form .input-container label):not(#edit-cutout-form .input-container label) {
+.input-container label:not(#create-sconce-form .input-container label):not(#edit-sconce-form .input-container label):not(#create-one-of-a-kind-form .input-container label):not(#edit-one-of-a-kind-form .input-container label):not(#create-cutout-form .input-container label):not(#edit-cutout-form .input-container label) {
     max-width: 140px;
     width    : 100%;
 }

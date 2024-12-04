@@ -3,37 +3,37 @@
 namespace App\Controllers;
 
 use App\Helpers\GeneralHelper;
-use App\Models\UniqueCeramic;
+use App\Models\OneOfAKind;
 use Exception;
 
-class UniqueCeramicController extends Controller
+class OneOfAKindController extends Controller
 {
-    private $ceramicModel;
+    private $oneOfAKindModel;
     private $helper;
 
     public function __construct(GeneralHelper $helper)
     {
-        $this->ceramicModel = new UniqueCeramic();
+        $this->oneOfAKindModel = new OneOfAKind();
         $this->helper = $helper;
     }
 
-    public function listCeramics()
+    public function listOneOfAKinds()
     {
         $logged_in_user = $_SESSION['user'];
-        $override_query = "SELECT unique_ceramics.*, users_c.email AS created_by_email, users_u.email AS updated_by_email 
-            FROM unique_ceramics
-            LEFT JOIN users users_c ON unique_ceramics.created_by = users_c.user_id
-            LEFT JOIN users users_u ON unique_ceramics.updated_by = users_u.user_id";
-        $ceramics = $this->ceramicModel->readAll($override_query);
+        $override_query = "SELECT one_of_a_kind.*, users_c.email AS created_by_email, users_u.email AS updated_by_email 
+            FROM one_of_a_kind
+            LEFT JOIN users users_c ON one_of_a_kind.created_by = users_c.user_id
+            LEFT JOIN users users_u ON one_of_a_kind.updated_by = users_u.user_id";
+        $one_of_a_kinds = $this->oneOfAKindModel->readAll($override_query);
         if ($logged_in_user['role_id'] > 1) {
-            $ceramics = array_filter($ceramics, function ($ceramic) {
-                return !isset($ceramic['deleted_at']);
+            $one_of_a_kinds = array_filter($one_of_a_kinds, function ($one_of_a_kind) {
+                return !isset($one_of_a_kind['deleted_at']);
             });
         }
-        $this->view("admin/ceramics/list.php", [
+        $this->view("admin/one-of-a-kind/list.php", [
             "user" => $logged_in_user,
-            "ceramics" => $ceramics,
-            "title" => "ceramics"
+            "one_of_a_kinds" => $one_of_a_kinds,
+            "title" => "One of a Kind"
         ]);
     }
 
@@ -41,16 +41,16 @@ class UniqueCeramicController extends Controller
     {
         $name = $_POST['name'];
         $uploadedFile = null;
-        $new_ceramic = [];
+        $new_one_of_a_kind = [];
         $status = 200;
         $message = "";
 
-        if (isset($_FILES['ceramic-img'])) {
-            $uploadedFile = $_FILES['ceramic-img'];
+        if (isset($_FILES['one-of-a-kind-img'])) {
+            $uploadedFile = $_FILES['one-of-a-kind-img'];
             $fileType = $uploadedFile['type'];
             $extension = $this->helper->getFileExtension($fileType);
 
-            $public_directory = "/assets/images/gallery/ceramics/";
+            $public_directory = "/assets/images/gallery/one-of-a-kind/";
             $newFileName = $name . $extension;
             $image_url = $public_directory . $newFileName;
 
@@ -66,13 +66,13 @@ class UniqueCeramicController extends Controller
             $message = "No file uploaded.";
         }
 
-        if ($this->ceramicModel->findByName($name)) {
+        if ($this->oneOfAKindModel->findByName($name)) {
             $status = 409;
-            $message = "There is already a ceramic with that name.";
+            $message = "There is already a one of a kind with that name.";
         }
 
         if ($status !== 200) {
-            $this->helper->respondToClient($new_ceramic, $status, $message);
+            $this->helper->respondToClient($new_one_of_a_kind, $status, $message);
         }
 
         [
@@ -86,7 +86,7 @@ class UniqueCeramicController extends Controller
             "weight-units" => $weight_units,
             "base_price" => $base_price,
             "stock_quantity" => $stock_quantity,
-            "status" => $ceramic_status,
+            "status" => $one_of_a_kind_status,
             "description" => $description,
         ] = $_POST;
 
@@ -98,21 +98,21 @@ class UniqueCeramicController extends Controller
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
-        $this->ceramicModel->name = $name;
-        $this->ceramicModel->dimensions = $dimensions;
-        $this->ceramicModel->material = $material;
-        $this->ceramicModel->color = $color;
-        $this->ceramicModel->weight = $weight;
-        $this->ceramicModel->price = $this->helper->truncateToThreeDecimals($base_price);
-        $this->ceramicModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
-        $this->ceramicModel->status = $ceramic_status;
-        $this->ceramicModel->description = $description;
-        $this->ceramicModel->image_url = $image_url;
-        $this->ceramicModel->created_by = $_SESSION['user']['user_id'];
+        $this->oneOfAKindModel->name = $name;
+        $this->oneOfAKindModel->dimensions = $dimensions;
+        $this->oneOfAKindModel->material = $material;
+        $this->oneOfAKindModel->color = $color;
+        $this->oneOfAKindModel->weight = $weight;
+        $this->oneOfAKindModel->price = $this->helper->truncateToThreeDecimals($base_price);
+        $this->oneOfAKindModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
+        $this->oneOfAKindModel->status = $one_of_a_kind_status;
+        $this->oneOfAKindModel->description = $description;
+        $this->oneOfAKindModel->image_url = $image_url;
+        $this->oneOfAKindModel->created_by = $_SESSION['user']['user_id'];
 
-        if ($this->ceramicModel->create()) {
-            $message = "Unique ceramic created successfully.";
-            $new_ceramic = $this->ceramicModel->findByName($name);
+        if ($this->oneOfAKindModel->create()) {
+            $message = "One of a kind created successfully.";
+            $new_one_of_a_kind = $this->oneOfAKindModel->findByName($name);
             $tmpName = $uploadedFile['tmp_name'];
 
             $uploadDirectory = __DIR__ . '/../../public' . $public_directory;
@@ -123,45 +123,45 @@ class UniqueCeramicController extends Controller
                 $message = "File uploaded successfully.";
             } else {
                 $status = 500;
-                $message = "Unique ceramic was created but the file upload failed.";
+                $message = "One of a kind was created but the file upload failed.";
             }
         } else {
             $status = 409;
-            $message = "Error creating unique ceramic.";
+            $message = "Error creating one of a kind.";
         }
 
-        $this->helper->respondToClient($new_ceramic, $status, $message);
+        $this->helper->respondToClient($new_one_of_a_kind, $status, $message);
     }
 
-    public function update($ceramic_id)
+    public function update($one_of_a_kind_id)
     {
         $name = $_POST['name'];
         $uploadedFile = null;
-        $new_ceramic = [];
+        $new_one_of_a_kind = [];
         $status = 200;
         $message = "";
-        $changing_image = isset($_FILES['ceramic-img']);
+        $changing_image = isset($_FILES['one-of-a-kind-img']);
 
-        $ceramic = $this->ceramicModel->findById($ceramic_id);
-        $ceramic_with_same_name = $this->ceramicModel->findByName($name);
+        $one_of_a_kind = $this->oneOfAKindModel->findById($one_of_a_kind_id);
+        $one_of_a_kind_with_same_name = $this->oneOfAKindModel->findByName($name);
 
-        // Check if the ceramic with the given ID exists
-        if (!$ceramic) {
+        // Check if the one of a kind with the given ID exists
+        if (!$one_of_a_kind) {
             $status = 409;
-            $message = "There is no unique ceramic with this id.";
-        } else if ($ceramic_with_same_name !== false) {
+            $message = "There is no one of a kind with this id.";
+        } else if ($one_of_a_kind_with_same_name !== false) {
             if (
-                ($ceramic_with_same_name['ceramic_id'] !== $ceramic['ceramic_id']) &&
-                ($ceramic_with_same_name['name'] === $name)
+                ($one_of_a_kind_with_same_name['one_of_a_kind_id'] !== $one_of_a_kind['one_of_a_kind_id']) &&
+                ($one_of_a_kind_with_same_name['name'] === $name)
             ) {
                 $status = 409;
-                $message = "There is already a unique ceramic with that name.";
+                $message = "There is already a one of a kind with that name.";
             }
         }
 
         try {
             if ($changing_image) {
-                $uploadedFile = $_FILES['ceramic-img'];
+                $uploadedFile = $_FILES['one-of-a-kind-img'];
                 $fileType = $uploadedFile['type'];
                 $extension = $this->helper->getFileExtension($fileType);
 
@@ -175,18 +175,18 @@ class UniqueCeramicController extends Controller
 
                 // Prepare file paths
                 $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/gallery/ceramics/";
+                $relative_directory = "/assets/images/gallery/one-of-a-kind/";
                 $newFileName = $name . $extension;
                 $new_image_url = $relative_directory . $newFileName;
                 $uploadDirectory = $public_directory . $relative_directory;
                 $destination = $uploadDirectory . $newFileName;
 
                 $tmpName = $uploadedFile['tmp_name'];
-                $old_image_path = $public_directory . $ceramic['image_url'];
+                $old_image_path = $public_directory . $one_of_a_kind['image_url'];
 
                 // Handle existing file replacement or renaming
                 if (file_exists($old_image_path)) {
-                    if ($ceramic['name'] === $name) {
+                    if ($one_of_a_kind['name'] === $name) {
                         // If the name hasn't changed, just overwrite the old image
                         if (!move_uploaded_file($tmpName, $old_image_path)) {
                             $status = 500;
@@ -217,19 +217,19 @@ class UniqueCeramicController extends Controller
                         throw new Exception("Failed to upload the new image.");
                     }
                 }
-            } else if ($ceramic['name'] !== $name) {
+            } else if ($one_of_a_kind['name'] !== $name) {
                 // not changing image, but changing name
-                $fileInfo = pathinfo($ceramic['image_url']);
+                $fileInfo = pathinfo($one_of_a_kind['image_url']);
                 $extension = $fileInfo['extension'];
 
                 $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/gallery/ceramics/";
+                $relative_directory = "/assets/images/gallery/one-of-a-kind/";
                 $newFileName = "$name.$extension";
                 $new_image_url = $relative_directory . $newFileName;
                 $uploadDirectory = $public_directory . $relative_directory;
                 $destination = $uploadDirectory . $newFileName;
 
-                $old_image_path = $public_directory . $ceramic['image_url'];
+                $old_image_path = $public_directory . $one_of_a_kind['image_url'];
 
                 if (file_exists($old_image_path)) {
                     if (!rename($old_image_path, $destination)) {
@@ -246,7 +246,7 @@ class UniqueCeramicController extends Controller
         }
 
         if ($status !== 200) {
-            $this->helper->respondToClient($new_ceramic, $status, $message);
+            $this->helper->respondToClient($new_one_of_a_kind, $status, $message);
         }
 
         [
@@ -260,7 +260,7 @@ class UniqueCeramicController extends Controller
             "weight-units" => $weight_units,
             "base_price" => $base_price,
             "stock_quantity" => $stock_quantity,
-            "status" => $ceramic_status,
+            "status" => $one_of_a_kind_status,
             "description" => $description,
         ] = $_POST;
 
@@ -272,46 +272,46 @@ class UniqueCeramicController extends Controller
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
-        $this->ceramicModel->ceramic_id = $ceramic_id;
-        $this->ceramicModel->name = $name;
-        $this->ceramicModel->dimensions = $dimensions;
-        $this->ceramicModel->material = $material;
-        $this->ceramicModel->color = $color;
-        $this->ceramicModel->weight = $weight;
-        $this->ceramicModel->price = $this->helper->truncateToThreeDecimals($base_price);
-        $this->ceramicModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
-        $this->ceramicModel->status = $ceramic_status;
-        $this->ceramicModel->description = $description;
-        $this->ceramicModel->image_url = isset($new_image_url) ? $new_image_url : $ceramic['image_url'];
-        $this->ceramicModel->updated_by = $_SESSION['user']['user_id'];
+        $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
+        $this->oneOfAKindModel->name = $name;
+        $this->oneOfAKindModel->dimensions = $dimensions;
+        $this->oneOfAKindModel->material = $material;
+        $this->oneOfAKindModel->color = $color;
+        $this->oneOfAKindModel->weight = $weight;
+        $this->oneOfAKindModel->price = $this->helper->truncateToThreeDecimals($base_price);
+        $this->oneOfAKindModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
+        $this->oneOfAKindModel->status = $one_of_a_kind_status;
+        $this->oneOfAKindModel->description = $description;
+        $this->oneOfAKindModel->image_url = isset($new_image_url) ? $new_image_url : $one_of_a_kind['image_url'];
+        $this->oneOfAKindModel->updated_by = $_SESSION['user']['user_id'];
 
-        if ($this->ceramicModel->update()) {
-            $message = "Unique ceramic updated successfully.";
-            $updated_ceramic = $this->ceramicModel->findByName($name);
+        if ($this->oneOfAKindModel->update()) {
+            $message = "One of a kind updated successfully.";
+            $updated_one_of_a_kind = $this->oneOfAKindModel->findByName($name);
         } else {
             $status = 409;
-            $message = "Error updating unique ceramic.";
+            $message = "Error updating one of a kind.";
         }
 
-        $this->helper->respondToClient($updated_ceramic, $status, $message);
+        $this->helper->respondToClient($updated_one_of_a_kind, $status, $message);
     }
 
-    public function delete($ceramic_id)
+    public function delete($one_of_a_kind_id)
     {
-        $ceramic_to_delete = $this->ceramicModel->findById($ceramic_id);
+        $one_of_a_kind_to_delete = $this->oneOfAKindModel->findById($one_of_a_kind_id);
         $status = 200;
         $message = "";
 
-        $this->ceramicModel->ceramic_id = $ceramic_id;
+        $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
 
-        if ($this->ceramicModel->delete()) {
-            $message = "Unique ceramic deleted successfully.";
-            $ceramic_to_delete = $this->ceramicModel->findById($ceramic_id);
+        if ($this->oneOfAKindModel->delete()) {
+            $message = "One of a kind deleted successfully.";
+            $one_of_a_kind_to_delete = $this->oneOfAKindModel->findById($one_of_a_kind_id);
         } else {
             $status = 500;
-            $message = "Error deleting unique ceramic.";
+            $message = "Error deleting one of a kind.";
         }
 
-        $this->helper->respondToClient($ceramic_to_delete, $status, $message);
+        $this->helper->respondToClient($one_of_a_kind_to_delete, $status, $message);
     }
 }

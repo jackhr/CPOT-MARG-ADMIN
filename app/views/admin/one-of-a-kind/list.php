@@ -12,9 +12,9 @@
                 <path d="M18 22H6" />
                 <path d="M9 2h6" />
             </svg>
-            <span>Create Ceramic</span>
+            <span>Create One of a Kind</span>
         </button>
-        <table id="ceramics-table">
+        <table id="one-of-a-kind-table">
             <thead>
                 <tr>
                     <th>Id #</th>
@@ -39,44 +39,44 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($ceramics as $s) {
-                    $created_at = new DateTime($s['created_at']);
-                    $updated_at = new DateTime($s['updated_at']);
+                <?php foreach ($one_of_a_kinds as $oak) {
+                    $created_at = new DateTime($oak['created_at']);
+                    $updated_at = new DateTime($oak['updated_at']);
                     $created_at = $created_at->format('M j, Y \@ g:i A T');
                     $updated_at = $updated_at->format('M j, Y \@ g:i A T');
 
                     if ($user['role_id'] === 1) {
                         $deleted_at = "-";
-                        if (isset($s['deleted_at'])) {
-                            $deleted_at = new DateTime($s['deleted_at']);
+                        if (isset($oak['deleted_at'])) {
+                            $deleted_at = new DateTime($oak['deleted_at']);
                             $deleted_at = $deleted_at->format('M j, Y \@ g:i A T');
                         }
                     }
                 ?>
-                    <tr data-id="<?php echo $s['ceramic_id']; ?>">
-                        <td><?php echo $s['ceramic_id']; ?></td>
-                        <td class="ceramic-thumb-td">
+                    <tr data-id="<?php echo $oak['one_of_a_kind_id']; ?>">
+                        <td><?php echo $oak['one_of_a_kind_id']; ?></td>
+                        <td class="one-of-a-kind-thumb-td">
                             <div>
-                                <img src="<?php echo $s['image_url']; ?>" alt="<?php echo $s['name']; ?>">
+                                <img src="<?php echo $oak['image_url']; ?>" alt="<?php echo $oak['name']; ?>">
                             </div>
                         </td>
-                        <td><?php echo $s['name']; ?></td>
-                        <td><?php echo $s['dimensions']; ?></td>
-                        <td><?php echo $s['material']; ?></td>
-                        <td><?php echo $s['color']; ?></td>
-                        <td><?php echo $s['weight']; ?></td>
-                        <td><?php echo $s['price']; ?></td>
-                        <td><?php echo $s['stock_quantity']; ?></td>
-                        <td><?php echo $s['status']; ?></td>
-                        <td><?php echo $s['description']; ?></td>
-                        <td><?php echo $s['availability']; ?></td>
+                        <td><?php echo $oak['name']; ?></td>
+                        <td><?php echo $oak['dimensions']; ?></td>
+                        <td><?php echo $oak['material']; ?></td>
+                        <td><?php echo $oak['color']; ?></td>
+                        <td><?php echo $oak['weight']; ?></td>
+                        <td><?php echo $oak['price']; ?></td>
+                        <td><?php echo $oak['stock_quantity']; ?></td>
+                        <td><?php echo $oak['status']; ?></td>
+                        <td><?php echo $oak['description']; ?></td>
+                        <td><?php echo $oak['availability']; ?></td>
                         <td class="dt-type-date"><?php echo $created_at; ?></td>
                         <td class="dt-type-date"><?php echo $updated_at; ?></td>
                         <?php if ($user['role_id'] === 1) { ?>
                             <td class="dt-type-date"><?php echo $deleted_at; ?></td>
                         <?php } ?>
-                        <td><?php echo $s['created_by_email']; ?></td>
-                        <td><?php echo $s['updated_by_email']; ?></td>
+                        <td><?php echo $oak['created_by_email']; ?></td>
+                        <td><?php echo $oak['updated_by_email']; ?></td>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -84,29 +84,29 @@
     </div>
 </main>
 
-<div id="create-ceramic-modal" class="modal">
+<div id="create-one-of-a-kind-modal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-options">
                     <span class="modal-close">×</span>
                 </div>
-                <h1>Adding Ceramic</h1>
+                <h1>Adding One of a Kind</h1>
             </div>
             <div class="modal-body">
-                <form id="create-ceramic-form">
-                    <div class="input-container ceramic-img-container">
-                        <input type="file" name="ceramic-img" class="ceramic-img-input" id="create-ceramic-img-input" style="display: none;">
-                        <div class="ceramic-preview-container"></div>
-                        <div class="ceramic-img-options">
-                            <label for="create-ceramic-img-input" class="continue-btn">Add Image</label>
-                            <label for="create-ceramic-img-input" class="continue-btn other">Change Image</label>
+                <form id="create-one-of-a-kind-form">
+                    <div class="input-container one-of-a-kind-img-container">
+                        <input type="file" name="one-of-a-kind-img" class="one-of-a-kind-img-input" id="create-one-of-a-kind-img-input" style="display: none;">
+                        <div class="one-of-a-kind-preview-container"></div>
+                        <div class="one-of-a-kind-img-options">
+                            <label for="create-one-of-a-kind-img-input" class="continue-btn">Add Image</label>
+                            <label for="create-one-of-a-kind-img-input" class="continue-btn other">Change Image</label>
                             <label class="continue-btn danger">Remove Image</label>
                         </div>
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
-                        <input type="text" name="name" placeholder="New Ceramic" required>
+                        <input type="text" name="name" placeholder="New One of a Kind" required>
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
@@ -174,44 +174,44 @@
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
-                        <textarea name="description" id="description" placeholder="My most valuable ceramic!" required aria-required /></textarea>
+                        <textarea name="description" id="description" placeholder="My most valuable one-of-a-kind!" required aria-required /></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button form="create-ceramic-form" type="submit" class="continue-btn">Submit</button>
+                <button form="create-one-of-a-kind-form" type="submit" class="continue-btn">Submit</button>
             </div>
             <div id="drop-alert">Drop Image To Add</div>
         </div>
     </div>
 </div>
 
-<div id="edit-ceramic-modal" class="modal">
+<div id="edit-one-of-a-kind-modal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-options">
                     <span class="modal-close">×</span>
                 </div>
-                <h1>Editing Ceramic</h1>
+                <h1>Editing One of a Kind</h1>
             </div>
             <div class="modal-body">
-                <form id="edit-ceramic-form">
+                <form id="edit-one-of-a-kind-form">
                     <div class="input-container">
                         <label>Id #</label>
-                        <span id="edit-ceramic-id"></span>
+                        <span id="edit-one-of-a-kind-id"></span>
                     </div>
                     <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
-                    <div class="input-container ceramic-img-container">
-                        <input type="file" name="ceramic-img" class="ceramic-img-input" id="edit-ceramic-img-input" style="display: none;">
-                        <div class="ceramic-preview-container"></div>
-                        <div class="ceramic-img-options">
-                            <label for="edit-ceramic-img-input" class="continue-btn other">Change Image</label>
+                    <div class="input-container one-of-a-kind-img-container">
+                        <input type="file" name="one-of-a-kind-img" class="one-of-a-kind-img-input" id="edit-one-of-a-kind-img-input" style="display: none;">
+                        <div class="one-of-a-kind-preview-container"></div>
+                        <div class="one-of-a-kind-img-options">
+                            <label for="edit-one-of-a-kind-img-input" class="continue-btn other">Change Image</label>
                         </div>
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
-                        <input type="text" name="name" placeholder="New Ceramic" required>
+                        <input type="text" name="name" placeholder="New One of a Kind" required>
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
@@ -279,13 +279,13 @@
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
-                        <textarea name="description" id="description" placeholder="My most valuable ceramic!" required aria-required /></textarea>
+                        <textarea name="description" id="description" placeholder="My most valuable one-of-a-kind!" required aria-required /></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="continue-btn cancel">Cancel</button>
-                <button form="edit-ceramic-form" type="submit" class="continue-btn">Update</button>
+                <button form="edit-one-of-a-kind-form" type="submit" class="continue-btn">Update</button>
             </div>
             <div class="modal-footer" style="margin-top: 18px;">
                 <button class="continue-btn danger">Delete</button>
@@ -296,20 +296,20 @@
 
 <script>
     $(document).ready(function() {
-        const dTable = new DataTable("#ceramics-table", {
+        const dTable = new DataTable("#one-of-a-kind-table", {
             ...STATE.dtDefaultOpts,
         });
 
         setTimeout(() => dTable.draw(), 1000);
 
-        $(".create-btn").on("click", () => $("#create-ceramic-modal").addClass("showing"));
+        $(".create-btn").on("click", () => $("#create-one-of-a-kind-modal").addClass("showing"));
 
-        $('button[form="edit-ceramic-form"]').on("click", function(e) {
+        $('button[form="edit-one-of-a-kind-form"]').on("click", function(e) {
             e.preventDefault();
 
-            const form = $("#edit-ceramic-form");
+            const form = $("#edit-one-of-a-kind-form");
             const data = getJSONDataFromForm(form);
-            const ceramicId = $("#edit-ceramic-id").text();
+            const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
             const formValidationMsg = getFormValidationMsg(data, "edit");
 
             if (formValidationMsg) {
@@ -322,7 +322,7 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Updating unique ceramic, <strong>"${data.name}"</strong>.`,
+                html: `Updating one of a kind, <strong>"${data.name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }
@@ -330,13 +330,13 @@
 
             const formData = new FormData(form[0]);
             if (STATE.imageToUpload) {
-                formData.set("ceramic-img", STATE.imageToUpload);
+                formData.set("one-of-a-kind-img", STATE.imageToUpload);
             } else {
-                formData.delete("ceramic-img");
+                formData.delete("one-of-a-kind-img");
             }
 
             $.ajax({
-                url: `/ceramics/${ceramicId}`,
+                url: `/one-of-a-kind/${oneOfAKindId}`,
                 method: "POST",
                 dataType: "JSON",
                 data: formData,
@@ -367,10 +367,10 @@
             });
         });
 
-        $('button[form="create-ceramic-form"]').on("click", function(e) {
+        $('button[form="create-one-of-a-kind-form"]').on("click", function(e) {
             e.preventDefault();
 
-            const form = $("#create-ceramic-form");
+            const form = $("#create-one-of-a-kind-form");
             const data = getJSONDataFromForm(form);
             const formValidationMsg = getFormValidationMsg(data);
 
@@ -384,7 +384,7 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Creating unique ceramic, <strong>"${data.name}"</strong>.`,
+                html: `Creating one of a kind, <strong>"${data.name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }
@@ -392,13 +392,13 @@
 
             const formData = new FormData(form[0]);
             if (STATE.imageToUpload) {
-                formData.set("ceramic-img", STATE.imageToUpload);
+                formData.set("one-of-a-kind-img", STATE.imageToUpload);
             } else {
-                formData.delete("ceramic-img");
+                formData.delete("one-of-a-kind-img");
             }
 
             $.ajax({
-                url: "/ceramics",
+                url: "/one-of-a-kind",
                 method: "POST",
                 dataType: "JSON",
                 data: formData,
@@ -426,9 +426,9 @@
             });
         });
 
-        $("#ceramics-table").on("click", "tbody tr", function() {
-            const modal = $("#edit-ceramic-modal");
-            const ceramicId = $(this).find('td').eq(0).text();
+        $("#one-of-a-kind-table").on("click", "tbody tr", function() {
+            const modal = $("#edit-one-of-a-kind-modal");
+            const oneOfAKindId = $(this).find('td').eq(0).text();
             const imgSrc = $(this).find('td').eq(1).find('img').attr('src');
             const name = $(this).find('td').eq(2).text();
             const dimensions = $(this).find('td').eq(3).text()
@@ -450,9 +450,9 @@
 
             delete STATE.imageToUpload;
 
-            modal.find('#edit-ceramic-id').text(ceramicId);
+            modal.find('#edit-one-of-a-kind-id').text(oneOfAKindId);
             modal.find('input[name="name"]').val(name);
-            modal.find('.ceramic-preview-container').html(`
+            modal.find('.one-of-a-kind-preview-container').html(`
                 <img title="${name}" src="${imgSrc}" alt="${name}">
             `);
             modal.find('input[name="width"]').val(dimensions[0]);
@@ -468,19 +468,19 @@
             modal.addClass("showing");
         });
 
-        $("#edit-ceramic-modal button.cancel").on("click", function() {
+        $("#edit-one-of-a-kind-modal button.cancel").on("click", function() {
             $(this).closest('.modal').removeClass('showing');
         });
 
-        $("#edit-ceramic-modal button.danger").on("click", async function() {
-            const form = $("#edit-ceramic-form");
+        $("#edit-one-of-a-kind-modal button.danger").on("click", async function() {
+            const form = $("#edit-one-of-a-kind-form");
             const data = form.serializeObject();
-            data.ceramic_id = $("#edit-ceramic-id").text();
+            data.one_of_a_kind_id = $("#edit-one-of-a-kind-id").text();
 
             const res = await Swal.fire({
                 icon: "warning",
                 title: `Deleting "${data.name}"`,
-                text: "Are you sure that you would like to delete this ceramic?",
+                text: "Are you sure that you would like to delete this one of a kind?",
                 showDenyButton: true,
                 confirmButtonText: 'Yes',
                 denyButtonText: 'No'
@@ -490,14 +490,14 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Deleting unique ceramic, <strong>"${data.name}"</strong>.`,
+                html: `Deleting one of a kind, <strong>"${data.name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }
             });
 
             $.ajax({
-                url: `/ceramics/${data.ceramic_id}`,
+                url: `/one-of-a-kind/${data.one_of_a_kind_id}`,
                 method: "DELETE",
                 dataType: "JSON",
                 data,
@@ -528,7 +528,7 @@
         return form.serializeObject();
     }
 
-    $(".ceramic-img-options .continue-btn.danger").on("click", async function() {
+    $(".one-of-a-kind-img-options .continue-btn.danger").on("click", async function() {
         const choice = await Swal.fire({
             icon: "warning",
             title: "Removing Image",
@@ -540,10 +540,10 @@
         if (!choice.isConfirmed) return;
 
         delete STATE.imageToUpload;
-        $(this).closest('.ceramic-img-container').find(".ceramic-preview-container").html("");
+        $(this).closest('.one-of-a-kind-img-container').find(".one-of-a-kind-preview-container").html("");
     });
 
-    $(".ceramic-img-input").on('change', function() {
+    $(".one-of-a-kind-img-input").on('change', function() {
         [...this.files].forEach(file => {
             if (file.type === 'application/pdf') {
                 return Swal.fire({
@@ -557,7 +557,7 @@
 
             const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
             const imgSrc = URL.createObjectURL(file);
-            $(this).siblings(".ceramic-preview-container").html(`
+            $(this).siblings(".one-of-a-kind-preview-container").html(`
                 <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
             `);
             $(this).closest('form').find('input[name="name"]').val(newFileName);
@@ -565,7 +565,7 @@
         $(this).val('');
     });
 
-    $("#create-ceramic-modal").on('drop', async function(evt) {
+    $("#create-one-of-a-kind-modal").on('drop', async function(evt) {
         evt.preventDefault();
 
         const origEvt = evt.originalEvent;
@@ -588,7 +588,7 @@
 
                     const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
                     const imgSrc = URL.createObjectURL(file);
-                    $(this).find(".ceramic-preview-container").html(`
+                    $(this).find(".one-of-a-kind-preview-container").html(`
                         <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                     `);
                     $(this).find('input[name="name"]').val(newFileName);
@@ -609,7 +609,7 @@
 
                 const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
                 const imgSrc = URL.createObjectURL(file);
-                $(this).find(".ceramic-preview-container").html(`
+                $(this).find(".one-of-a-kind-preview-container").html(`
                     <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                 `);
                 $(this).find('input[name="name"]').val(newFileName);
@@ -630,37 +630,37 @@
             if (!STATE.imageToUpload && type === "create") {
                 errMsg = "You need to upload an image";
             } else if (!data.name.length) {
-                errMsg = "Please provide your ceramic with a name.";
+                errMsg = "Please provide your one of a kind with a name.";
             } else if (!data.width.length) {
-                errMsg = "Please provide your ceramic with a width.";
+                errMsg = "Please provide your one of a kind with a width.";
             } else if (!data.width.match(STATE.regEx.decimal)) {
                 errMsg = `Width can only be a number. You entered: "${data.width}"`;
             } else if (!data.height.length) {
-                errMsg = "Please provide your ceramic with a height.";
+                errMsg = "Please provide your one of a kind with a height.";
             } else if (!data.height.match(STATE.regEx.decimal)) {
                 errMsg = `Height can only be a number. You entered: "${data.height}"`;
             } else if (!data.breadth.length) {
-                errMsg = "Please provide your ceramic with a breadth.";
+                errMsg = "Please provide your one of a kind with a breadth.";
             } else if (!data.breadth.match(STATE.regEx.decimal)) {
                 errMsg = `Breadth can only be a number. You entered: "${data.breadth}"`;
             } else if (!data.material.length) {
-                errMsg = "Please provide your ceramic with a material.";
+                errMsg = "Please provide your one of a kind with a material.";
             } else if (!data.color.length) {
-                errMsg = "Please provide your ceramic with a color.";
+                errMsg = "Please provide your one of a kind with a color.";
             } else if (!data.weight.length) {
-                errMsg = "Please provide your ceramic with a weight.";
+                errMsg = "Please provide your one of a kind with a weight.";
             } else if (!data.weight.match(STATE.regEx.decimal)) {
                 errMsg = `Weight can only be a number. You entered: "${data.weight}"`;
             } else if (!data.base_price.length) {
-                errMsg = "Please provide your ceramic with a price.";
+                errMsg = "Please provide your one of a kind with a price.";
             } else if (!data.base_price.match(STATE.regEx.decimal)) {
                 errMsg = `Price can only be a number. You entered: "${data.base_price}"`;
             } else if (!data.stock_quantity.length) {
-                errMsg = "Please provide your ceramic with a stock quantity.";
+                errMsg = "Please provide your one of a kind with a stock quantity.";
             } else if (!data.stock_quantity.match(STATE.regEx.decimal)) {
                 errMsg = `Stock quantity can only be a number. You entered: "${data.stock_quantity}"`;
             } else if (!data.name.length) {
-                errMsg = "Please provide your ceramic with a name.";
+                errMsg = "Please provide your one of a kind with a name.";
             }
         }
 

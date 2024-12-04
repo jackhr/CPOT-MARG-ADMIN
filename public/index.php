@@ -5,7 +5,7 @@ use App\Controllers\CutoutController;
 use App\Controllers\OrderController;
 use App\Controllers\RoleController;
 use App\Controllers\SconceController;
-use App\Controllers\UniqueCeramicController;
+use App\Controllers\OneOfAKindController;
 use App\Controllers\UserController;
 use App\Core\ControllerFactory;
 use App\Middleware\AuthMiddleware;
@@ -60,11 +60,11 @@ $router->group('/', function (Router $router) {
         $router->delete('/{id}', [SconceController::class, 'delete']);
     });
 
-    $router->group('ceramics', function (Router $router) {
-        $router->get('', [UniqueCeramicController::class, 'listCeramics']);
-        $router->post('', [UniqueCeramicController::class, 'create']);
-        $router->post('/{id}', [UniqueCeramicController::class, 'update']);
-        $router->delete('/{id}', [UniqueCeramicController::class, 'delete']);
+    $router->group('one-of-a-kind', function (Router $router) {
+        $router->get('', [OneOfAKindController::class, 'listOneOfAKinds']);
+        $router->post('', [OneOfAKindController::class, 'create']);
+        $router->post('/{id}', [OneOfAKindController::class, 'update']);
+        $router->delete('/{id}', [OneOfAKindController::class, 'delete']);
     });
 
     $router->group('cutouts', function (Router $router) {

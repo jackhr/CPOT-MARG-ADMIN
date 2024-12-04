@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Helpers\GeneralHelper;
 use PDO;
 
-class UniqueCeramic extends Model
+class OneOfAKind extends Model
 {
-    public $ceramic_id;
+    public $one_of_a_kind_id;
     public $name;
     public $slug;
     public $dimensions;
@@ -33,18 +33,18 @@ class UniqueCeramic extends Model
     public function __construct()
     {
         parent::__construct();
-        $this->table_name = "unique_ceramics";
-        $this->primary_key = "ceramic_id";
+        $this->table_name = "one_of_a_kind";
+        $this->primary_key = "one_of_a_kind_id";
         $this->helper = new GeneralHelper();
     }
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, updated_by = :updated_by WHERE ceramic_id = :ceramic_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
-        $this->ceramic_id = htmlspecialchars($this->ceramic_id);
+        $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
         $this->name = htmlspecialchars($this->name);
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
@@ -68,7 +68,7 @@ class UniqueCeramic extends Model
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":image_url", $this->image_url);
-        $stmt->bindParam(":ceramic_id", $this->ceramic_id, PDO::PARAM_INT);
+        $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
         $stmt->bindParam(":updated_by", $this->updated_by, PDO::PARAM_INT);
 
         // Execute the query
@@ -112,12 +112,12 @@ class UniqueCeramic extends Model
 
     public function delete()
     {
-        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP WHERE ceramic_id = :ceramic_id";
+        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP WHERE one_of_a_kind_id = :one_of_a_kind_id";
         $stmt = $this->con->prepare($query);
 
-        $this->ceramic_id = htmlspecialchars($this->ceramic_id);
+        $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
 
-        $stmt->bindParam(":ceramic_id", $this->ceramic_id, PDO::PARAM_INT);
+        $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
 
         return $stmt->execute();
     }

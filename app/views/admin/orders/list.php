@@ -127,8 +127,8 @@
         function parseType(item) {
             if (item.sconce_id) {
                 return "sconce";
-            } else if (item.ceramic_id) {
-                return "ceramic";
+            } else if (item.one_of_a_kind_id) {
+                return "one of a kind";
             } else if (item.cutout_id) {
                 return "cutout";
             }
