@@ -76,23 +76,27 @@
                         <label for="phone">Phone</label>
                         <span data-phone></span>
                     </div>
-                    <div class="input-container">
-                        <label for="address_1">Street Address</label>
-                        <span data-address_1></span>
+                    <div class="mutiple-input-container" style="margin-top: 36px;">
+                        <div class="input-container">
+                            <label for="address_1">Street Address</label>
+                            <span data-address_1></span>
+                        </div>
+                        <div class="input-container">
+                            <label for="town_or_city">Town / City</label>
+                            <span data-town_or_city></span>
+                        </div>
                     </div>
-                    <div class="input-container">
-                        <label for="town_or_city">Town / City</label>
-                        <span data-town_or_city></span>
+                    <div class="mutiple-input-container">
+                        <div class="input-container">
+                            <label for="state">State</label>
+                            <span data-state></span>
+                        </div>
+                        <div class="input-container">
+                            <label for="country">Country</label>
+                            <span data-country></span>
+                        </div>
                     </div>
-                    <div class="input-container">
-                        <label for="state">State</label>
-                        <span data-state></span>
-                    </div>
-                    <div class="input-container">
-                        <label for="country">Country</label>
-                        <span data-country></span>
-                    </div>
-                    <div class="input-container">
+                    <div class="input-container" style="margin-top: 24px;">
                         <label for="message">Message</label>
                         <p data-message></p>
                     </div>
