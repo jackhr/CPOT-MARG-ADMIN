@@ -12,7 +12,7 @@
                 <path d="M18 22H6" />
                 <path d="M9 2h6" />
             </svg>
-            <span>Create One of a Kind</span>
+            <span>Add New Item</span>
         </button>
         <table id="one-of-a-kind-table">
             <thead>
@@ -118,15 +118,14 @@
                             <input type="text" name="height" placeholder="24" required>
                         </div>
                         <div class="input-container">
-                            <label for="breadth">Breadth</label>
-                            <input type="text" name="breadth" placeholder="6" required>
+                            <label for="depth">Depth</label>
+                            <input type="text" name="depth" placeholder="6" required>
                         </div>
                     </div>
                     <div class="input-container">
-                        <label for="dimension-units">Units</label>
-                        <select name="dimension-units" id="dimension-units">
+                        <label>Dimension Units</label>
+                        <select name="dimension-units">
                             <option value="cm">cm</option>
-                            <option value="mm">mm</option>
                             <option value="in">in</option>
                         </select>
                     </div>
@@ -146,11 +145,10 @@
                             <input type="text" name="weight" placeholder="10" required>
                         </div>
                         <div class="input-container">
-                            <label for="weight-units">Units</label>
+                            <label for="weight-units">Weight Units</label>
                             <select name="weight-units" id="weight-units">
                                 <option selected value="lbs">lbs</option>
                                 <option value="kgs">kgs</option>
-                                <option value="ozs">ozs</option>
                             </select>
                         </div>
                     </div>
@@ -223,15 +221,14 @@
                             <input type="text" name="height" placeholder="24" required>
                         </div>
                         <div class="input-container">
-                            <label for="breadth">Breadth</label>
-                            <input type="text" name="breadth" placeholder="6" required>
+                            <label for="depth">Depth</label>
+                            <input type="text" name="depth" placeholder="6" required>
                         </div>
                     </div>
                     <div class="input-container">
-                        <label for="dimension-units">Units</label>
-                        <select name="dimension-units" id="dimension-units">
+                        <label>Dimension Units</label>
+                        <select name="dimension-units">
                             <option value="cm">cm</option>
-                            <option value="mm">mm</option>
                             <option value="in">in</option>
                         </select>
                     </div>
@@ -251,11 +248,10 @@
                             <input type="text" name="weight" placeholder="10" required>
                         </div>
                         <div class="input-container">
-                            <label for="weight-units">Units</label>
+                            <label for="weight-units">Weight Units</label>
                             <select name="weight-units" id="weight-units">
                                 <option selected value="lbs">lbs</option>
                                 <option value="kgs">kgs</option>
-                                <option value="ozs">ozs</option>
                             </select>
                         </div>
                     </div>
@@ -426,24 +422,39 @@
             });
         });
 
+        $('[name="dimension-units"]').on('change', function() {
+            const form = $(this).closest('form');
+            const widthEl = form.find('[name="width"]');
+            const heightEl = form.find('[name="height"]');
+            const depthEl = form.find('[name="depth"]');
+
+            const toIn = $(this).val() === "in";
+
+            widthEl.val(convertUnits('length', widthEl.val(), toIn));
+            heightEl.val(convertUnits('length', heightEl.val(), toIn));
+            depthEl.val(convertUnits('length', depthEl.val(), toIn));
+        });
+
+        $('[name="weight-units"]').on('change', function() {
+            const form = $(this).closest('form');
+            const weightEl = form.find('[name="weight"]');
+
+            const toKg = $(this).val() === "kgs";
+
+            weightEl.val(convertUnits('weight', weightEl.val(), toKg));
+        });
+
         $("#one-of-a-kind-table").on("click", "tbody tr", function() {
             const modal = $("#edit-one-of-a-kind-modal");
             const oneOfAKindId = $(this).find('td').eq(0).text();
             const imgSrc = $(this).find('td').eq(1).find('img').attr('src');
             const name = $(this).find('td').eq(2).text();
             const dimensions = $(this).find('td').eq(3).text()
-                .split(" x ").map(x => {
-                    let res = x.replace("mm", "");
-                    res = x.replace("in", "");
-                    res = x.replace("cm", "");
-                    return res;
-                });
+                .split(" x ")
+                .map(x => x.replace(/in|cm/gi, ""));
             const material = $(this).find('td').eq(4).text();
             const color = $(this).find('td').eq(5).text();
-            const weight = $(this).find('td').eq(6).text()
-                .replace("lbs", "")
-                .replace("kgs", "")
-                .replace("ozs", "");
+            const weight = $(this).find('td').eq(6).text().replace(/lbs|kgs/gi, "");
             const base_price = $(this).find('td').eq(7).text();
             const stock_quantity = $(this).find('td').eq(8).text();
             const description = $(this).find('td').eq(10).text();
@@ -457,7 +468,7 @@
             `);
             modal.find('input[name="width"]').val(dimensions[0]);
             modal.find('input[name="height"]').val(dimensions[1]);
-            modal.find('input[name="breadth"]').val(dimensions[2]);
+            modal.find('input[name="depth"]').val(dimensions[2]);
             modal.find('input[name="material"]').val(material);
             modal.find('input[name="color"]').val(color);
             modal.find('input[name="weight"]').val(weight);
@@ -639,10 +650,10 @@
                 errMsg = "Please provide your one of a kind with a height.";
             } else if (!data.height.match(STATE.regEx.decimal)) {
                 errMsg = `Height can only be a number. You entered: "${data.height}"`;
-            } else if (!data.breadth.length) {
-                errMsg = "Please provide your one of a kind with a breadth.";
-            } else if (!data.breadth.match(STATE.regEx.decimal)) {
-                errMsg = `Breadth can only be a number. You entered: "${data.breadth}"`;
+            } else if (!data.depth.length) {
+                errMsg = "Please provide your one of a kind with a depth.";
+            } else if (!data.depth.match(STATE.regEx.decimal)) {
+                errMsg = `Depth can only be a number. You entered: "${data.depth}"`;
             } else if (!data.material.length) {
                 errMsg = "Please provide your one of a kind with a material.";
             } else if (!data.color.length) {

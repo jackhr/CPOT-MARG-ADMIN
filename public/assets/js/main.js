@@ -7,8 +7,15 @@ const STATE = {
         decimal: /^\d*\.?\d+$/,
         email: /[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/,
     },
-    modalDelay: 400
+    modalDelay: 400,
+    weightConst: 2.20462,
+    lengthConst: 2.54,
 }
+
+const convertUnits = (type, value, convertUp = true) => {
+    const unitConst = STATE[`${type}Const`];
+    return convertUp ? value / unitConst : value * unitConst;
+};
 
 function formatPrice(price) {
     // Convert to number and then to a string and use toLocaleString for formatting
