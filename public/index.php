@@ -62,6 +62,7 @@ $router->group('/', function (Router $router) {
 
     $router->group('one-of-a-kind', function (Router $router) {
         $router->get('', [OneOfAKindController::class, 'listOneOfAKinds']);
+        $router->get('/getAll', [OneOfAKindController::class, 'getAll']);
         $router->post('', [OneOfAKindController::class, 'create']);
         $router->post('/{id}', [OneOfAKindController::class, 'update']);
         $router->delete('/{id}', [OneOfAKindController::class, 'delete']);

@@ -38,48 +38,6 @@
                     <th>Updated By</th>
                 </tr>
             </thead>
-            <tbody>
-                <?php foreach ($one_of_a_kinds as $oak) {
-                    $created_at = new DateTime($oak['created_at']);
-                    $updated_at = new DateTime($oak['updated_at']);
-                    $created_at = $created_at->format('M j, Y \@ g:i A T');
-                    $updated_at = $updated_at->format('M j, Y \@ g:i A T');
-
-                    if ($user['role_id'] === 1) {
-                        $deleted_at = "-";
-                        if (isset($oak['deleted_at'])) {
-                            $deleted_at = new DateTime($oak['deleted_at']);
-                            $deleted_at = $deleted_at->format('M j, Y \@ g:i A T');
-                        }
-                    }
-                ?>
-                    <tr data-id="<?php echo $oak['one_of_a_kind_id']; ?>">
-                        <td><?php echo $oak['one_of_a_kind_id']; ?></td>
-                        <td class="one-of-a-kind-thumb-td">
-                            <div>
-                                <img src="<?php echo $oak['image_url']; ?>" alt="<?php echo $oak['name']; ?>">
-                            </div>
-                        </td>
-                        <td><?php echo $oak['name']; ?></td>
-                        <td><?php echo $oak['dimensions']; ?></td>
-                        <td><?php echo $oak['material']; ?></td>
-                        <td><?php echo $oak['color']; ?></td>
-                        <td><?php echo $oak['weight']; ?></td>
-                        <td><?php echo $oak['price']; ?></td>
-                        <td><?php echo $oak['stock_quantity']; ?></td>
-                        <td><?php echo $oak['status']; ?></td>
-                        <td><?php echo $oak['description']; ?></td>
-                        <td><?php echo $oak['availability']; ?></td>
-                        <td class="dt-type-date"><?php echo $created_at; ?></td>
-                        <td class="dt-type-date"><?php echo $updated_at; ?></td>
-                        <?php if ($user['role_id'] === 1) { ?>
-                            <td class="dt-type-date"><?php echo $deleted_at; ?></td>
-                        <?php } ?>
-                        <td><?php echo $oak['created_by_email']; ?></td>
-                        <td><?php echo $oak['updated_by_email']; ?></td>
-                    </tr>
-                <?php } ?>
-            </tbody>
         </table>
     </div>
 </main>
@@ -299,10 +257,134 @@
                 imageCount: 0,
                 images: {},
             };
+            STATE.activeId = null;
         })();
         const dTable = new DataTable("#one-of-a-kind-table", {
             ...STATE.dtDefaultOpts,
+            ajax: {
+                url: "/one-of-a-kind/getAll",
+                dataSrc: function(response) {
+                    let res = [];
+                    if (response && response.data) {
+                        STATE.oneOfAKinds = structuredClone(Object.values(response.data));
+                        res = Object.values(response.data).map(oak => {
+                            oak.price = formatPrice(oak.price);
+                            oak.description = oak.description ? oak.description : "-";
+                            oak.deleted_at = oak.deleted_at ? oak.deleted_at : "-";
+                            oak.updated_by_email = oak.updated_by_email ? oak.updated_by_email : "-";
+                            return oak;
+                        });
+                    } else {
+                        console.error("Invalid response format", response);
+                    }
+
+                    return res;
+                }
+            },
+            columns: [{
+                    data: 'one_of_a_kind_id'
+                },
+                {
+                    data: 'image_url'
+                },
+                {
+                    data: 'name'
+                },
+                {
+                    data: 'dimensions'
+                },
+                {
+                    data: 'material'
+                },
+                {
+                    data: 'color'
+                },
+                {
+                    data: 'weight'
+                },
+                {
+                    data: 'price'
+                },
+                {
+                    data: 'stock_quantity'
+                },
+                {
+                    data: 'status'
+                },
+                {
+                    data: 'description'
+                },
+                {
+                    data: 'availability'
+                },
+                {
+                    data: 'created_at'
+                },
+                {
+                    data: 'updated_at'
+                },
+                <?php if ($user['role_id'] === 1) {
+                    echo "{
+                        data: 'deleted_at'
+                    },";
+                } ?> {
+                    data: 'created_by_email'
+                },
+                {
+                    data: 'updated_by_email'
+                },
+            ],
+            initComplete: function() {
+                handleInitTableRowEvents()
+                this.api().on('draw', function() {
+                    handleInitTableRowEvents();
+                });
+            }
         });
+
+        function handleInitTableRowEvents() {
+            dTable.rows().every(function(idx) {
+                const rowNode = this.node();
+                if (!rowNode) {
+                    console.warn(`Row node not found for index ${idx}`);
+                    return;
+                }
+
+                const id = this.data().one_of_a_kind_id;
+                const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
+                $(rowNode)
+                    .find('td')
+                    .eq(1)
+                    .addClass("one-of-a-kind-thumb-td")
+                    .html(`
+                        <div>
+                            <img src="${data.image_url}" alt="${data.name}">
+                        </div>
+                    `);
+                const dimensions = data.dimensions
+                    .split(" x ")
+                    .map(x => x.replace(/in|cm/gi, ""));
+
+                rowNode.onclick = () => {
+                    const modal = $("#edit-one-of-a-kind-modal");
+
+                    modal.find('#edit-one-of-a-kind-id').text(data.one_of_a_kind_id);
+                    modal.find('input[name="name"]').val(data.name);
+                    modal.find('input[name="width"]').val(dimensions[0]);
+                    modal.find('input[name="height"]').val(dimensions[1]);
+                    modal.find('input[name="depth"]').val(dimensions[2]);
+                    modal.find('input[name="material"]').val(data.material);
+                    modal.find('input[name="color"]').val(data.color);
+                    modal.find('input[name="weight"]').val(data.weight);
+                    modal.find('input[name="base_price"]').val(data.price);
+                    modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
+                    modal.find('textarea[name="description"]').val(data.description);
+
+                    modal.addClass('showing');
+                };
+            });
+
+        }
 
         setTimeout(() => dTable.draw(), 1000);
 
@@ -455,41 +537,6 @@
             const toKg = $(this).val() === "kgs";
 
             weightEl.val(convertUnits('weight', weightEl.val(), toKg));
-        });
-
-        $("#one-of-a-kind-table").on("click", "tbody tr", function() {
-            const modal = $("#edit-one-of-a-kind-modal");
-            const oneOfAKindId = $(this).find('td').eq(0).text();
-            const imgSrc = $(this).find('td').eq(1).find('img').attr('src');
-            const name = $(this).find('td').eq(2).text();
-            const dimensions = $(this).find('td').eq(3).text()
-                .split(" x ")
-                .map(x => x.replace(/in|cm/gi, ""));
-            const material = $(this).find('td').eq(4).text();
-            const color = $(this).find('td').eq(5).text();
-            const weight = $(this).find('td').eq(6).text().replace(/lbs|kgs/gi, "");
-            const base_price = $(this).find('td').eq(7).text();
-            const stock_quantity = $(this).find('td').eq(8).text();
-            const description = $(this).find('td').eq(10).text();
-
-            delete STATE.imageToUpload;
-
-            modal.find('#edit-one-of-a-kind-id').text(oneOfAKindId);
-            modal.find('input[name="name"]').val(name);
-            modal.find('.one-of-a-kind-preview-container').html(`
-                <img title="${name}" src="${imgSrc}" alt="${name}">
-            `);
-            modal.find('input[name="width"]').val(dimensions[0]);
-            modal.find('input[name="height"]').val(dimensions[1]);
-            modal.find('input[name="depth"]').val(dimensions[2]);
-            modal.find('input[name="material"]').val(material);
-            modal.find('input[name="color"]').val(color);
-            modal.find('input[name="weight"]').val(weight);
-            modal.find('input[name="base_price"]').val(base_price);
-            modal.find('input[name="stock_quantity"]').val(stock_quantity);
-            modal.find('textarea[name="description"]').val(description);
-
-            modal.addClass("showing");
         });
 
         $("#edit-one-of-a-kind-modal button.cancel").on("click", function() {
