@@ -117,7 +117,7 @@ class OneOfAKindController extends Controller
             $message = "One of a kind created successfully.";
             $new_one_of_a_kind = $this->oneOfAKindModel->findByName($name);
 
-            foreach ($_FILES['one-of-a-kind-imgs']['name'] as $index => $name) {
+            foreach ($_FILES['one-of-a-kind-imgs']['name'] as $index => $file_name) {
                 $one_of_a_kind_id = $new_one_of_a_kind['one_of_a_kind_id'];
                 $this->oneOfAKindImageModel->one_of_a_kind_id = $one_of_a_kind_id;
                 $image_id = $this->oneOfAKindImageModel->create();
