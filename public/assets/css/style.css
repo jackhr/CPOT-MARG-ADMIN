@@ -1006,30 +1006,47 @@ form hr {
     border: solid 1px var(--primary);
 }
 
-#delete-on-of-a-kind-btn {
-    margin-left     : auto;
-    padding         : 2px;
-    width           : 28px;
-    color           : var(--white);
-    background-color: var(--red);
-    border          : solid 2px transparent;
-    border-radius   : 6px;
-    cursor          : pointer;
-    display         : flex;
-    align-items     : center;
-    justify-content : center;
-    transition      : background-color ease 0.3s, border-color ease 0.3s;
+.edit-one-of-a-kind-option {
+    padding        : 2px;
+    width          : 28px;
+    color          : var(--white);
+    border         : solid 2px transparent;
+    border-radius  : 6px;
+    cursor         : pointer;
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    transition     : background-color ease 0.3s, border-color ease 0.3s;
 }
 
-#delete-on-of-a-kind-btn svg {
+.edit-one-of-a-kind-option.delete {
+    background-color: var(--red);
+}
+
+.edit-one-of-a-kind-option.reset {
+    background-color: var(--blue);
+    margin-left     : auto;
+}
+
+.edit-one-of-a-kind-option svg {
     width     : 100%;
     transition: color ease 0.3s;
 }
 
-#delete-on-of-a-kind-btn:hover {
+.edit-one-of-a-kind-option:hover {
     color           : var(--red);
-    background-color: var(--white);
     border-color    : var(--red);
+    background-color: var(--white);
+}
+
+.edit-one-of-a-kind-option.delete:hover {
+    color       : var(--red);
+    border-color: var(--red);
+}
+
+.edit-one-of-a-kind-option.reset:hover {
+    color       : var(--blue);
+    border-color: var(--blue);
 }
 
 .swal-confirm-red {

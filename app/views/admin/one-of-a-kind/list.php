@@ -156,7 +156,13 @@
                     <div class="input-container">
                         <label>Id #</label>
                         <span id="edit-one-of-a-kind-id"></span>
-                        <div id="delete-on-of-a-kind-btn">
+                        <div class="edit-one-of-a-kind-option reset">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                            </svg>
+                        </div>
+                        <div class="edit-one-of-a-kind-option delete">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M3 6h18" />
                                 <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
@@ -169,7 +175,9 @@
                     <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
                     <div class="input-container one-of-a-kind-img-container">
                         <input multiple type="file" name="one-of-a-kind-imgs" class="one-of-a-kind-img-input" id="edit-one-of-a-kind-img-input" style="display: none;">
-                        <div class="one-of-a-kind-preview-container"></div>
+                        <div class="one-of-a-kind-preview-container">
+                            <div class="carousel"></div>
+                        </div>
                         <div class="one-of-a-kind-img-options">
                             <label for="edit-one-of-a-kind-img-input" class="continue-btn other">Add Images</label>
                         </div>
@@ -345,13 +353,83 @@
                 currentIdx: 0,
                 imageCount: 0,
                 images: {},
+                carousel: null
             };
             STATE.activeId = null;
 
             setTimeout(() => dTable.draw(), 1000);
         })();
 
-        function handleInitTableRowEvents() {
+        function getImageNameAndUrl(id) {
+            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
+            const imageData = data.images?.[data.primary_image_id];
+            const imageName = `${data.name}_${id}_${imageData?.image_id}`;
+            const imageUrl = imageData ? imageData?.image_url : data.image_url;
+            return [imageName, imageUrl];
+        }
+
+        function populateEditForm(data, reset = false) {
+            const modal = $("#edit-one-of-a-kind-modal");
+            const carouselContainer = modal.find(".carousel");
+            const [imageName, imageUrl] = getImageNameAndUrl(data.one_of_a_kind_id);
+            const dimensions = data.dimensions
+                .split(" x ")
+                .map(x => x.replace(/in|cm/gi, ""));
+
+            modal.find('#edit-one-of-a-kind-id').text(data.one_of_a_kind_id);
+            modal.find('input[name="name"]').val(data.name);
+            modal.find('input[name="width"]').val(dimensions[0]);
+            modal.find('input[name="height"]').val(dimensions[1]);
+            modal.find('input[name="depth"]').val(dimensions[2]);
+            modal.find('input[name="material"]').val(data.material);
+            modal.find('input[name="color"]').val(data.color);
+            modal.find('input[name="weight"]').val(data.weight);
+            modal.find('input[name="base_price"]').val(data.price);
+            modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
+            modal.find('textarea[name="description"]').val(data.description);
+
+            if (STATE.activeId != data.one_of_a_kind_id || reset === true) {
+                STATE.activeId = data.one_of_a_kind_id;
+                if (carouselContainer.data('flickity')) {
+                    carouselContainer.flickity('destroy'); // Destroy existing Flickity instance
+                }
+                carouselContainer.html("");
+
+                if (data.images) {
+                    let idx = 0;
+                    for (const image_id in data.images) {
+                        const image = data.images[image_id];
+                        const imageName = `${data.name}_${data.one_of_a_kind_id}_${image.image_id}`;
+                        carouselContainer.append(`
+                            <div class="carousel-cell" data-idx="${++idx}">
+                                <button class="continue-btn make-primary-button ${image.image_id == data.primary_image_id ? "is-primary" : ""}"></button>
+                                <div class="remove-image-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M18 6 6 18"/>
+                                        <path d="m6 6 12 12"/>
+                                    </svg>
+                                </div>
+                                <img src="${image.image_url}" alt="${imageName}" title="${imageName}">
+                            </div>
+                        `);
+                    }
+                }
+            }
+
+            if (carouselContainer.children().length) {
+                STATE.upload.carousel = carouselContainer.flickity({
+                    cellAlign: 'left',
+                    contain: true,
+                    wrapAround: true,
+                    autoPlay: false, // Add your preferences
+                    arrowShape: "M 57.5,75 L 32.5,50 L 57.5,25",
+                });
+
+                initPageDots();
+            }
+        }
+
+        function handleInitTableRowEvents(reset = false) {
             dTable.rows().every(function(idx) {
                 const rowNode = this.node();
                 if (!rowNode) {
@@ -360,36 +438,21 @@
                 }
 
                 const id = this.data().one_of_a_kind_id;
-                const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
+                const [imageName, imageUrl] = getImageNameAndUrl(id);
                 $(rowNode)
                     .find('td')
                     .eq(1)
                     .addClass("one-of-a-kind-thumb-td")
                     .html(`
                         <div>
-                            <img src="${data.image_url}" alt="${data.name}">
+                        <img src="${imageUrl}" alt="${imageName}">
                         </div>
                     `);
-                const dimensions = data.dimensions
-                    .split(" x ")
-                    .map(x => x.replace(/in|cm/gi, ""));
 
                 rowNode.onclick = () => {
-                    const modal = $("#edit-one-of-a-kind-modal");
-
-                    modal.find('#edit-one-of-a-kind-id').text(data.one_of_a_kind_id);
-                    modal.find('input[name="name"]').val(data.name);
-                    modal.find('input[name="width"]').val(dimensions[0]);
-                    modal.find('input[name="height"]').val(dimensions[1]);
-                    modal.find('input[name="depth"]').val(dimensions[2]);
-                    modal.find('input[name="material"]').val(data.material);
-                    modal.find('input[name="color"]').val(data.color);
-                    modal.find('input[name="weight"]').val(data.weight);
-                    modal.find('input[name="base_price"]').val(data.price);
-                    modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
-                    modal.find('textarea[name="description"]').val(data.description);
-
-                    modal.addClass('showing');
+                    const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
+                    populateEditForm(data);
+                    $("#edit-one-of-a-kind-modal").addClass('showing');
                 };
             });
 
@@ -609,7 +672,22 @@
             $(this).closest('.modal').find('.modal-close').trigger('click');
         });
 
-        $("#delete-on-of-a-kind-btn").on("click", async function() {
+        $(".edit-one-of-a-kind-option.reset").on("click", async function() {
+            const res = await Swal.fire({
+                icon: "warning",
+                title: "Reseting Form",
+                text: "Are you sure that you would like to reset this form? All of your changes will be lost.",
+                showDenyButton: true,
+                focusDeny: true, // Focuses on the "No" button when the dialog opens
+            });
+
+            if (!res.isConfirmed) return;
+
+            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === STATE.activeId);
+            populateEditForm(data, true);
+        });
+
+        $(".edit-one-of-a-kind-option.delete").on("click", async function() {
             const form = $("#edit-one-of-a-kind-form");
             const data = form.serializeObject();
             data.one_of_a_kind_id = $("#edit-one-of-a-kind-id").text();
