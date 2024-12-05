@@ -156,13 +156,22 @@
                     <div class="input-container">
                         <label>Id #</label>
                         <span id="edit-one-of-a-kind-id"></span>
+                        <div id="delete-on-of-a-kind-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18" />
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                <line x1="10" x2="10" y1="11" y2="17" />
+                                <line x1="14" x2="14" y1="11" y2="17" />
+                            </svg>
+                        </div>
                     </div>
                     <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
                     <div class="input-container one-of-a-kind-img-container">
                         <input multiple type="file" name="one-of-a-kind-imgs" class="one-of-a-kind-img-input" id="edit-one-of-a-kind-img-input" style="display: none;">
                         <div class="one-of-a-kind-preview-container"></div>
                         <div class="one-of-a-kind-img-options">
-                            <label for="edit-one-of-a-kind-img-input" class="continue-btn other">Change Image</label>
+                            <label for="edit-one-of-a-kind-img-input" class="continue-btn other">Add Images</label>
                         </div>
                     </div>
                     <div class="input-container">
@@ -241,24 +250,12 @@
                 <button class="continue-btn cancel">Cancel</button>
                 <button form="edit-one-of-a-kind-form" type="submit" class="continue-btn">Update</button>
             </div>
-            <div class="modal-footer" style="margin-top: 18px;">
-                <button class="continue-btn danger">Delete</button>
-            </div>
         </div>
     </div>
 </div>
 
 <script>
     $(document).ready(function() {
-        (function initSTATE() {
-            STATE.upload = {
-                maxImageCount: 10,
-                currentIdx: 0,
-                imageCount: 0,
-                images: {},
-            };
-            STATE.activeId = null;
-        })();
         const dTable = new DataTable("#one-of-a-kind-table", {
             ...STATE.dtDefaultOpts,
             ajax: {
@@ -342,6 +339,18 @@
             }
         });
 
+        (function init() {
+            STATE.upload = {
+                maxImageCount: 10,
+                currentIdx: 0,
+                imageCount: 0,
+                images: {},
+            };
+            STATE.activeId = null;
+
+            setTimeout(() => dTable.draw(), 1000);
+        })();
+
         function handleInitTableRowEvents() {
             dTable.rows().every(function(idx) {
                 const rowNode = this.node();
@@ -386,7 +395,64 @@
 
         }
 
-        setTimeout(() => dTable.draw(), 1000);
+        function getJSONDataFromForm(form) {
+            return form.serializeObject();
+        }
+
+        function initPageDots() {
+            const selectedIdx = $(".carousel-cell:has(.is-primary)").index();
+            const dots = $(".flickity-page-dots .dot");
+            if (selectedIdx === -1) {
+                return $(".carousel-cell:first-child .make-primary-button").trigger('click');
+            }
+
+            dots.removeClass("is-primary");
+            dots.eq(selectedIdx).addClass("is-primary");
+        }
+
+        function getFormValidationMsg(data, type = "create") {
+            let errMsg = "";
+
+            if (type === "create" || type === "edit") {
+                if (!STATE.upload.imageCount && type === "create") {
+                    errMsg = "You need to upload at least one image";
+                } else if (!data.name.length) {
+                    errMsg = "Please provide your one of a kind with a name.";
+                } else if (!data.width.length) {
+                    errMsg = "Please provide your one of a kind with a width.";
+                } else if (!data.width.match(STATE.regEx.decimal)) {
+                    errMsg = `Width can only be a number. You entered: "${data.width}"`;
+                } else if (!data.height.length) {
+                    errMsg = "Please provide your one of a kind with a height.";
+                } else if (!data.height.match(STATE.regEx.decimal)) {
+                    errMsg = `Height can only be a number. You entered: "${data.height}"`;
+                } else if (!data.depth.length) {
+                    errMsg = "Please provide your one of a kind with a depth.";
+                } else if (!data.depth.match(STATE.regEx.decimal)) {
+                    errMsg = `Depth can only be a number. You entered: "${data.depth}"`;
+                } else if (!data.material.length) {
+                    errMsg = "Please provide your one of a kind with a material.";
+                } else if (!data.color.length) {
+                    errMsg = "Please provide your one of a kind with a color.";
+                } else if (!data.weight.length) {
+                    errMsg = "Please provide your one of a kind with a weight.";
+                } else if (!data.weight.match(STATE.regEx.decimal)) {
+                    errMsg = `Weight can only be a number. You entered: "${data.weight}"`;
+                } else if (!data.base_price.length) {
+                    errMsg = "Please provide your one of a kind with a price.";
+                } else if (!data.base_price.match(STATE.regEx.decimal)) {
+                    errMsg = `Price can only be a number. You entered: "${data.base_price}"`;
+                } else if (!data.stock_quantity.length) {
+                    errMsg = "Please provide your one of a kind with a stock quantity.";
+                } else if (!data.stock_quantity.match(STATE.regEx.decimal)) {
+                    errMsg = `Stock quantity can only be a number. You entered: "${data.stock_quantity}"`;
+                } else if (!data.name.length) {
+                    errMsg = "Please provide your one of a kind with a name.";
+                }
+            }
+
+            return errMsg || null;
+        }
 
         $(".create-btn").on("click", () => $("#create-one-of-a-kind-modal").addClass("showing"));
 
@@ -540,10 +606,10 @@
         });
 
         $("#edit-one-of-a-kind-modal button.cancel").on("click", function() {
-            $(this).closest('.modal').removeClass('showing');
+            $(this).closest('.modal').find('.modal-close').trigger('click');
         });
 
-        $("#edit-one-of-a-kind-modal button.danger").on("click", async function() {
+        $("#delete-on-of-a-kind-btn").on("click", async function() {
             const form = $("#edit-one-of-a-kind-form");
             const data = form.serializeObject();
             data.one_of_a_kind_id = $("#edit-one-of-a-kind-id").text();
@@ -553,8 +619,14 @@
                 title: `Deleting "${data.name}"`,
                 text: "Are you sure that you would like to delete this one of a kind?",
                 showDenyButton: true,
-                confirmButtonText: 'Yes',
-                denyButtonText: 'No'
+                confirmButtonText: 'Delete',
+                denyButtonText: 'No',
+                reverseButtons: true, // Swaps the positions of the buttons
+                focusDeny: true, // Focuses on the "No" button when the dialog opens
+                customClass: {
+                    confirmButton: 'swal-confirm-red',
+                    denyButton: 'swal-deny-gray'
+                }
             });
 
             if (!res.isConfirmed) return;
@@ -593,152 +665,142 @@
                 }
             });
         });
-    });
 
-    function getJSONDataFromForm(form) {
-        return form.serializeObject();
-    }
-
-    function initPageDots() {
-        const selectedIdx = $(".carousel-cell:has(.is-primary)").index();
-        const dots = $(".flickity-page-dots .dot");
-        if (selectedIdx === -1) {
-            return $(".carousel-cell:first-child .make-primary-button").trigger('click');
-        }
-
-        dots.removeClass("is-primary");
-        dots.eq(selectedIdx).addClass("is-primary");
-    }
-
-    $(".one-of-a-kind-img-options .continue-btn.danger").on("click", async function() {
-        const choice = await Swal.fire({
-            icon: "warning",
-            title: "Removing Image",
-            text: "Are you sure you'd like to remove this image?",
-            confirmButtonText: "Yes, Remove It",
-            showCancelButton: true
+        $(".carousel").on("click", ".flickity-prev-next-button", function(e) {
+            initPageDots();
         });
 
-        if (!choice.isConfirmed) return;
+        $(".carousel").on("click", ".make-primary-button", function(e) {
+            e.preventDefault();
+            if ($(this).hasClass('is-primary')) return;
 
-        delete STATE.imageToUpload;
-        $(this).closest('.one-of-a-kind-img-container').find(".one-of-a-kind-preview-container").html("");
-    });
-
-    $(".carousel").on("click", ".flickity-prev-next-button", function(e) {
-        initPageDots();
-    });
-
-    $(".carousel").on("click", ".make-primary-button", function(e) {
-        e.preventDefault();
-        if ($(this).hasClass('is-primary')) return;
-
-        $(".make-primary-button").removeClass('is-primary');
-        $(this).addClass('is-primary');
-        initPageDots();
-    });
-
-    $(".carousel").on("click", ".remove-image-btn", function(e) {
-        const cell = $(this).closest('.carousel-cell');
-        const idx = cell.data('idx');
-
-        setTimeout(() => {
-            /**
-             * Need this function to be asynchronous since it removes
-             * the cell before the click event is called which triggers
-             * a click event on the document while the the target is
-             * removed from the dom. Basically it marks this condition as
-             * true: !target.closest(".modal-dialog").length in main.js
-             */
-            STATE.upload.carousel.flickity('remove', cell);
-            STATE.upload.imageCount--;
-            delete STATE.upload.images[idx];
+            $(".make-primary-button").removeClass('is-primary');
+            $(this).addClass('is-primary');
             initPageDots();
-        }, 100);
-    });
+        });
 
-    $(".one-of-a-kind-img-input").on('change', function() {
-        const incorrectFiles = [];
-        let hitMaxCount = false;
-        let carouselContainer = $(this).closest('form').find('.carousel'); // Target carousel container
+        $(".carousel").on("click", ".remove-image-btn", function(e) {
+            const cell = $(this).closest('.carousel-cell');
+            const idx = cell.data('idx');
 
-        [...this.files].forEach(file => {
-            if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-                return incorrectFiles.push(file);
-            } else if (STATE.upload.imageCount === STATE.upload.maxImageCount) {
-                return hitMaxCount = true;
-            }
+            setTimeout(() => {
+                /**
+                 * Need this function to be asynchronous since it removes
+                 * the cell before the click event is called which triggers
+                 * a click event on the document while the the target is
+                 * removed from the dom. Basically it marks this condition as
+                 * true: !target.closest(".modal-dialog").length in main.js
+                 */
+                STATE.upload.carousel.flickity('remove', cell);
+                STATE.upload.imageCount--;
+                delete STATE.upload.images[idx];
+                initPageDots();
+            }, 100);
+        });
 
-            const idx = STATE.upload.currentIdx++;
-            const imagesCount = ++STATE.upload.imageCount;
-            const imgSrc = URL.createObjectURL(file);
-            STATE.upload.images[idx] = file;
-            carouselContainer.append(`
-                <div class="carousel-cell" data-idx="${idx}">
-                    <button class="continue-btn make-primary-button ${imagesCount === 1 ? "is-primary" : ""}"></button>
-                    <div class="remove-image-btn">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 6 6 18"/>
-                            <path d="m6 6 12 12"/>
-                        </svg>
+        $(".one-of-a-kind-img-input").on('change', function() {
+            const incorrectFiles = [];
+            let hitMaxCount = false;
+            let carouselContainer = $(this).closest('form').find('.carousel'); // Target carousel container
+
+            [...this.files].forEach(file => {
+                if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+                    return incorrectFiles.push(file);
+                } else if (STATE.upload.imageCount === STATE.upload.maxImageCount) {
+                    return hitMaxCount = true;
+                }
+
+                const idx = STATE.upload.currentIdx++;
+                const imagesCount = ++STATE.upload.imageCount;
+                const imgSrc = URL.createObjectURL(file);
+                STATE.upload.images[idx] = file;
+                carouselContainer.append(`
+                    <div class="carousel-cell" data-idx="${idx}">
+                        <button class="continue-btn make-primary-button ${imagesCount === 1 ? "is-primary" : ""}"></button>
+                        <div class="remove-image-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 6 6 18"/>
+                                <path d="m6 6 12 12"/>
+                            </svg>
+                        </div>
+                        <img src="${imgSrc}" alt="${file.name}" title="${file.name}">
                     </div>
-                    <img src="${imgSrc}" alt="${file.name}" title="${file.name}">
-                </div>
-            `);
+                `);
+            });
+
+            let html = "";
+            let showSwal = false;
+
+            if (incorrectFiles.length) {
+                showSwal = true;
+                html += `The following files are the wrong type:<br><ul>${incorrectFiles.reduce((lis, file) => {
+                    lis +=`<li>${file.name}</li>`;
+                    return lis;
+                }, "")}</ul>`;
+            }
+            if (hitMaxCount) {
+                showSwal = true;
+                html += `You can only upload ${STATE.upload.maxImageCount} images at one time`;
+            }
+
+            if (showSwal) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Warning",
+                    html
+                });
+            }
+
+            // Reinitialize Flickity
+            if (carouselContainer.children().length) {
+                if (carouselContainer.data('flickity')) {
+                    carouselContainer.flickity('destroy'); // Destroy existing Flickity instance
+                }
+                STATE.upload.carousel = carouselContainer.flickity({
+                    cellAlign: 'left',
+                    contain: true,
+                    wrapAround: true,
+                    autoPlay: false, // Add your preferences
+                    arrowShape: "M 57.5,75 L 32.5,50 L 57.5,25",
+                });
+
+                initPageDots();
+            }
+            $(this).val('');
         });
 
-        let html = "";
-        let showSwal = false;
+        $("#create-one-of-a-kind-modal").on('drop', async function(evt) {
+            evt.preventDefault();
 
-        if (incorrectFiles.length) {
-            showSwal = true;
-            html += `The following files are the wrong type:<br><ul>${incorrectFiles.reduce((lis, file) => {
-            lis +=`<li>${file.name}</li>`;
-            return lis;
-        }, "")}</ul>`;
-        }
-        if (hitMaxCount) {
-            showSwal = true;
-            html += `You can only upload ${STATE.upload.maxImageCount} images at one time`;
-        }
+            const origEvt = evt.originalEvent;
 
-        if (showSwal) {
-            Swal.fire({
-                icon: "warning",
-                title: "Warning",
-                html
-            });
-        }
+            if (origEvt.dataTransfer.items) {
+                // Use DataTransferItemList interface to access the file(s)
+                [...origEvt.dataTransfer.items].forEach(item => {
+                    // If dropped items aren't files, reject them
+                    if (item.kind === "file") {
+                        const file = item.getAsFile();
+                        if (file.type === 'application/pdf') {
+                            return Swal.fire({
+                                icon: "warning",
+                                title: "Incorrect File Type",
+                                text: "Please choose a file that is not a pdf."
+                            });
+                        }
 
-        // Reinitialize Flickity
-        if (carouselContainer.children().length) {
-            if (carouselContainer.data('flickity')) {
-                carouselContainer.flickity('destroy'); // Destroy existing Flickity instance
-            }
-            STATE.upload.carousel = carouselContainer.flickity({
-                cellAlign: 'left',
-                contain: true,
-                wrapAround: true,
-                autoPlay: false, // Add your preferences
-                arrowShape: "M 57.5,75 L 32.5,50 L 57.5,25",
-            });
+                        STATE.imageToUpload = file;
 
-            initPageDots();
-        }
-        $(this).val('');
-    });
-
-    $("#create-one-of-a-kind-modal").on('drop', async function(evt) {
-        evt.preventDefault();
-
-        const origEvt = evt.originalEvent;
-
-        if (origEvt.dataTransfer.items) {
-            // Use DataTransferItemList interface to access the file(s)
-            [...origEvt.dataTransfer.items].forEach(item => {
-                // If dropped items aren't files, reject them
-                if (item.kind === "file") {
-                    const file = item.getAsFile();
+                        const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
+                        const imgSrc = URL.createObjectURL(file);
+                        $(this).find(".one-of-a-kind-preview-container").html(`
+                        <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
+                    `);
+                        $(this).find('input[name="name"]').val(newFileName);
+                    }
+                });
+            } else {
+                // Use DataTransfer interface to access the file(s)
+                [...origEvt.dataTransfer.files].forEach(file => {
                     if (file.type === 'application/pdf') {
                         return Swal.fire({
                             icon: "warning",
@@ -752,83 +814,19 @@
                     const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
                     const imgSrc = URL.createObjectURL(file);
                     $(this).find(".one-of-a-kind-preview-container").html(`
-                        <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
-                    `);
-                    $(this).find('input[name="name"]').val(newFileName);
-                }
-            });
-        } else {
-            // Use DataTransfer interface to access the file(s)
-            [...origEvt.dataTransfer.files].forEach(file => {
-                if (file.type === 'application/pdf') {
-                    return Swal.fire({
-                        icon: "warning",
-                        title: "Incorrect File Type",
-                        text: "Please choose a file that is not a pdf."
-                    });
-                }
-
-                STATE.imageToUpload = file;
-
-                const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
-                const imgSrc = URL.createObjectURL(file);
-                $(this).find(".one-of-a-kind-preview-container").html(`
                     <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
                 `);
-                $(this).find('input[name="name"]').val(newFileName);
-            });
-        }
-
-        $("#drop-alert").removeClass('showing');
-    }).on('dragover', function(evt) {
-        evt.preventDefault();
-
-        $("#drop-alert").addClass('showing');
-    });
-
-    function getFormValidationMsg(data, type = "create") {
-        let errMsg = "";
-
-        if (type === "create" || type === "edit") {
-            if (!STATE.upload.imageCount && type === "create") {
-                errMsg = "You need to upload at least one image";
-            } else if (!data.name.length) {
-                errMsg = "Please provide your one of a kind with a name.";
-            } else if (!data.width.length) {
-                errMsg = "Please provide your one of a kind with a width.";
-            } else if (!data.width.match(STATE.regEx.decimal)) {
-                errMsg = `Width can only be a number. You entered: "${data.width}"`;
-            } else if (!data.height.length) {
-                errMsg = "Please provide your one of a kind with a height.";
-            } else if (!data.height.match(STATE.regEx.decimal)) {
-                errMsg = `Height can only be a number. You entered: "${data.height}"`;
-            } else if (!data.depth.length) {
-                errMsg = "Please provide your one of a kind with a depth.";
-            } else if (!data.depth.match(STATE.regEx.decimal)) {
-                errMsg = `Depth can only be a number. You entered: "${data.depth}"`;
-            } else if (!data.material.length) {
-                errMsg = "Please provide your one of a kind with a material.";
-            } else if (!data.color.length) {
-                errMsg = "Please provide your one of a kind with a color.";
-            } else if (!data.weight.length) {
-                errMsg = "Please provide your one of a kind with a weight.";
-            } else if (!data.weight.match(STATE.regEx.decimal)) {
-                errMsg = `Weight can only be a number. You entered: "${data.weight}"`;
-            } else if (!data.base_price.length) {
-                errMsg = "Please provide your one of a kind with a price.";
-            } else if (!data.base_price.match(STATE.regEx.decimal)) {
-                errMsg = `Price can only be a number. You entered: "${data.base_price}"`;
-            } else if (!data.stock_quantity.length) {
-                errMsg = "Please provide your one of a kind with a stock quantity.";
-            } else if (!data.stock_quantity.match(STATE.regEx.decimal)) {
-                errMsg = `Stock quantity can only be a number. You entered: "${data.stock_quantity}"`;
-            } else if (!data.name.length) {
-                errMsg = "Please provide your one of a kind with a name.";
+                    $(this).find('input[name="name"]').val(newFileName);
+                });
             }
-        }
 
-        return errMsg || null;
-    }
+            $("#drop-alert").removeClass('showing');
+        }).on('dragover', function(evt) {
+            evt.preventDefault();
+
+            $("#drop-alert").addClass('showing');
+        });
+    });
 </script>
 
 <?php include_once __DIR__ . "/../../partials/footer.php"; ?>

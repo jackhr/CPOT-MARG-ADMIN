@@ -1006,6 +1006,42 @@ form hr {
     border: solid 1px var(--primary);
 }
 
+#delete-on-of-a-kind-btn {
+    margin-left     : auto;
+    padding         : 2px;
+    width           : 28px;
+    color           : var(--white);
+    background-color: var(--red);
+    border          : solid 2px transparent;
+    border-radius   : 6px;
+    cursor          : pointer;
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    transition      : background-color ease 0.3s, border-color ease 0.3s;
+}
+
+#delete-on-of-a-kind-btn svg {
+    width     : 100%;
+    transition: color ease 0.3s;
+}
+
+#delete-on-of-a-kind-btn:hover {
+    color           : var(--red);
+    background-color: var(--white);
+    border-color    : var(--red);
+}
+
+.swal-confirm-red {
+    background-color: var(--red) !important;
+    color           : var(--white) !important;
+}
+
+.swal-deny-gray {
+    background-color: var(--grey-light) !important;
+    color           : var(--white) !important;
+}
+
 @media screen and (max-width: 1256px) {
     #dashboard-main {
         grid-template-columns: repeat(4, 1fr);
