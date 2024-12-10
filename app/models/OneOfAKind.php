@@ -119,7 +119,6 @@ class OneOfAKind extends Model
         $stmt->bindParam(":stock_quantity", $this->stock_quantity);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":image_url", $this->image_url);
         $stmt->bindParam(":created_by", $this->created_by, PDO::PARAM_INT);
 
         // Execute the query
