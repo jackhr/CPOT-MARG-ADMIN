@@ -39,14 +39,29 @@ class OneOfAKind extends Model
         $this->helper = new GeneralHelper();
     }
 
-    public function update()
-    {
-        $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id, name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
+    public function updatePrimaryImg() {
+        $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id WHERE one_of_a_kind_id = :one_of_a_kind_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
         $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
         $this->primary_image_id = htmlspecialchars($this->primary_image_id);
+
+        // Bind parameters
+        $stmt->bindParam(":primary_image_id", $this->primary_image_id, PDO::PARAM_INT);
+        $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
+
+        // Execute the query
+        return $stmt->execute();
+    }
+
+    public function update()
+    {
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $stmt = $this->con->prepare($query);
+
+        // Sanitize input
+        $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
         $this->name = htmlspecialchars($this->name);
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
@@ -60,7 +75,6 @@ class OneOfAKind extends Model
         $this->updated_by = htmlspecialchars($this->updated_by);
 
         // Bind parameters
-        $stmt->bindParam(":primary_image_id", $this->primary_image_id, PDO::PARAM_INT);
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":dimensions", $this->dimensions);
         $stmt->bindParam(":material", $this->material);

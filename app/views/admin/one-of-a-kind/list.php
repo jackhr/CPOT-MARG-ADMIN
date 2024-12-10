@@ -352,8 +352,11 @@
                 maxImageCount: 10,
                 currentIdx: 0,
                 imageCount: 0,
+                carousel: null,
                 images: {},
-                carousel: null
+                existingImages: {},
+                newImages: {},
+                deletedImages: {},
             };
             STATE.activeId = null;
 
@@ -368,41 +371,56 @@
             return [imageName, imageUrl];
         }
 
-        function populateEditForm(data, reset = false) {
+        function populateEditForm(id, reset = false) {
+            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
             const modal = $("#edit-one-of-a-kind-modal");
             const carouselContainer = modal.find(".carousel");
-            const [imageName, imageUrl] = getImageNameAndUrl(data.one_of_a_kind_id);
+            const [imageName, imageUrl] = getImageNameAndUrl(id);
             const dimensions = data.dimensions
                 .split(" x ")
-                .map(x => x.replace(/in|cm/gi, ""));
+                .map(x => x.replace(/\D+/gi, ""));
+            const weight = data.weight.replace(/\D+/gi, "");
+            let selectedCellIdx = 0;
 
-            modal.find('#edit-one-of-a-kind-id').text(data.one_of_a_kind_id);
+            modal.find('#edit-one-of-a-kind-id').text(id);
             modal.find('input[name="name"]').val(data.name);
             modal.find('input[name="width"]').val(dimensions[0]);
             modal.find('input[name="height"]').val(dimensions[1]);
             modal.find('input[name="depth"]').val(dimensions[2]);
             modal.find('input[name="material"]').val(data.material);
             modal.find('input[name="color"]').val(data.color);
-            modal.find('input[name="weight"]').val(data.weight);
+            modal.find('input[name="weight"]').val(weight);
             modal.find('input[name="base_price"]').val(data.price);
             modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
             modal.find('textarea[name="description"]').val(data.description);
 
-            if (STATE.activeId != data.one_of_a_kind_id || reset === true) {
-                STATE.activeId = data.one_of_a_kind_id;
+            if (STATE.activeId !== id || reset === true) {
+                // Store existing images
+                STATE.upload.existingImages = data.images ? data.images : {};
+                STATE.upload.imageCount = Object.values(STATE.upload.existingImages).length;
+                STATE.upload.newImages = {};
+                STATE.upload.deletedImages = {};
+                STATE.activeId = id;
                 if (carouselContainer.data('flickity')) {
                     carouselContainer.flickity('destroy'); // Destroy existing Flickity instance
                 }
                 carouselContainer.html("");
+                let idx = -1;
 
                 if (data.images) {
-                    let idx = 0;
                     for (const image_id in data.images) {
+                        idx++;
                         const image = data.images[image_id];
                         const imageName = `${data.name}_${data.one_of_a_kind_id}_${image.image_id}`;
+                        const isPrimary = image.image_id == data.primary_image_id;
+                        if (isPrimary) {
+                            selectedCellIdx = idx;
+                        }
                         carouselContainer.append(`
-                            <div class="carousel-cell" data-idx="${++idx}">
-                                <button class="continue-btn make-primary-button ${image.image_id == data.primary_image_id ? "is-primary" : ""}"></button>
+                            <div class="carousel-cell" data-idx="${image.image_id}" data-existing="true" data-image-id="${image.image_id}">
+                            <div class="carousel-cell-btn-container">
+                                <button class="continue-btn make-primary-button ${isPrimary ? "is-primary" : ""}"></button>
+                            </div>
                                 <div class="remove-image-btn">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M18 6 6 18"/>
@@ -424,6 +442,7 @@
                     autoPlay: false, // Add your preferences
                     arrowShape: "M 57.5,75 L 32.5,50 L 57.5,25",
                 });
+                carouselContainer.flickity('selectCell', selectedCellIdx);
 
                 initPageDots();
             }
@@ -450,8 +469,7 @@
                     `);
 
                 rowNode.onclick = () => {
-                    const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
-                    populateEditForm(data);
+                    populateEditForm(id);
                     $("#edit-one-of-a-kind-modal").addClass('showing');
                 };
             });
@@ -469,7 +487,12 @@
                 return $(".carousel-cell:first-child .make-primary-button").trigger('click');
             }
 
-            dots.removeClass("is-primary");
+            dots.removeClass("is-primary is-new");
+            $(".carousel-cell[data-new]").each((idx, cell) => {
+                const isNewIdx = $(cell).index();
+                dots.eq(isNewIdx).addClass("is-new");
+            });
+
             dots.eq(selectedIdx).addClass("is-primary");
         }
 
@@ -477,7 +500,7 @@
             let errMsg = "";
 
             if (type === "create" || type === "edit") {
-                if (!STATE.upload.imageCount && type === "create") {
+                if (!STATE.upload.imageCount) {
                     errMsg = "You need to upload at least one image";
                 } else if (!data.name.length) {
                     errMsg = "Please provide your one of a kind with a name.";
@@ -519,6 +542,13 @@
 
         $(".create-btn").on("click", () => $("#create-one-of-a-kind-modal").addClass("showing"));
 
+        function handleMakePrimary(formData, idx, type) {
+            if ($(`.carousel-cell[data-idx="${idx}"] .make-primary-button`).hasClass("is-primary")) {
+                formData.append('primary_image_idx', idx);
+                formData.append('primary_image_type', type);
+            }
+        }
+
         $('button[form="edit-one-of-a-kind-form"]').on("click", function(e) {
             e.preventDefault();
 
@@ -544,10 +574,26 @@
             });
 
             const formData = new FormData(form[0]);
-            if (STATE.imageToUpload) {
-                formData.set("one-of-a-kind-img", STATE.imageToUpload);
-            } else {
-                formData.delete("one-of-a-kind-img");
+            formData.delete("one-of-a-kind-imgs");
+
+            // Include existing image IDs to retain
+            for (const idx in STATE.upload.existingImages) {
+                const img = STATE.upload.existingImages[idx];
+                formData.append(`existingImages[${idx}]`, img.image_id);
+                handleMakePrimary(formData, idx, 'existingImages');
+            }
+
+            // Include new images
+            for (const idx in STATE.upload.newImages) {
+                const file = STATE.upload.newImages[idx];
+                formData.append(`newImages[${idx}]`, file);
+                handleMakePrimary(formData, idx, 'newImages');
+            }
+
+            // Include deleted image IDs
+            for (const idx in STATE.upload.deletedImages) {
+                const img = STATE.upload.deletedImages[idx];
+                formData.append(`deletedImages[${idx}]`, img.image_id);
             }
 
             $.ajax({
@@ -607,14 +653,25 @@
 
             const formData = new FormData(form[0]);
             formData.delete("one-of-a-kind-imgs");
-            if (STATE.upload.imageCount) {
-                for (const idx in STATE.upload.images) {
-                    const file = STATE.upload.images[idx];
-                    formData.append(`one-of-a-kind-imgs[${idx}]`, file);
-                    if ($(`.carousel-cell[data-idx="${idx}"] .make-primary-button`).hasClass("is-primary")) {
-                        formData.append('primary_image_idx', idx);
-                    }
-                }
+
+            // Include existing image IDs to retain
+            for (const idx in STATE.upload.existingImages) {
+                const img = STATE.upload.existingImages[idx];
+                formData.append(`existingImages[${idx}]`, img.image_id);
+                handleMakePrimary(formData, idx, 'existingImages');
+            }
+
+            // Include new images
+            for (const idx in STATE.upload.newImages) {
+                const file = STATE.upload.newImages[idx];
+                formData.append(`newImages[${idx}]`, file);
+                handleMakePrimary(formData, idx, 'newImages');
+            }
+
+            // Include deleted image IDs
+            for (const idx in STATE.upload.deletedImages) {
+                const img = STATE.upload.deletedImages[idx];
+                formData.append(`deletedImages[${idx}]`, img.image_id);
             }
 
             $.ajax({
@@ -683,8 +740,7 @@
 
             if (!res.isConfirmed) return;
 
-            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === STATE.activeId);
-            populateEditForm(data, true);
+            populateEditForm(STATE.activeId, true);
         });
 
         $(".edit-one-of-a-kind-option.delete").on("click", async function() {
@@ -744,6 +800,10 @@
             });
         });
 
+        $(".carousel").on("click", ".flickity-page-dots .dot", function(e) {
+            initPageDots();
+        });
+
         $(".carousel").on("click", ".flickity-prev-next-button", function(e) {
             initPageDots();
         });
@@ -760,6 +820,8 @@
         $(".carousel").on("click", ".remove-image-btn", function(e) {
             const cell = $(this).closest('.carousel-cell');
             const idx = cell.data('idx');
+            const isExisting = cell.data("existing");
+            const isNew = cell.data("new");
 
             setTimeout(() => {
                 /**
@@ -769,17 +831,30 @@
                  * removed from the dom. Basically it marks this condition as
                  * true: !target.closest(".modal-dialog").length in main.js
                  */
+                if (isExisting) {
+                    const imageId = cell.data("image-id");
+                    const img = STATE.upload.existingImages[imageId];
+                    STATE.upload.deletedImages[imageId] = img; // Track for deletion
+                }
+
+                if (isNew) {
+                    const newImgIdx = cell.data("idx");
+                    delete STATE.upload.newImages[newImgIdx]; // Remove from new images
+                }
+
                 STATE.upload.carousel.flickity('remove', cell);
-                STATE.upload.imageCount--;
-                delete STATE.upload.images[idx];
+                STATE.upload.imageCount = Math.max(STATE.upload.imageCount - 1, 0);
                 initPageDots();
             }, 100);
         });
 
         $(".one-of-a-kind-img-input").on('change', function() {
+            // only ever for adding
             const incorrectFiles = [];
             let hitMaxCount = false;
             let carouselContainer = $(this).closest('form').find('.carousel'); // Target carousel container
+            let carouselCellsHTML = "";
+            let selectedCellIdx = NaN;
 
             [...this.files].forEach(file => {
                 if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
@@ -791,10 +866,16 @@
                 const idx = STATE.upload.currentIdx++;
                 const imagesCount = ++STATE.upload.imageCount;
                 const imgSrc = URL.createObjectURL(file);
-                STATE.upload.images[idx] = file;
-                carouselContainer.append(`
-                    <div class="carousel-cell" data-idx="${idx}">
-                        <button class="continue-btn make-primary-button ${imagesCount === 1 ? "is-primary" : ""}"></button>
+                STATE.upload.newImages[idx] = file;
+                if (isNaN(selectedCellIdx)) {
+                    selectedCellIdx = imagesCount - 1;
+                }
+                carouselCellsHTML += `
+                    <div class="carousel-cell" data-idx="${idx}" data-new="true">
+                        <div class="carousel-cell-btn-container">
+                            <button class="continue-btn make-primary-button ${imagesCount === 1 ? "is-primary" : ""}"></button>
+                            <button class="continue-btn is-new-button">New Image</button>
+                        </div>
                         <div class="remove-image-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M18 6 6 18"/>
@@ -803,7 +884,7 @@
                         </div>
                         <img src="${imgSrc}" alt="${file.name}" title="${file.name}">
                     </div>
-                `);
+                `;
             });
 
             let html = "";
@@ -830,20 +911,20 @@
             }
 
             // Reinitialize Flickity
-            if (carouselContainer.children().length) {
-                if (carouselContainer.data('flickity')) {
-                    carouselContainer.flickity('destroy'); // Destroy existing Flickity instance
-                }
-                STATE.upload.carousel = carouselContainer.flickity({
-                    cellAlign: 'left',
-                    contain: true,
-                    wrapAround: true,
-                    autoPlay: false, // Add your preferences
-                    arrowShape: "M 57.5,75 L 32.5,50 L 57.5,25",
-                });
-
-                initPageDots();
+            if (carouselContainer.data('flickity')) {
+                carouselContainer.flickity('destroy'); // Destroy existing Flickity instance
             }
+            carouselContainer.append(carouselCellsHTML);
+            STATE.upload.carousel = carouselContainer.flickity({
+                cellAlign: 'left',
+                contain: true,
+                wrapAround: true,
+                autoPlay: false, // Add your preferences
+                arrowShape: "M 57.5,75 L 32.5,50 L 57.5,25",
+            });
+            carouselContainer.flickity('selectCell', selectedCellIdx);
+
+            initPageDots();
             $(this).val('');
         });
 

@@ -171,13 +171,12 @@ class OneOfAKindController extends Controller
 
     public function update($one_of_a_kind_id)
     {
-        $name = $_POST['name'];
-        $uploadedFile = null;
+        $name = trim($_POST['name']);
+        $primary_image_idx = trim($_POST['primary_image_idx']);
+        $primary_image_type = trim($_POST['primary_image_type']);
         $new_one_of_a_kind = [];
         $status = 200;
         $message = "";
-        $changing_image = isset($_FILES['one-of-a-kind-img']);
-
         $one_of_a_kind = $this->oneOfAKindModel->findById($one_of_a_kind_id);
         $one_of_a_kind_with_same_name = $this->oneOfAKindModel->findByName($name);
 
@@ -191,105 +190,135 @@ class OneOfAKindController extends Controller
                 ($one_of_a_kind_with_same_name['name'] === $name)
             ) {
                 $status = 409;
-                $message = "There is already a one of a kind with that name.";
+                $message = "There is already a one of a kind with the name: \"$name\"";
             }
         }
 
-        try {
-            if ($changing_image) {
-                $uploadedFile = $_FILES['one-of-a-kind-img'];
-                $fileType = $uploadedFile['type'];
-                $extension = $this->helper->getFileExtension($fileType);
+        if ($status !== 200) {
+            $this->helper->respondToClient(null, $status, $message);
+        }
 
-                if (!strlen($extension)) {
-                    $status = 415;
-                    throw new Exception("The file type was not recognized. Please use jpeg, png, webp, avif, or tiff.");
-                } else if (!$this->helper->checkIfFileTypeIsAcceptable($fileType)) {
-                    $status = 409;
-                    throw new Exception("The file type is not acceptable. Please use jpeg, png, webp, avif, or tiff.");
+        $public_directory = __DIR__ . '/../../public';
+        $relative_directory = "/assets/images/gallery/one-of-a-kind/";
+
+        if (isset($_POST['deletedImages'])) {
+            try {
+                foreach ($_POST['deletedImages'] as $image_id) {
+                    $image = $this->oneOfAKindImageModel->findById($image_id);
+                    $delete_image_path = $public_directory . $image['image_url'];
+                    if (!unlink($delete_image_path)) {
+                        $status = 500;
+                        throw new Exception("Failed to delete the old image.");
+                    } else {
+                        $this->oneOfAKindImageModel->image_id = $image_id;
+                        $this->oneOfAKindImageModel->delete();
+                    }
                 }
+            } catch (Exception $e) {
+                $message = $e->getMessage();
+            }
+        }
 
-                // Prepare file paths
-                $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/gallery/one-of-a-kind/";
-                $newFileName = $name . $extension;
-                $new_image_url = $relative_directory . $newFileName;
-                $uploadDirectory = $public_directory . $relative_directory;
-                $destination = $uploadDirectory . $newFileName;
+        if ($status !== 200) {
+            $this->helper->respondToClient(null, $status, $message);
+        }
 
-                $tmpName = $uploadedFile['tmp_name'];
-                $old_image_path = $public_directory . $one_of_a_kind['image_url'];
+        if ($name !== $one_of_a_kind['name']) {
+            /**
+             * Means that we are updating the resource name
+             * and so we must update the image urls
+             */
+            try {
+                $images = $this->oneOfAKindImageModel->findByOneOfAKindId($one_of_a_kind_id);
+                foreach ($images as $image) {
+                    $fileInfo = pathinfo($image['image_url']);
+                    $extension = $fileInfo['extension'];
 
-                // Handle existing file replacement or renaming
-                if (file_exists($old_image_path)) {
-                    if ($one_of_a_kind['name'] === $name) {
-                        // If the name hasn't changed, just overwrite the old image
-                        if (!move_uploaded_file($tmpName, $old_image_path)) {
+                    $newFileName = "$name.$extension";
+                    $new_image_url = "{$name}_{$one_of_a_kind_id}_{$image['image_id']}.$extension";
+                    $uploadDirectory = $public_directory . $relative_directory;
+                    $destination = $uploadDirectory . $newFileName;
+
+                    $old_image_path = $public_directory . $image['image_url'];
+
+                    if (file_exists($old_image_path)) {
+                        if (!rename($old_image_path, $destination)) {
                             $status = 500;
-                            throw new Exception("Failed to overwrite the existing image.");
-                        }
-
-                        if (!rename($old_image_path, $public_directory . $new_image_url)) {
-                            $status = 500;
-                            throw new Exception("Failed to rename the updated image.");
+                            throw new Exception("Failed to rename the image.");
                         }
                     } else {
-                        // If the name has changed, delete the old image
-                        if (!unlink($old_image_path)) {
-                            $status = 500;
-                            throw new Exception("Failed to delete the old image.");
-                        }
-
-                        // Upload the new image to the new file path
-                        if (!move_uploaded_file($tmpName, $destination)) {
-                            $status = 500;
-                            throw new Exception("Failed to upload the new image.");
-                        }
-                    }
-                } else {
-                    // If the old image doesn't exist, just upload the new one
-                    if (!move_uploaded_file($tmpName, $destination)) {
                         $status = 500;
-                        throw new Exception("Failed to upload the new image.");
+                        throw new Exception("File does not exist.");
                     }
                 }
-            } else if ($one_of_a_kind['name'] !== $name) {
-                // not changing image, but changing name
-                $fileInfo = pathinfo($one_of_a_kind['image_url']);
-                $extension = $fileInfo['extension'];
-
-                $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/gallery/one-of-a-kind/";
-                $newFileName = "$name.$extension";
-                $new_image_url = $relative_directory . $newFileName;
-                $uploadDirectory = $public_directory . $relative_directory;
-                $destination = $uploadDirectory . $newFileName;
-
-                $old_image_path = $public_directory . $one_of_a_kind['image_url'];
-
-                if (file_exists($old_image_path)) {
-                    if (!rename($old_image_path, $destination)) {
-                        $status = 500;
-                        throw new Exception("Failed to rename the image.");
-                    }
-                } else {
-                    $status = 500;
-                    throw new Exception("File does not exist.");
-                }
+            } catch (Exception $e) {
+                $message = $e->getMessage();
             }
-        } catch (Exception $e) {
-            $message = $e->getMessage();
+        }
+
+        if ($status !== 200) {
+            $this->helper->respondToClient(null, $status, $message);
+        }
+
+        if (isset($_FILES['newImages'])) {
+            try {
+                foreach ($_FILES['newImages']['type'] as $index => $fileType) {
+                    $this->oneOfAKindImageModel->one_of_a_kind_id = $one_of_a_kind_id;
+                    $image_id = $this->oneOfAKindImageModel->create();
+                    $extension = $this->helper->getFileExtension($fileType);
+
+                    if (!strlen($extension)) {
+                        $status = 415;
+                        throw new Exception("The file type was not recognized. Please use jpeg, png, webp, avif, or tiff.");
+                    } else if (!$this->helper->checkIfFileTypeIsAcceptable($fileType)) {
+                        $status = 409;
+                        throw new Exception("The file type is not acceptable. Please use jpeg, png, webp, avif, or tiff.");
+                    }
+
+                    if ($primary_image_type === "newImages" && (int)$index == (int)$primary_image_idx) {
+                        $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
+                        $this->oneOfAKindModel->primary_image_id = $image_id;
+                        $this->oneOfAKindModel->updatePrimaryImg();
+                    }
+
+                    $tmpName = $_FILES['newImages']['tmp_name'][$index];
+                    $newFileName = sprintf("%s_%d_%d%s", $name, $one_of_a_kind_id, $image_id, $extension);
+                    $image_url = $relative_directory . $newFileName;
+
+                    $this->oneOfAKindImageModel->image_id = $image_id;
+                    $this->oneOfAKindImageModel->image_url = $image_url;
+                    $this->oneOfAKindImageModel->update();
+
+                    $destination = $public_directory . $image_url;
+
+                    // Move the uploaded file to the target directory
+                    if (move_uploaded_file($tmpName, $destination)) {
+                        $message = "File uploaded successfully.";
+                    } else {
+                        $status = 500;
+                        $message = "One of a kind was created but the file upload failed.";
+                    }
+                }
+            } catch (Exception $e) {
+                $message = $e->getMessage();
+            }
         }
 
         if ($status !== 200) {
             $this->helper->respondToClient($new_one_of_a_kind, $status, $message);
         }
 
+        if ($primary_image_type === "existingImages") {
+            $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
+            $this->oneOfAKindModel->primary_image_id = $primary_image_idx;
+            $this->oneOfAKindModel->updatePrimaryImg();
+        }
+
         [
             "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
-            "breadth" => $breadth,
+            "depth" => $depth,
             "material" => $material,
             "color" => $color,
             "weight" => $weight,
@@ -302,13 +331,14 @@ class OneOfAKindController extends Controller
 
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
-        $breadth = $this->helper->truncateToThreeDecimals($breadth);
+        $depth = $this->helper->truncateToThreeDecimals($depth);
         $weight = $this->helper->truncateToThreeDecimals($weight);
 
-        $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
+        $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
         $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
+        $this->oneOfAKindModel->primary_image_id = $primary_image_idx;
         $this->oneOfAKindModel->name = $name;
         $this->oneOfAKindModel->dimensions = $dimensions;
         $this->oneOfAKindModel->material = $material;
@@ -318,7 +348,6 @@ class OneOfAKindController extends Controller
         $this->oneOfAKindModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->oneOfAKindModel->status = $one_of_a_kind_status;
         $this->oneOfAKindModel->description = $description;
-        $this->oneOfAKindModel->image_url = isset($new_image_url) ? $new_image_url : $one_of_a_kind['image_url'];
         $this->oneOfAKindModel->updated_by = $_SESSION['user']['user_id'];
 
         if ($this->oneOfAKindModel->update()) {

@@ -934,22 +934,42 @@ form hr {
     box-shadow: 0 0 0 5px var(--secondary);
 }
 
-.make-primary-button {
+.carousel-cell-btn-container {
     position      : absolute;
     top           : 6px;
     left          : 6px;
-    width         : max-content;
-    height        : auto;
     font-size     : 12px;
+    display       : flex;
+    align-items   : center;
+    gap           : 4px;
     transition    : opacity ease 0.3s;
-    opacity       : 0;
     pointer-events: none;
+    opacity       : 0;
+}
+
+.carousel-cell-btn-container button {
+    width    : max-content;
+    height   : auto;
+    font-size: 12px;
+}
+
+.is-new-button {
+    pointer-events  : none;
+    display         : none;
+    background-color: var(--white);
+    border-color    : var(--secondary);
+    color           : var(--secondary);
+}
+
+.carousel-cell[data-new] .is-new-button {
+    display: flex;
 }
 
 .make-primary-button.is-primary {
     background-color: var(--white);
     color           : var(--primary);
     opacity         : 1;
+    cursor          : default;
 }
 
 .make-primary-button::before {
@@ -962,6 +982,10 @@ form hr {
 
 .carousel-cell:has(.make-primary-button.is-primary) {
     border-color: var(--primary);
+}
+
+.carousel-cell[data-new] {
+    border-color: var(--secondary);
 }
 
 .remove-image-btn {
@@ -987,7 +1011,7 @@ form hr {
     height: 100%;
 }
 
-.carousel-cell:hover .make-primary-button,
+.carousel-cell:hover .carousel-cell-btn-container,
 .carousel-cell:hover .remove-image-btn {
     opacity       : 1;
     pointer-events: all;
@@ -996,14 +1020,25 @@ form hr {
 .flickity-page-dots .dot {
     background: #3333;
     opacity   : 1;
+    outline   : solid 1px #3333;
 }
 
 .flickity-page-dots .dot.is-selected {
     background-color: var(--primary);
+    outline         : solid 1px var(--primary);
 }
 
 .flickity-page-dots .dot.is-primary {
-    border: solid 1px var(--primary);
+    outline: solid 1px var(--primary);
+}
+
+.flickity-page-dots .dot.is-new {
+    outline: solid 1px var(--secondary);
+}
+
+.flickity-page-dots .dot.is-primary.is-new {
+    border : solid 2px var(--primary);
+    outline: solid 1px var(--secondary);
 }
 
 .edit-one-of-a-kind-option {
