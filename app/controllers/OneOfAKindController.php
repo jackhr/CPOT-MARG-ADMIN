@@ -55,17 +55,16 @@ class OneOfAKindController extends Controller
 
     public function create()
     {
-        $name = $_POST['name'];
+        $name = trim($_POST['name']);
         $new_one_of_a_kind = [];
         $status = 200;
         $message = "";
         $file_data = [];
-        $public_directory = "/assets/images/gallery/one-of-a-kind/";
+        $public_directory = __DIR__ . '/../../public';
+        $relative_directory = "/assets/images/gallery/one-of-a-kind/";
 
-        if (isset($_FILES['one-of-a-kind-imgs'])) {
-            foreach ($_FILES['one-of-a-kind-imgs']['name'] as $index => $file_name) {
-                $tmpName = $_FILES['one-of-a-kind-imgs']['tmp_name'][$index];
-                $fileType = $_FILES['one-of-a-kind-imgs']['type'][$index];
+        if (isset($_FILES['newImages'])) {
+            foreach ($_FILES['newImages']['type'] as $index => $fileType) {
                 $extension = $this->helper->getFileExtension($fileType);
                 $file_data['extension'][$index] = $extension;
 
@@ -130,7 +129,7 @@ class OneOfAKindController extends Controller
             $message = "One of a kind created successfully.";
             $new_one_of_a_kind = $this->oneOfAKindModel->findByName($name);
 
-            foreach ($_FILES['one-of-a-kind-imgs']['name'] as $index => $file_name) {
+            foreach ($_FILES['newImages']['tmp_name'] as $index => $tmpName) {
                 $one_of_a_kind_id = $new_one_of_a_kind['one_of_a_kind_id'];
                 $this->oneOfAKindImageModel->one_of_a_kind_id = $one_of_a_kind_id;
                 $image_id = $this->oneOfAKindImageModel->create();
@@ -138,20 +137,17 @@ class OneOfAKindController extends Controller
                 if ((int)$index == (int)$primary_image_idx) {
                     $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
                     $this->oneOfAKindModel->primary_image_id = $image_id;
-                    $this->oneOfAKindModel->update();
+                    $this->oneOfAKindModel->updatePrimaryImg();
                 }
 
-                $tmpName = $_FILES['one-of-a-kind-imgs']['tmp_name'][$index];
                 $extension = $file_data['extension'][$index];
                 $newFileName = sprintf("%s_%d_%d%s", $name, $one_of_a_kind_id, $image_id, $extension);
-                $image_url = $public_directory . $newFileName;
+                $image_url = $relative_directory . $newFileName;
+                $destination = $public_directory . $image_url;
 
                 $this->oneOfAKindImageModel->image_id = $image_id;
                 $this->oneOfAKindImageModel->image_url = $image_url;
                 $this->oneOfAKindImageModel->update();
-
-                $uploadDirectory = __DIR__ . '/../../public' . $public_directory;
-                $destination = $uploadDirectory . $newFileName;
 
                 // Move the uploaded file to the target directory
                 if (move_uploaded_file($tmpName, $destination)) {
@@ -177,6 +173,8 @@ class OneOfAKindController extends Controller
         $new_one_of_a_kind = [];
         $status = 200;
         $message = "";
+        $public_directory = __DIR__ . '/../../public';
+        $relative_directory = "/assets/images/gallery/one-of-a-kind/";
         $one_of_a_kind = $this->oneOfAKindModel->findById($one_of_a_kind_id);
         $one_of_a_kind_with_same_name = $this->oneOfAKindModel->findByName($name);
 
@@ -197,9 +195,6 @@ class OneOfAKindController extends Controller
         if ($status !== 200) {
             $this->helper->respondToClient(null, $status, $message);
         }
-
-        $public_directory = __DIR__ . '/../../public';
-        $relative_directory = "/assets/images/gallery/one-of-a-kind/";
 
         if (isset($_POST['deletedImages'])) {
             try {
@@ -235,7 +230,6 @@ class OneOfAKindController extends Controller
                     $extension = $fileInfo['extension'];
 
                     $newFileName = "$name.$extension";
-                    $new_image_url = "{$name}_{$one_of_a_kind_id}_{$image['image_id']}.$extension";
                     $uploadDirectory = $public_directory . $relative_directory;
                     $destination = $uploadDirectory . $newFileName;
 
@@ -284,12 +278,11 @@ class OneOfAKindController extends Controller
                     $tmpName = $_FILES['newImages']['tmp_name'][$index];
                     $newFileName = sprintf("%s_%d_%d%s", $name, $one_of_a_kind_id, $image_id, $extension);
                     $image_url = $relative_directory . $newFileName;
+                    $destination = $public_directory . $image_url;
 
                     $this->oneOfAKindImageModel->image_id = $image_id;
                     $this->oneOfAKindImageModel->image_url = $image_url;
                     $this->oneOfAKindImageModel->update();
-
-                    $destination = $public_directory . $image_url;
 
                     // Move the uploaded file to the target directory
                     if (move_uploaded_file($tmpName, $destination)) {

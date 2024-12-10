@@ -540,14 +540,14 @@
             return errMsg || null;
         }
 
-        $(".create-btn").on("click", () => $("#create-one-of-a-kind-modal").addClass("showing"));
-
         function handleMakePrimary(formData, idx, type) {
             if ($(`.carousel-cell[data-idx="${idx}"] .make-primary-button`).hasClass("is-primary")) {
                 formData.append('primary_image_idx', idx);
                 formData.append('primary_image_type', type);
             }
         }
+
+        $(".create-btn").on("click", () => $("#create-one-of-a-kind-modal").addClass("showing"));
 
         $('button[form="edit-one-of-a-kind-form"]').on("click", function(e) {
             e.preventDefault();
@@ -654,24 +654,11 @@
             const formData = new FormData(form[0]);
             formData.delete("one-of-a-kind-imgs");
 
-            // Include existing image IDs to retain
-            for (const idx in STATE.upload.existingImages) {
-                const img = STATE.upload.existingImages[idx];
-                formData.append(`existingImages[${idx}]`, img.image_id);
-                handleMakePrimary(formData, idx, 'existingImages');
-            }
-
             // Include new images
             for (const idx in STATE.upload.newImages) {
                 const file = STATE.upload.newImages[idx];
                 formData.append(`newImages[${idx}]`, file);
                 handleMakePrimary(formData, idx, 'newImages');
-            }
-
-            // Include deleted image IDs
-            for (const idx in STATE.upload.deletedImages) {
-                const img = STATE.upload.deletedImages[idx];
-                formData.append(`deletedImages[${idx}]`, img.image_id);
             }
 
             $.ajax({
