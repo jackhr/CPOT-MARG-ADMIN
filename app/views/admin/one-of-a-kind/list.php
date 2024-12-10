@@ -380,7 +380,6 @@
                 .split(" x ")
                 .map(x => x.replace(/\D+/gi, ""));
             const weight = data.weight.replace(/\D+/gi, "");
-            let selectedCellIdx = 0;
 
             modal.find('#edit-one-of-a-kind-id').text(id);
             modal.find('input[name="name"]').val(data.name);
@@ -413,10 +412,7 @@
                         const image = data.images[image_id];
                         const imageName = `${data.name}_${data.one_of_a_kind_id}_${image.image_id}`;
                         const isPrimary = image.image_id == data.primary_image_id;
-                        if (isPrimary) {
-                            selectedCellIdx = idx;
-                        }
-                        carouselContainer.append(`
+                        const cellHTML = `
                             <div class="carousel-cell" data-idx="${image.image_id}" data-existing="true" data-image-id="${image.image_id}">
                             <div class="carousel-cell-btn-container">
                                 <button class="continue-btn make-primary-button ${isPrimary ? "is-primary" : ""}"></button>
@@ -429,7 +425,13 @@
                                 </div>
                                 <img src="${image.image_url}" alt="${imageName}" title="${imageName}">
                             </div>
-                        `);
+                        `;
+
+                        if (isPrimary) {
+                            carouselContainer.prepend(cellHTML);
+                        } else {
+                            carouselContainer.append(cellHTML);
+                        }
                     }
                 }
             }
@@ -442,7 +444,6 @@
                     autoPlay: false, // Add your preferences
                     arrowShape: "M 57.5,75 L 32.5,50 L 57.5,25",
                 });
-                carouselContainer.flickity('selectCell', selectedCellIdx);
 
                 initPageDots();
             }
