@@ -473,6 +473,8 @@
                     populateEditForm(id);
                     $("#edit-one-of-a-kind-modal").addClass('showing');
                 };
+
+                if (this.data().deleted_at !== "-") $(rowNode).addClass('deleted_item');
             });
 
         }

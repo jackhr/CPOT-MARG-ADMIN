@@ -1094,6 +1094,10 @@ form hr {
     color           : var(--white) !important;
 }
 
+table.dataTable>tbody>tr.deleted_item:not(:hover) {
+    background-color: #f000000f;
+}
+
 @media screen and (max-width: 1256px) {
     #dashboard-main {
         grid-template-columns: repeat(4, 1fr);
