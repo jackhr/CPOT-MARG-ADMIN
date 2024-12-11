@@ -19,7 +19,6 @@ class OneOfAKind extends Model
     public $stock_quantity;
     public $status;
     public $description;
-    public $image_url;
     public $availability;
     public $care_instructions;
     public $release_date;
@@ -73,7 +72,7 @@ class OneOfAKind extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, stock_quantity = :stock_quantity, status = :status, description = :description, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -87,7 +86,6 @@ class OneOfAKind extends Model
         $this->stock_quantity = htmlspecialchars($this->stock_quantity);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
-        $this->image_url = htmlspecialchars($this->image_url);
         $this->updated_by = htmlspecialchars($this->updated_by);
 
         // Bind parameters
@@ -100,7 +98,6 @@ class OneOfAKind extends Model
         $stmt->bindParam(":stock_quantity", $this->stock_quantity);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":image_url", $this->image_url);
         $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
         $stmt->bindParam(":updated_by", $this->updated_by, PDO::PARAM_INT);
 

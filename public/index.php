@@ -64,7 +64,8 @@ $router->group('/', function (Router $router) {
         $router->get('', [OneOfAKindController::class, 'listOneOfAKinds']);
         $router->get('/getAll', [OneOfAKindController::class, 'getAll']);
         $router->post('', [OneOfAKindController::class, 'create']);
-        $router->post('/{id}', [OneOfAKindController::class, 'update']);
+        $router->post('/{id}/images', [OneOfAKindController::class, 'updateImages']);
+        $router->put('/{id}', [OneOfAKindController::class, 'update']);
         $router->put('/{id}/restore', [OneOfAKindController::class, 'restore']);
         $router->delete('/{id}', [OneOfAKindController::class, 'delete']);
     });

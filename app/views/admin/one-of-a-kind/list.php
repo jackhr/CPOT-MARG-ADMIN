@@ -55,12 +55,7 @@
                 <form id="create-one-of-a-kind-form">
                     <div class="input-container one-of-a-kind-img-container">
                         <input multiple type="file" name="one-of-a-kind-imgs" class="one-of-a-kind-img-input" id="create-one-of-a-kind-img-input" style="display: none;">
-                        <div class="one-of-a-kind-preview-container">
-                            <div class="carousel"></div>
-                        </div>
-                        <div class="one-of-a-kind-img-options">
-                            <label for="create-one-of-a-kind-img-input" class="continue-btn">Add Images</label>
-                        </div>
+                        <div class="one-of-a-kind-preview-container"></div>
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
@@ -157,6 +152,14 @@
                         <label>Id #</label>
                         <span id="edit-one-of-a-kind-id"></span>
                         <div class="edit-options-container">
+                            <div class="edit-one-of-a-kind-option images">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 22H4a2 2 0 0 1-2-2V6" />
+                                    <path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18" />
+                                    <circle cx="12" cy="8" r="2" />
+                                    <rect width="16" height="16" x="6" y="2" rx="2" />
+                                </svg>
+                            </div>
                             <div class="edit-one-of-a-kind-option reset">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
@@ -205,12 +208,7 @@
                     <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
                     <div class="input-container one-of-a-kind-img-container">
                         <input multiple type="file" name="one-of-a-kind-imgs" class="one-of-a-kind-img-input" id="edit-one-of-a-kind-img-input" style="display: none;">
-                        <div class="one-of-a-kind-preview-container">
-                            <div class="carousel"></div>
-                        </div>
-                        <div class="one-of-a-kind-img-options">
-                            <label for="edit-one-of-a-kind-img-input" class="continue-btn other">Add Images</label>
-                        </div>
+                        <div class="one-of-a-kind-preview-container"></div>
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
@@ -287,6 +285,26 @@
             <div class="modal-footer">
                 <button class="continue-btn cancel">Cancel</button>
                 <button form="edit-one-of-a-kind-form" type="submit" class="continue-btn">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal images-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-options">
+                    <span class="modal-close">×</span>
+                </div>
+                <h1>Images</h1>
+            </div>
+            <div class="modal-body">
+                <div id="images-grid"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="continue-btn cancel">Cancel</button>
+                <button class="continue-btn confirm">Confirm</button>
             </div>
         </div>
     </div>
@@ -379,7 +397,7 @@
 
         (function init() {
             STATE.upload = {
-                maxImageCount: 10,
+                maxImageCount: 9,
                 currentIdx: 0,
                 imageCount: 0,
                 carousel: null,
@@ -404,12 +422,14 @@
         function populateEditForm(id, reset = false) {
             const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
             const modal = $("#edit-one-of-a-kind-modal");
-            const carouselContainer = modal.find(".carousel");
+            const imagesContainer = $("#images-grid");
             const [imageName, imageUrl] = getImageNameAndUrl(id);
             const dimensions = data.dimensions
                 .split(" x ")
                 .map(x => x.replace(/\D+/gi, ""));
             const weight = data.weight.replace(/\D+/gi, "");
+            let cellsHTML = "";
+            imagesContainer.children('.non-draggable').remove();
 
             modal.find('#edit-one-of-a-kind-id').text(id);
             modal.find('input[name="name"]').val(data.name);
@@ -435,10 +455,6 @@
                 STATE.upload.newImages = {};
                 STATE.upload.deletedImages = {};
                 STATE.activeId = id;
-                if (carouselContainer.data('flickity')) {
-                    carouselContainer.flickity('destroy'); // Destroy existing Flickity instance
-                }
-                carouselContainer.html("");
                 let idx = -1;
 
                 if (data.images) {
@@ -448,10 +464,7 @@
                         const imageName = `${data.name}_${data.one_of_a_kind_id}_${image.image_id}`;
                         const isPrimary = image.image_id == data.primary_image_id;
                         const cellHTML = `
-                            <div class="carousel-cell" data-idx="${image.image_id}" data-existing="true" data-image-id="${image.image_id}">
-                            <div class="carousel-cell-btn-container">
-                                <button class="continue-btn make-primary-button ${isPrimary ? "is-primary" : ""}"></button>
-                            </div>
+                            <div class="images-grid-item" data-idx="${image.image_id}" data-existing="true" data-image-id="${image.image_id}">
                                 <div class="remove-image-btn">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M18 6 6 18"/>
@@ -463,25 +476,35 @@
                         `;
 
                         if (isPrimary) {
-                            carouselContainer.prepend(cellHTML);
+                            $("#edit-one-of-a-kind-modal .one-of-a-kind-preview-container").html(`<img src="${image.image_url}" alt="${imageName}" title="${imageName}">`);
+                            cellsHTML = cellHTML + cellsHTML;
                         } else {
-                            carouselContainer.append(cellHTML);
+                            cellsHTML += cellHTML;
                         }
                     }
                 }
             }
 
-            if (carouselContainer.children().length) {
-                STATE.upload.carousel = carouselContainer.flickity({
-                    cellAlign: 'left',
-                    contain: true,
-                    wrapAround: true,
-                    autoPlay: false, // Add your preferences
-                    arrowShape: "M 57.5,75 L 32.5,50 L 57.5,25",
-                });
-
-                initPageDots();
+            if (STATE.upload?.sortable?.el) {
+                STATE.upload.sortable.destroy();
             }
+
+            imagesContainer.html(cellsHTML);
+
+            if (STATE.upload.imageCount !== STATE.upload.maxImageCount) {
+                imagesContainer.append('<label for="edit-one-of-a-kind-img-input" class="images-grid-item non-draggable">+</label>');
+            }
+
+            // Initialize Sortable
+            STATE.upload.sortable = new Sortable(imagesContainer[0], {
+                animation: 150, // Smooth animation when dragging
+                ghostClass: 'sortable-ghost', // Class applied to ghost element
+                draggable: ".images-grid-item:not(.non-draggable)",
+                filter: ".non-draggable",
+                onEnd: function(evt) {
+                    // Example: Logging new order of items
+                }
+            });
         }
 
         function handleInitTableRowEvents(reset = false) {
@@ -517,22 +540,6 @@
 
         function getJSONDataFromForm(form) {
             return form.serializeObject();
-        }
-
-        function initPageDots() {
-            const selectedIdx = $(".carousel-cell:has(.is-primary)").index();
-            const dots = $(".flickity-page-dots .dot");
-            if (selectedIdx === -1) {
-                return $(".carousel-cell:first-child .make-primary-button").trigger('click');
-            }
-
-            dots.removeClass("is-primary is-new");
-            $(".carousel-cell[data-new]").each((idx, cell) => {
-                const isNewIdx = $(cell).index();
-                dots.eq(isNewIdx).addClass("is-new");
-            });
-
-            dots.eq(selectedIdx).addClass("is-primary");
         }
 
         function getFormValidationMsg(data, type = "create") {
@@ -580,7 +587,11 @@
         }
 
         function handleMakePrimary(formData, idx, type) {
-            if ($(`.carousel-cell[data-idx="${idx}"] .make-primary-button`).hasClass("is-primary")) {
+            const dataType = type.replace("Images", "");
+            if (
+                $("#images-grid .images-grid-item").first().data('idx') == idx &&
+                $("#images-grid .images-grid-item").first().data(dataType)
+            ) {
                 formData.append('primary_image_idx', idx);
                 formData.append('primary_image_type', type);
             }
@@ -591,6 +602,80 @@
         });
 
         $(".create-btn").on("click", () => $("#create-one-of-a-kind-modal").addClass("showing"));
+
+        $(".images-modal button.cancel").on('click', function(e) {
+            e.preventDefault();
+            $(this).closest('.modal').find('.modal-close').trigger('click');
+        });
+
+        $(".images-modal button.confirm").on('click', function(e) {
+            e.preventDefault();
+            const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
+            const name = $("#edit-one-of-a-kind-form [name='name']").val();
+
+            const formData = new FormData();
+
+            // Include existing image IDs to retain
+            for (const idx in STATE.upload.existingImages) {
+                const img = STATE.upload.existingImages[idx];
+                formData.append(`existingImages[${idx}]`, img.image_id);
+                handleMakePrimary(formData, idx, 'existingImages');
+            }
+
+            // Include new images
+            for (const idx in STATE.upload.newImages) {
+                const file = STATE.upload.newImages[idx];
+                formData.append(`newImages[${idx}]`, file);
+                handleMakePrimary(formData, idx, 'newImages');
+            }
+
+            // Include deleted image IDs
+            for (const idx in STATE.upload.deletedImages) {
+                const img = STATE.upload.deletedImages[idx];
+                formData.append(`deletedImages[${idx}]`, img.image_id);
+            }
+
+            Swal.fire({
+                icon: "warning",
+                title: `Updating Images For "${name}"`,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: `/one-of-a-kind/${oneOfAKindId}/images`,
+                method: "POST",
+                dataType: "JSON",
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    "X-HTTP-Method-Override": "PUT" // Set custom header to tell server it's a PUT request
+                },
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        });
 
         $('button[form="edit-one-of-a-kind-form"]').on("click", function(e) {
             e.preventDefault();
@@ -616,39 +701,12 @@
                 }
             });
 
-            const formData = new FormData(form[0]);
-            formData.delete("one-of-a-kind-imgs");
-
-            // Include existing image IDs to retain
-            for (const idx in STATE.upload.existingImages) {
-                const img = STATE.upload.existingImages[idx];
-                formData.append(`existingImages[${idx}]`, img.image_id);
-                handleMakePrimary(formData, idx, 'existingImages');
-            }
-
-            // Include new images
-            for (const idx in STATE.upload.newImages) {
-                const file = STATE.upload.newImages[idx];
-                formData.append(`newImages[${idx}]`, file);
-                handleMakePrimary(formData, idx, 'newImages');
-            }
-
-            // Include deleted image IDs
-            for (const idx in STATE.upload.deletedImages) {
-                const img = STATE.upload.deletedImages[idx];
-                formData.append(`deletedImages[${idx}]`, img.image_id);
-            }
-
             $.ajax({
                 url: `/one-of-a-kind/${oneOfAKindId}`,
-                method: "POST",
+                method: "PUT",
                 dataType: "JSON",
-                data: formData,
-                processData: false,
-                contentType: false,
-                headers: {
-                    "X-HTTP-Method-Override": "PUT" // Set custom header to tell server it's a PUT request
-                },
+                contentType: "application/json",
+                data: JSON.stringify(data),
                 success: res => {
                     const {
                         data,
@@ -755,8 +813,18 @@
             weightEl.val(convertUnits('weight', weightEl.val(), toKg));
         });
 
+        $("#edit-one-of-a-kind-modal .modal-close").on("click", function() {
+            $(this)
+                .closest('.modal')
+                .find('.edit-one-of-a-kind-option.toggle-options')
+                .removeClass('active');
+        });
+
         $("#edit-one-of-a-kind-modal button.cancel").on("click", function() {
-            $(this).closest('.modal').find('.modal-close').trigger('click');
+            $(this)
+                .closest('.modal')
+                .find('.modal-close')
+                .trigger('click');
         });
 
         $(".edit-one-of-a-kind-option.reset").on("click", async function() {
@@ -830,6 +898,10 @@
             });
         });
 
+        $(".edit-one-of-a-kind-option.images").on("click", function() {
+            $(".modal.images-modal").addClass('showing');
+        });
+
         $(".edit-one-of-a-kind-option.restore").on("click", async function() {
             const id = $("#edit-one-of-a-kind-id").text();
             const name = $("#edit-one-of-a-kind-form [name='name']");
@@ -880,61 +952,54 @@
             });
         });
 
-        $(".carousel").on("click", ".flickity-page-dots .dot", function(e) {
-            initPageDots();
-        });
-
-        $(".carousel").on("click", ".flickity-prev-next-button", function(e) {
-            initPageDots();
-        });
-
-        $(".carousel").on("click", ".make-primary-button", function(e) {
-            e.preventDefault();
-            if ($(this).hasClass('is-primary')) return;
-
-            $(".make-primary-button").removeClass('is-primary');
-            $(this).addClass('is-primary');
-            initPageDots();
-        });
-
-        $(".carousel").on("click", ".remove-image-btn", function(e) {
-            const cell = $(this).closest('.carousel-cell');
-            const idx = cell.data('idx');
-            const isExisting = cell.data("existing");
-            const isNew = cell.data("new");
+        $("#images-grid").on("click", ".remove-image-btn", function(e) {
+            const container = $(this).closest('.images-grid-item');
+            const idx = container.data('idx');
+            const isExisting = container.data("existing");
+            const isNew = container.data("new");
 
             setTimeout(() => {
                 /**
                  * Need this function to be asynchronous since it removes
-                 * the cell before the click event is called which triggers
+                 * the container before the click event is called which triggers
                  * a click event on the document while the the target is
                  * removed from the dom. Basically it marks this condition as
                  * true: !target.closest(".modal-dialog").length in main.js
                  */
                 if (isExisting) {
-                    const imageId = cell.data("image-id");
+                    const imageId = container.data("image-id");
                     const img = STATE.upload.existingImages[imageId];
                     STATE.upload.deletedImages[imageId] = img; // Track for deletion
                 }
 
                 if (isNew) {
-                    const newImgIdx = cell.data("idx");
+                    const newImgIdx = container.data("idx");
                     delete STATE.upload.newImages[newImgIdx]; // Remove from new images
                 }
 
-                STATE.upload.carousel.flickity('remove', cell);
+                container.remove();
                 STATE.upload.imageCount = Math.max(STATE.upload.imageCount - 1, 0);
-                initPageDots();
+
+                const imagesContainer = $("#images-grid");
+                if (
+                    STATE.upload.imageCount < STATE.upload.maxImageCount &&
+                    imagesContainer.has('label[for="edit-one-of-a-kind-img-input"]').length === 0
+                ) {
+                    imagesContainer.append('<label for="edit-one-of-a-kind-img-input" class="images-grid-item non-draggable">+</label>')
+                }
             }, 100);
         });
 
         $(".one-of-a-kind-img-input").on('change', function() {
             // only ever for adding
             const incorrectFiles = [];
+            const imagesContainer = $("#images-grid");
             let hitMaxCount = false;
-            let carouselContainer = $(this).closest('form').find('.carousel'); // Target carousel container
-            let carouselCellsHTML = "";
+            let cellsHTML = "";
             let selectedCellIdx = NaN;
+
+            // first remove add button and check how many images can be added;
+            imagesContainer.children(".non-draggable").remove();
 
             [...this.files].forEach(file => {
                 if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
@@ -950,12 +1015,8 @@
                 if (isNaN(selectedCellIdx)) {
                     selectedCellIdx = imagesCount - 1;
                 }
-                carouselCellsHTML += `
-                    <div class="carousel-cell" data-idx="${idx}" data-new="true">
-                        <div class="carousel-cell-btn-container">
-                            <button class="continue-btn make-primary-button ${imagesCount === 1 ? "is-primary" : ""}"></button>
-                            <button class="continue-btn is-new-button">New Image</button>
-                        </div>
+                cellsHTML += `
+                    <div class="images-grid-item" data-idx="${idx}" data-new="true">
                         <div class="remove-image-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M18 6 6 18"/>
@@ -990,21 +1051,25 @@
                 });
             }
 
-            // Reinitialize Flickity
-            if (carouselContainer.data('flickity')) {
-                carouselContainer.flickity('destroy'); // Destroy existing Flickity instance
+            if (STATE.upload?.sortable?.el) {
+                STATE.upload.sortable.destroy();
             }
-            carouselContainer.append(carouselCellsHTML);
-            STATE.upload.carousel = carouselContainer.flickity({
-                cellAlign: 'left',
-                contain: true,
-                wrapAround: true,
-                autoPlay: false, // Add your preferences
-                arrowShape: "M 57.5,75 L 32.5,50 L 57.5,25",
-            });
-            carouselContainer.flickity('selectCell', selectedCellIdx);
 
-            initPageDots();
+            imagesContainer.append(cellsHTML);
+
+            if (STATE.upload.imageCount !== STATE.upload.maxImageCount) {
+                imagesContainer.append('<label for="edit-one-of-a-kind-img-input" class="images-grid-item non-draggable">+</label>')
+            }
+
+            STATE.upload.sortable = new Sortable(imagesContainer[0], {
+                animation: 150, // Smooth animation when dragging
+                ghostClass: 'sortable-ghost', // Class applied to ghost element
+                draggable: ".images-grid-item:not(.non-draggable)",
+                filter: ".non-draggable",
+                onEnd: function(evt) {
+                    // Example: Logging new order of items
+                }
+            });
             $(this).val('');
         });
 

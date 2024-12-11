@@ -989,29 +989,6 @@ form hr {
     border-color: var(--secondary);
 }
 
-.remove-image-btn {
-    position        : absolute;
-    top             : 6px;
-    right           : 6px;
-    display         : flex;
-    align-items     : center;
-    justify-content : center;
-    padding         : 2px;
-    width           : 24px;
-    height          : 24px;
-    border-radius   : 50%;
-    background-color: var(--white);
-    transition      : opacity ease 0.3s;
-    opacity         : 0;
-    pointer-events  : none;
-    cursor          : pointer;
-}
-
-.remove-image-btn svg {
-    width : 100%;
-    height: 100%;
-}
-
 .carousel-cell:hover .carousel-cell-btn-container,
 .carousel-cell:hover .remove-image-btn {
     opacity       : 1;
@@ -1083,7 +1060,8 @@ form hr {
     background-color: var(--red);
 }
 
-.edit-one-of-a-kind-option.restore {
+.edit-one-of-a-kind-option.restore,
+.edit-one-of-a-kind-option.images {
     background-color: var(--green);
 }
 
@@ -1101,7 +1079,8 @@ form hr {
     border-color: var(--red);
 }
 
-.edit-one-of-a-kind-option.restore:hover {
+.edit-one-of-a-kind-option.restore:hover,
+.edit-one-of-a-kind-option.images:hover {
     color       : var(--green);
     border-color: var(--green);
 }
@@ -1128,12 +1107,92 @@ form hr {
 }
 
 .edit-options-container:has(+ .edit-one-of-a-kind-option.toggle-options.active) {
-    width: 100px;
+    width: 130px;
 }
 
 .edit-one-of-a-kind-option.delete:not(.restore) svg.restore,
 .edit-one-of-a-kind-option.delete.restore svg.delete {
     display: none;
+}
+
+#images-grid {
+    display              : grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap                  : 10px;
+    padding              : 10px;
+}
+
+.images-grid-item {
+    width              : 180px;
+    height             : 180px;
+    background-size    : cover;
+    background-position: center;
+    cursor             : grab;
+    position           : relative;
+    margin             : auto;
+}
+
+.images-grid-item.non-draggable {
+    border         : solid 2px var(--primary);
+    color          : var(--primary);
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    font-size      : 80px;
+    cursor         : pointer;
+}
+
+.images-grid-item img {
+    width     : 100%;
+    height    : 100%;
+    object-fit: contain;
+}
+
+.images-grid-item:not(.non-draggable):first-child::before {
+    content         : "Primary";
+    position        : absolute;
+    top             : 6px;
+    left            : 6px;
+    font-size       : 12px;
+    display         : flex;
+    align-items     : center;
+    padding         : 0 4px;
+    background-color: var(--white);
+    color           : var(--primary);
+    opacity         : 1;
+    cursor          : default;
+    border          : solid 2px var(--primary);
+    font-weight     : 700;
+    border-radius   : 6px;
+    pointer-events  : none;
+}
+
+.remove-image-btn {
+    position        : absolute;
+    top             : 6px;
+    right           : 6px;
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    padding         : 2px;
+    width           : 24px;
+    height          : 24px;
+    border-radius   : 50%;
+    background-color: var(--white);
+    transition      : opacity ease 0.3s;
+    opacity         : 0;
+    pointer-events  : none;
+    cursor          : pointer;
+}
+
+.images-grid-item:hover .remove-image-btn {
+    opacity       : 1;
+    pointer-events: all;
+}
+
+.remove-image-btn svg {
+    width : 100%;
+    height: 100%;
 }
 
 .swal-confirm-red {
