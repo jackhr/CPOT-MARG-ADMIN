@@ -156,19 +156,40 @@
                     <div class="input-container">
                         <label>Id #</label>
                         <span id="edit-one-of-a-kind-id"></span>
-                        <div class="edit-one-of-a-kind-option reset">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                <path d="M3 3v5h5" />
-                            </svg>
+                        <div class="edit-options-container">
+                            <div class="edit-one-of-a-kind-option reset">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                    <path d="M3 3v5h5" />
+                                </svg>
+                            </div>
+                            <div class="edit-one-of-a-kind-option delete">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 6h18" />
+                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                    <line x1="10" x2="10" y1="11" y2="17" />
+                                    <line x1="14" x2="14" y1="11" y2="17" />
+                                </svg>
+                            </div>
+                            <div class="options-border"></div>
                         </div>
-                        <div class="edit-one-of-a-kind-option delete">
+                        <div class="edit-one-of-a-kind-option toggle-options">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 6h18" />
-                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                <line x1="10" x2="10" y1="11" y2="17" />
-                                <line x1="14" x2="14" y1="11" y2="17" />
+                                <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+                                <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+                                <path d="M12 2v2" />
+                                <path d="M12 22v-2" />
+                                <path d="m17 20.66-1-1.73" />
+                                <path d="M11 10.27 7 3.34" />
+                                <path d="m20.66 17-1.73-1" />
+                                <path d="m3.34 7 1.73 1" />
+                                <path d="M14 12h8" />
+                                <path d="M2 12h2" />
+                                <path d="m20.66 7-1.73 1" />
+                                <path d="m3.34 17 1.73-1" />
+                                <path d="m17 3.34-1 1.73" />
+                                <path d="m11 13.73-4 6.93" />
                             </svg>
                         </div>
                     </div>
@@ -549,6 +570,10 @@
                 formData.append('primary_image_type', type);
             }
         }
+
+        $(".edit-one-of-a-kind-option.toggle-options").on("click", function() {
+            $(this).toggleClass('active');
+        });
 
         $(".create-btn").on("click", () => $("#create-one-of-a-kind-modal").addClass("showing"));
 

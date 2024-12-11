@@ -1041,6 +1041,17 @@ form hr {
     outline: solid 1px var(--secondary);
 }
 
+.edit-options-container {
+    display        : flex;
+    align-items    : center;
+    justify-content: flex-end;
+    gap            : 12px;
+    margin-left    : auto;
+    transition     : all ease 0.5s;
+    overflow       : hidden;
+    width          : 0;
+}
+
 .edit-one-of-a-kind-option {
     padding        : 2px;
     width          : 28px;
@@ -1054,13 +1065,8 @@ form hr {
     transition     : background-color ease 0.3s, border-color ease 0.3s;
 }
 
-.edit-one-of-a-kind-option.delete {
-    background-color: var(--red);
-}
-
-.edit-one-of-a-kind-option.reset {
-    background-color: var(--blue);
-    margin-left     : auto;
+.edit-one-of-a-kind-option:hover {
+    background-color: var(--white);
 }
 
 .edit-one-of-a-kind-option svg {
@@ -1068,10 +1074,21 @@ form hr {
     transition: color ease 0.3s;
 }
 
-.edit-one-of-a-kind-option:hover {
-    color           : var(--red);
-    border-color    : var(--red);
-    background-color: var(--white);
+.edit-one-of-a-kind-option.toggle-options {
+    background-color: var(--grey-light);
+}
+
+.edit-one-of-a-kind-option.delete {
+    background-color: var(--red);
+}
+
+.edit-one-of-a-kind-option.reset {
+    background-color: var(--blue);
+}
+
+.edit-one-of-a-kind-option.toggle-options:hover {
+    color       : var(--grey-light);
+    border-color: var(--grey-light);
 }
 
 .edit-one-of-a-kind-option.delete:hover {
@@ -1082,6 +1099,26 @@ form hr {
 .edit-one-of-a-kind-option.reset:hover {
     color       : var(--blue);
     border-color: var(--blue);
+}
+
+.edit-one-of-a-kind-option.toggle-options svg {
+    transition: all ease-in-out 0.6s;
+    rotate    : 0deg;
+}
+
+.edit-one-of-a-kind-option.toggle-options.active svg {
+    rotate: 180deg;
+}
+
+.options-border {
+    height       : 28px;
+    width        : 3px;
+    border-radius: 2px;
+    background   : var(--grey-x-light);
+}
+
+.edit-options-container:has(+ .edit-one-of-a-kind-option.toggle-options.active) {
+    width: 100px;
 }
 
 .swal-confirm-red {
