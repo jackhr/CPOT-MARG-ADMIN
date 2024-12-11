@@ -848,7 +848,7 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Deleting one of a kind, <strong>"${name}"</strong>.`,
+                html: `Restoring one of a kind, <strong>"${name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }
