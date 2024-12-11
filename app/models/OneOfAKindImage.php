@@ -86,9 +86,9 @@ class OneOfAKindImage extends Model
 
     public function findByOneOfAKindId($one_of_a_kind_id)
     {
-        $query = "SELECT * FROM {$this->table_name} WHERE one_of_$one_of_a_kind_id = :one_of_$one_of_a_kind_id";
+        $query = "SELECT * FROM {$this->table_name} WHERE one_of_a_kind_id = :one_of_a_kind_id";
         $stmt = $this->con->prepare($query);
-        $stmt->bindParam(":one_of_$one_of_a_kind_id", $one_of_a_kind_id);
+        $stmt->bindParam(":one_of_a_kind_id", $one_of_a_kind_id);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
