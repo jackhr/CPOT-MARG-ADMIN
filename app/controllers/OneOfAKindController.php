@@ -354,6 +354,25 @@ class OneOfAKindController extends Controller
         $this->helper->respondToClient($updated_one_of_a_kind, $status, $message);
     }
 
+    public function restore($one_of_a_kind_id)
+    {
+        $one_of_a_kind_to_restore = null;
+        $status = 200;
+        $message = "";
+
+        $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
+
+        if ($this->oneOfAKindModel->restore()) {
+            $message = "One of a kind restored successfully.";
+            $one_of_a_kind_to_restore = $this->oneOfAKindModel->findById($one_of_a_kind_id);
+        } else {
+            $status = 500;
+            $message = "Error deleting one of a kind.";
+        }
+
+        $this->helper->respondToClient($one_of_a_kind_to_restore, $status, $message);
+    }
+
     public function delete($one_of_a_kind_id)
     {
         $one_of_a_kind_to_delete = $this->oneOfAKindModel->findById($one_of_a_kind_id);

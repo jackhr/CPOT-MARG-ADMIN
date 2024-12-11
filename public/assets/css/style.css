@@ -6,6 +6,7 @@
     --secondary-rgb     : rgb(46, 67, 152);
     --secondary-rgb-vals: 46, 67, 152;
     --blue              : #3a6ed3;
+    --green             : #39bf13;
     --black             : #232628;
     --white             : #f5f5f5;
     --grey-x-light      : #cdcdcd;
@@ -1066,7 +1067,7 @@ form hr {
 }
 
 .edit-one-of-a-kind-option:hover {
-    background-color: var(--white);
+    background-color: var(--white) !important;
 }
 
 .edit-one-of-a-kind-option svg {
@@ -1082,6 +1083,10 @@ form hr {
     background-color: var(--red);
 }
 
+.edit-one-of-a-kind-option.restore {
+    background-color: var(--green);
+}
+
 .edit-one-of-a-kind-option.reset {
     background-color: var(--blue);
 }
@@ -1094,6 +1099,11 @@ form hr {
 .edit-one-of-a-kind-option.delete:hover {
     color       : var(--red);
     border-color: var(--red);
+}
+
+.edit-one-of-a-kind-option.restore:hover {
+    color       : var(--green);
+    border-color: var(--green);
 }
 
 .edit-one-of-a-kind-option.reset:hover {
@@ -1119,6 +1129,11 @@ form hr {
 
 .edit-options-container:has(+ .edit-one-of-a-kind-option.toggle-options.active) {
     width: 100px;
+}
+
+.edit-one-of-a-kind-option.delete:not(.restore) svg.restore,
+.edit-one-of-a-kind-option.delete.restore svg.delete {
+    display: none;
 }
 
 .swal-confirm-red {

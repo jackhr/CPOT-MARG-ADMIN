@@ -65,6 +65,7 @@ $router->group('/', function (Router $router) {
         $router->get('/getAll', [OneOfAKindController::class, 'getAll']);
         $router->post('', [OneOfAKindController::class, 'create']);
         $router->post('/{id}', [OneOfAKindController::class, 'update']);
+        $router->put('/{id}/restore', [OneOfAKindController::class, 'restore']);
         $router->delete('/{id}', [OneOfAKindController::class, 'delete']);
     });
 

@@ -172,6 +172,15 @@
                                     <line x1="14" x2="14" y1="11" y2="17" />
                                 </svg>
                             </div>
+                            <div class="edit-one-of-a-kind-option restore">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect width="20" height="5" x="2" y="3" rx="1" />
+                                    <path d="M4 8v11a2 2 0 0 0 2 2h2" />
+                                    <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
+                                    <path d="m9 15 3-3 3 3" />
+                                    <path d="M12 12v9" />
+                                </svg>
+                            </div>
                             <div class="options-border"></div>
                         </div>
                         <div class="edit-one-of-a-kind-option toggle-options">
@@ -414,6 +423,11 @@
             modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
             modal.find('textarea[name="description"]').val(data.description);
 
+            // handle rendering option buttons
+            const isDeleted = data.deleted_at !== null;
+            $(".edit-one-of-a-kind-option.restore").toggle(isDeleted);
+            $(".edit-one-of-a-kind-option.delete").toggle(!isDeleted);
+
             if (STATE.activeId !== id || reset === true) {
                 // Store existing images
                 STATE.upload.existingImages = data.images ? data.images : {};
@@ -491,6 +505,7 @@
                     `);
 
                 rowNode.onclick = () => {
+                    $(".edit-one-of-a-kind-option.toggle-options").removeClass('active');
                     populateEditForm(id);
                     $("#edit-one-of-a-kind-modal").addClass('showing');
                 };
@@ -793,6 +808,56 @@
                 method: "DELETE",
                 dataType: "JSON",
                 data,
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    }).then(() => {
+                        success && location.reload();
+                    });
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        });
+
+        $(".edit-one-of-a-kind-option.restore").on("click", async function() {
+            const id = $("#edit-one-of-a-kind-id").text();
+            const name = $("#edit-one-of-a-kind-form [name='name']");
+
+            const res = await Swal.fire({
+                icon: "warning",
+                title: `Restoring "${name}"`,
+                text: "Are you sure that you would like to restore this one of a kind?",
+                showCancelButton: true,
+                confirmButtonText: 'Restore',
+                reverseButtons: true, // Swaps the positions of the buttons
+                focusCancel: true, // Focuses on the "No" button when the dialog opens
+            });
+
+            if (!res.isConfirmed) return;
+
+            Swal.fire({
+                title: "Loading...",
+                html: `Deleting one of a kind, <strong>"${name}"</strong>.`,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: `/one-of-a-kind/${id}/restore`,
+                method: "PUT",
+                dataType: "JSON",
                 success: res => {
                     const {
                         data,

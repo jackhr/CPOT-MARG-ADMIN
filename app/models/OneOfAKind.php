@@ -39,7 +39,8 @@ class OneOfAKind extends Model
         $this->helper = new GeneralHelper();
     }
 
-    public function updatePrimaryImg() {
+    public function updatePrimaryImg()
+    {
         $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id WHERE one_of_a_kind_id = :one_of_a_kind_id";
         $stmt = $this->con->prepare($query);
 
@@ -49,6 +50,21 @@ class OneOfAKind extends Model
 
         // Bind parameters
         $stmt->bindParam(":primary_image_id", $this->primary_image_id, PDO::PARAM_INT);
+        $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
+
+        // Execute the query
+        return $stmt->execute();
+    }
+
+    public function restore()
+    {
+        $query = "UPDATE {$this->table_name} SET deleted_at = NULL WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $stmt = $this->con->prepare($query);
+
+        // Sanitize input
+        $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
+
+        // Bind parameters
         $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
 
         // Execute the query
