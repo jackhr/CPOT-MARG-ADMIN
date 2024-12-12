@@ -551,6 +551,22 @@
             });
         }
 
+        function resetModal(modal) {
+            modal.find('input[name="name"]').val("");
+            modal.find('input[name="width"]').val("");
+            modal.find('input[name="height"]').val("");
+            modal.find('input[name="depth"]').val("");
+            modal.find('input[name="material"]').val("");
+            modal.find('input[name="color"]').val("");
+            modal.find('input[name="weight"]').val("");
+            modal.find('input[name="base_price"]').val("");
+            modal.find('input[name="stock_quantity"]').val("");
+            modal.find('textarea[name="description"]').val("");
+            modal.find('.one-of-a-kind-preview-container').html("");
+
+            resetImagesModal();
+        }
+
         function populateEditForm(id, reset = false) {
             const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
             const modal = $("#edit-one-of-a-kind-modal");
@@ -929,7 +945,12 @@
 
             if (!res.isConfirmed) return;
 
-            populateEditForm(STATE.activeId, true);
+            if ($("#create-one-of-a-kind-modal").hasClass("showing")) {
+                resetModal($("#create-one-of-a-kind-modal"));
+            } else {
+                populateEditForm(STATE.activeId, true);
+            }
+
         });
 
         $(".edit-one-of-a-kind-option.delete").on("click", async function() {
