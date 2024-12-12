@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Helpers\GeneralHelper;
+use Exception;
 use PDO;
 
 class OneOfAKind extends Model
@@ -57,7 +58,7 @@ class OneOfAKind extends Model
 
     public function restore()
     {
-        $query = "UPDATE {$this->table_name} SET deleted_at = NULL WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $query = "UPDATE {$this->table_name} SET deleted_at = NULL, `status` = 'active' WHERE one_of_a_kind_id = :one_of_a_kind_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -140,7 +141,8 @@ class OneOfAKind extends Model
 
     public function delete()
     {
-        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP, `status` = 'archived' WHERE one_of_a_kind_id = :one_of_a_kind_id";
+
         $stmt = $this->con->prepare($query);
 
         $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
