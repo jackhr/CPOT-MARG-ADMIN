@@ -53,6 +53,43 @@
             </div>
             <div class="modal-body">
                 <form id="create-one-of-a-kind-form">
+                    <div class="input-container">
+                        <div class="edit-options-container">
+                            <div class="edit-one-of-a-kind-option images">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 22H4a2 2 0 0 1-2-2V6" />
+                                    <path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18" />
+                                    <circle cx="12" cy="8" r="2" />
+                                    <rect width="16" height="16" x="6" y="2" rx="2" />
+                                </svg>
+                            </div>
+                            <div class="edit-one-of-a-kind-option reset">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                    <path d="M3 3v5h5" />
+                                </svg>
+                            </div>
+                            <div class="options-border"></div>
+                        </div>
+                        <div class="edit-one-of-a-kind-option toggle-options">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
+                                <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
+                                <path d="M12 2v2" />
+                                <path d="M12 22v-2" />
+                                <path d="m17 20.66-1-1.73" />
+                                <path d="M11 10.27 7 3.34" />
+                                <path d="m20.66 17-1.73-1" />
+                                <path d="m3.34 7 1.73 1" />
+                                <path d="M14 12h8" />
+                                <path d="M2 12h2" />
+                                <path d="m20.66 7-1.73 1" />
+                                <path d="m3.34 17 1.73-1" />
+                                <path d="m17 3.34-1 1.73" />
+                                <path d="m11 13.73-4 6.93" />
+                            </svg>
+                        </div>
+                    </div>
                     <div class="input-container one-of-a-kind-img-container">
                         <input multiple type="file" name="one-of-a-kind-imgs" class="one-of-a-kind-img-input" id="create-one-of-a-kind-img-input" style="display: none;">
                         <div class="one-of-a-kind-preview-container"></div>
@@ -132,7 +169,6 @@
             <div class="modal-footer">
                 <button form="create-one-of-a-kind-form" type="submit" class="continue-btn">Submit</button>
             </div>
-            <div id="drop-alert">Drop Image To Add</div>
         </div>
     </div>
 </div>
@@ -407,6 +443,7 @@
                 deletedImages: {},
             };
             STATE.activeId = null;
+            resetImagesModal();
 
             setTimeout(() => dTable.draw(), 1000);
         })();
@@ -419,8 +456,41 @@
             return [imageName, imageUrl];
         }
 
+        function handleSetPreviewImage() {
+            const modal = $("#create-one-of-a-kind-modal");
+            if (!modal.hasClass('showing')) return;
+            const idx = $(".images-grid-item:not(.non-draggable)").first().data('idx');
+            const file = STATE.upload.newImages[idx];
+            const imgSrc = URL.createObjectURL(file);
+            modal.find(".one-of-a-kind-preview-container")
+                .html(`<img src="${imgSrc}" alt="${file.name}" title="${file.name}">`);
+        }
+
+        function resetImagesModal() {
+            const imagesContainer = $("#images-grid");
+
+            if (STATE.upload?.sortable?.el) STATE.upload.sortable.destroy();
+
+            imagesContainer.html('<label for="edit-one-of-a-kind-img-input" class="images-grid-item non-draggable">+</label>');
+
+            // Initialize Sortable
+            STATE.upload.sortable = new Sortable(imagesContainer[0], {
+                animation: 150, // Smooth animation when dragging
+                ghostClass: 'sortable-ghost', // Class applied to ghost element
+                draggable: ".images-grid-item:not(.non-draggable)",
+                filter: ".non-draggable",
+                onEnd: () => handleSetPreviewImage()
+            });
+
+            STATE.upload.existingImages = {};
+            STATE.upload.imageCount = 0;
+            STATE.upload.newImages = {};
+            STATE.upload.deletedImages = {};
+            STATE.activeId = null;
+        }
+
         function populateImagesModal(data, reset = false) {
-            const id = data.one_of_a_kind_id;
+            const id = data?.one_of_a_kind_id || null;
             const imagesContainer = $("#images-grid");
             let cellsHTML = "";
 
@@ -433,30 +503,28 @@
                 STATE.activeId = id;
                 let idx = -1;
 
-                if (data.images) {
-                    for (const image_id in data.images) {
-                        idx++;
-                        const image = data.images[image_id];
-                        const imageName = `${data.name}_${data.one_of_a_kind_id}_${image.image_id}`;
-                        const isPrimary = image.image_id == data.primary_image_id;
-                        const cellHTML = `
-                            <div class="images-grid-item" data-idx="${image.image_id}" data-existing="true" data-image-id="${image.image_id}">
-                                <div class="remove-image-btn">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M18 6 6 18"/>
-                                        <path d="m6 6 12 12"/>
-                                    </svg>
-                                </div>
-                                <img src="${image.image_url}" alt="${imageName}" title="${imageName}">
+                for (const image_id in data.images) {
+                    idx++;
+                    const image = data.images[image_id];
+                    const imageName = `${data.name}_${data.one_of_a_kind_id}_${image.image_id}`;
+                    const isPrimary = image.image_id == data.primary_image_id;
+                    const cellHTML = `
+                        <div class="images-grid-item" data-idx="${image.image_id}" data-existing="true" data-image-id="${image.image_id}">
+                            <div class="remove-image-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 6 6 18"/>
+                                    <path d="m6 6 12 12"/>
+                                </svg>
                             </div>
-                        `;
+                            <img src="${image.image_url}" alt="${imageName}" title="${imageName}">
+                        </div>
+                    `;
 
-                        if (isPrimary) {
-                            $("#edit-one-of-a-kind-modal .one-of-a-kind-preview-container").html(`<img src="${image.image_url}" alt="${imageName}" title="${imageName}">`);
-                            cellsHTML = cellHTML + cellsHTML;
-                        } else {
-                            cellsHTML += cellHTML;
-                        }
+                    if (isPrimary) {
+                        $("#edit-one-of-a-kind-modal .one-of-a-kind-preview-container").html(`<img src="${image.image_url}" alt="${imageName}" title="${imageName}">`);
+                        cellsHTML = cellHTML + cellsHTML;
+                    } else {
+                        cellsHTML += cellHTML;
                     }
                 }
             }
@@ -478,7 +546,7 @@
                 draggable: ".images-grid-item:not(.non-draggable)",
                 filter: ".non-draggable",
                 onEnd: function(evt) {
-                    // Example: Logging new order of items
+                    handleSetPreviewImage()
                 }
             });
         }
@@ -606,18 +674,33 @@
             $(this).toggleClass('active');
         });
 
-        $(".create-btn").on("click", () => $("#create-one-of-a-kind-modal").addClass("showing"));
+        $(".create-btn").on("click", () => {
+            $("#create-one-of-a-kind-modal").addClass("showing");
+            if (STATE.activeId !== null) {
+                resetImagesModal();
+                $("#create-one-of-a-kind-modal").find(".one-of-a-kind-preview-container").html("");
+            }
+        });
 
         $(".images-modal button.cancel").on('click', function(e) {
             e.preventDefault();
             $(this).closest('.modal').find('.modal-close').trigger('click');
-            const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
-            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === Number(oneOfAKindId));
+            let data = {};
+            if ($("#edit-one-of-a-kind-modal").hasClass("showing")) {
+                const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
+                data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === Number(oneOfAKindId));
+            } else if ($("#create-one-of-a-kind-modal").hasClass("showing")) {
+                $("#create-one-of-a-kind-modal .one-of-a-kind-preview-container").html("");
+            }
             setTimeout(() => populateImagesModal(data, true), 400);
         });
 
         $(".images-modal button.confirm").on('click', function(e) {
             e.preventDefault();
+            if ($("#create-one-of-a-kind-modal").hasClass("showing")) {
+                return $(this).closest('.modal').find(".modal-close").trigger("click");
+            };
+
             const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
             const name = $("#edit-one-of-a-kind-form [name='name']").val();
 
@@ -1073,68 +1156,13 @@
                 draggable: ".images-grid-item:not(.non-draggable)",
                 filter: ".non-draggable",
                 onEnd: function(evt) {
-                    // Example: Logging new order of items
+                    handleSetPreviewImage()
                 }
             });
             $(this).val('');
-        });
-
-        $("#create-one-of-a-kind-modal").on('drop', async function(evt) {
-            evt.preventDefault();
-
-            const origEvt = evt.originalEvent;
-
-            if (origEvt.dataTransfer.items) {
-                // Use DataTransferItemList interface to access the file(s)
-                [...origEvt.dataTransfer.items].forEach(item => {
-                    // If dropped items aren't files, reject them
-                    if (item.kind === "file") {
-                        const file = item.getAsFile();
-                        if (file.type === 'application/pdf') {
-                            return Swal.fire({
-                                icon: "warning",
-                                title: "Incorrect File Type",
-                                text: "Please choose a file that is not a pdf."
-                            });
-                        }
-
-                        STATE.imageToUpload = file;
-
-                        const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
-                        const imgSrc = URL.createObjectURL(file);
-                        $(this).find(".one-of-a-kind-preview-container").html(`
-                        <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
-                    `);
-                        $(this).find('input[name="name"]').val(newFileName);
-                    }
-                });
-            } else {
-                // Use DataTransfer interface to access the file(s)
-                [...origEvt.dataTransfer.files].forEach(file => {
-                    if (file.type === 'application/pdf') {
-                        return Swal.fire({
-                            icon: "warning",
-                            title: "Incorrect File Type",
-                            text: "Please choose a file that is not a pdf."
-                        });
-                    }
-
-                    STATE.imageToUpload = file;
-
-                    const newFileName = file.name.replaceAll(/\.(png|jpeg|jpg)/gi, '');
-                    const imgSrc = URL.createObjectURL(file);
-                    $(this).find(".one-of-a-kind-preview-container").html(`
-                    <img title="${file.name}" src="${imgSrc}" alt="${file.name}">
-                `);
-                    $(this).find('input[name="name"]').val(newFileName);
-                });
+            if ($("#create-one-of-a-kind-modal").hasClass("showing")) {
+                handleSetPreviewImage();
             }
-
-            $("#drop-alert").removeClass('showing');
-        }).on('dragover', function(evt) {
-            evt.preventDefault();
-
-            $("#drop-alert").addClass('showing');
         });
     });
 </script>
