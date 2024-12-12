@@ -419,34 +419,10 @@
             return [imageName, imageUrl];
         }
 
-        function populateEditForm(id, reset = false) {
-            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
-            const modal = $("#edit-one-of-a-kind-modal");
+        function populateImagesModal(data, reset = false) {
+            const id = data.one_of_a_kind_id;
             const imagesContainer = $("#images-grid");
-            const [imageName, imageUrl] = getImageNameAndUrl(id);
-            const dimensions = data.dimensions
-                .split(" x ")
-                .map(x => x.replace(/\D+/gi, ""));
-            const weight = data.weight.replace(/\D+/gi, "");
             let cellsHTML = "";
-            imagesContainer.children('.non-draggable').remove();
-
-            modal.find('#edit-one-of-a-kind-id').text(id);
-            modal.find('input[name="name"]').val(data.name);
-            modal.find('input[name="width"]').val(dimensions[0]);
-            modal.find('input[name="height"]').val(dimensions[1]);
-            modal.find('input[name="depth"]').val(dimensions[2]);
-            modal.find('input[name="material"]').val(data.material);
-            modal.find('input[name="color"]').val(data.color);
-            modal.find('input[name="weight"]').val(weight);
-            modal.find('input[name="base_price"]').val(data.price);
-            modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
-            modal.find('textarea[name="description"]').val(data.description);
-
-            // handle rendering option buttons
-            const isDeleted = data.deleted_at !== null;
-            $(".edit-one-of-a-kind-option.restore").toggle(isDeleted);
-            $(".edit-one-of-a-kind-option:not(.restore):not(.toggle-options)").toggle(!isDeleted);
 
             if (STATE.activeId !== id || reset === true) {
                 // Store existing images
@@ -505,6 +481,35 @@
                     // Example: Logging new order of items
                 }
             });
+        }
+
+        function populateEditForm(id, reset = false) {
+            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
+            const modal = $("#edit-one-of-a-kind-modal");
+            const [imageName, imageUrl] = getImageNameAndUrl(id);
+            const dimensions = data.dimensions
+                .split(" x ")
+                .map(x => x.replace(/\D+/gi, ""));
+            const weight = data.weight.replace(/\D+/gi, "");
+
+            modal.find('#edit-one-of-a-kind-id').text(id);
+            modal.find('input[name="name"]').val(data.name);
+            modal.find('input[name="width"]').val(dimensions[0]);
+            modal.find('input[name="height"]').val(dimensions[1]);
+            modal.find('input[name="depth"]').val(dimensions[2]);
+            modal.find('input[name="material"]').val(data.material);
+            modal.find('input[name="color"]').val(data.color);
+            modal.find('input[name="weight"]').val(weight);
+            modal.find('input[name="base_price"]').val(data.price);
+            modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
+            modal.find('textarea[name="description"]').val(data.description);
+
+            // handle rendering option buttons
+            const isDeleted = data.deleted_at !== null;
+            $(".edit-one-of-a-kind-option.restore").toggle(isDeleted);
+            $(".edit-one-of-a-kind-option:not(.restore):not(.toggle-options)").toggle(!isDeleted);
+
+            populateImagesModal(data, reset);
         }
 
         function handleInitTableRowEvents(reset = false) {
@@ -606,6 +611,9 @@
         $(".images-modal button.cancel").on('click', function(e) {
             e.preventDefault();
             $(this).closest('.modal').find('.modal-close').trigger('click');
+            const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
+            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === Number(oneOfAKindId));
+            setTimeout(() => populateImagesModal(data, true), 400);
         });
 
         $(".images-modal button.confirm").on('click', function(e) {
