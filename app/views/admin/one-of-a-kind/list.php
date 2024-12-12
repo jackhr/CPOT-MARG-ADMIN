@@ -904,7 +904,7 @@
 
         $(".edit-one-of-a-kind-option.restore").on("click", async function() {
             const id = $("#edit-one-of-a-kind-id").text();
-            const name = $("#edit-one-of-a-kind-form [name='name']");
+            const name = $("#edit-one-of-a-kind-form [name='name']").val();
 
             const res = await Swal.fire({
                 icon: "warning",
