@@ -446,7 +446,7 @@
             // handle rendering option buttons
             const isDeleted = data.deleted_at !== null;
             $(".edit-one-of-a-kind-option.restore").toggle(isDeleted);
-            $(".edit-one-of-a-kind-option.delete").toggle(!isDeleted);
+            $(".edit-one-of-a-kind-option:not(.restore):not(.toggle-options)").toggle(!isDeleted);
 
             if (STATE.activeId !== id || reset === true) {
                 // Store existing images
@@ -842,13 +842,12 @@
         });
 
         $(".edit-one-of-a-kind-option.delete").on("click", async function() {
-            const form = $("#edit-one-of-a-kind-form");
-            const data = form.serializeObject();
-            data.one_of_a_kind_id = $("#edit-one-of-a-kind-id").text();
+            const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
+            const name = $("#edit-one-of-a-kind-form [name='name']").val();
 
             const res = await Swal.fire({
                 icon: "warning",
-                title: `Deleting "${data.name}"`,
+                title: `Deleting "${name}"`,
                 text: "Are you sure that you would like to delete this one of a kind?",
                 showDenyButton: true,
                 confirmButtonText: 'Delete',
@@ -865,17 +864,16 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Deleting one of a kind, <strong>"${data.name}"</strong>.`,
+                html: `Deleting one of a kind, <strong>"${name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }
             });
 
             $.ajax({
-                url: `/one-of-a-kind/${data.one_of_a_kind_id}`,
+                url: `/one-of-a-kind/${oneOfAKindId}`,
                 method: "DELETE",
                 dataType: "JSON",
-                data,
                 success: res => {
                     const {
                         data,
