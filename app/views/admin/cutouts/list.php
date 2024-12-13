@@ -15,7 +15,7 @@
             </svg>
             <span>Create Cutout</span>
         </button>
-        <table id="cutouts-table">
+        <table>
             <thead>
                 <tr>
                     <th>Id #</th>
@@ -32,41 +32,6 @@
                     <th>Updated By</th>
                 </tr>
             </thead>
-            <tbody>
-                <?php foreach ($cutouts as $c) {
-                    $created_at = new DateTime($c['created_at']);
-                    $updated_at = new DateTime($c['updated_at']);
-                    $created_at = $created_at->format('M j, Y \@ g:i A T');
-                    $updated_at = $updated_at->format('M j, Y \@ g:i A T');
-
-                    if ($user['role_id'] === 1) {
-                        $deleted_at = "-";
-                        if (isset($c['deleted_at'])) {
-                            $deleted_at = new DateTime($c['deleted_at']);
-                            $deleted_at = $deleted_at->format('M j, Y \@ g:i A T');
-                        }
-                    }
-                ?>
-                    <tr data-id="<?php echo $c['cutout_id']; ?>">
-                        <td><?php echo $c['cutout_id']; ?></td>
-                        <td class="cutout-thumb-td">
-                            <div>
-                                <img src="<?php echo $c['image_url']; ?>" alt="<?php echo $c['name']; ?>">
-                            </div>
-                        </td>
-                        <td><?php echo $c['name']; ?></td>
-                        <td><?php echo $c['description']; ?></td>
-                        <td><?php echo $c['cutout_type']; ?></td>
-                        <td class="dt-type-date"><?php echo $created_at; ?></td>
-                        <td class="dt-type-date"><?php echo $updated_at; ?></td>
-                        <?php if ($user['role_id'] === 1) { ?>
-                            <td class="dt-type-date"><?php echo $deleted_at; ?></td>
-                        <?php } ?>
-                        <td><?php echo $c['created_by_email']; ?></td>
-                        <td><?php echo $c['updated_by_email']; ?></td>
-                    </tr>
-                <?php } ?>
-            </tbody>
         </table>
     </div>
 </main>
@@ -167,8 +132,61 @@
 
 <script>
     $(document).ready(function() {
-        const dTable = new DataTable("#cutouts-table", {
+        const dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
+            ajax: {
+                url: "/cutouts/getAll",
+                dataSrc: function(response) {
+                    let res = [];
+                    console.log("response:", response);
+                    if (response && response.data) {
+                        STATE.oneOfAKinds = structuredClone(Object.values(response.data));
+                        res = Object.values(response.data).map(cutout => {
+                            cutout.price = formatPrice(cutout.price);
+                            cutout.description = cutout.description ? cutout.description : "-";
+                            cutout.deleted_at = cutout.deleted_at ? cutout.deleted_at : "-";
+                            cutout.updated_by_email = cutout.updated_by_email ? cutout.updated_by_email : "-";
+                            return cutout;
+                        });
+                    } else {
+                        console.error("Invalid response format", response);
+                    }
+
+                    return res;
+                }
+            },
+            columns: [{
+                    data: 'cutout_id'
+                },
+                {
+                    data: 'image_url'
+                },
+                {
+                    data: 'name'
+                },
+                {
+                    data: 'description'
+                },
+                {
+                    data: 'cutout_type'
+                },
+                {
+                    data: 'created_at'
+                },
+                {
+                    data: 'updated_at'
+                },
+                <?php if ($user['role_id'] === 1) {
+                    echo "{
+                        data: 'deleted_at'
+                    },";
+                } ?> {
+                    data: 'created_by_email'
+                },
+                {
+                    data: 'updated_by_email'
+                },
+            ],
         });
 
         setTimeout(() => dTable.draw(), 1000);
@@ -297,7 +315,7 @@
             });
         });
 
-        $("#cutouts-table").on("click", "tbody tr", function() {
+        $("table").on("click", "tbody tr", function() {
             const modal = $("#edit-cutout-modal");
             const cutoutId = $(this).find('td').eq(0).text();
             const imgSrc = $(this).find('td').eq(1).find('img').attr('src');

@@ -20,22 +20,34 @@ class CutoutController extends Controller
     public function listCutouts()
     {
         $logged_in_user = $_SESSION['user'];
-        $table = "cutouts";
-        $override_query = "SELECT $table.*, users_c.email AS created_by_email, users_u.email AS updated_by_email 
-            FROM $table
-            LEFT JOIN users users_c ON $table.created_by = users_c.user_id
-            LEFT JOIN users users_u ON $table.updated_by = users_u.user_id";
+        $this->view("admin/cutouts/list.php", [
+            "user" => $logged_in_user,
+            "title" => "Cutouts"
+        ]);
+    }
+
+    public function getAll()
+    {
+        $logged_in_user = $_SESSION['user'];
+        $override_query = "SELECT cutouts.*, users_c.email AS created_by_email, users_u.email AS updated_by_email 
+            FROM cutouts
+            LEFT JOIN users users_c ON cutouts.created_by = users_c.user_id
+            LEFT JOIN users users_u ON cutouts.updated_by = users_u.user_id";
         $cutouts = $this->cutoutModel->readAll($override_query);
         if ($logged_in_user['role_id'] > 1) {
             $cutouts = array_filter($cutouts, function ($cutout) {
                 return !isset($cutout['deleted_at']);
             });
         }
-        $this->view("admin/cutouts/list.php", [
-            "user" => $logged_in_user,
-            "cutouts" => $cutouts,
-            "title" => "Cutouts"
-        ]);
+
+        $images = $this->cutoutModel->DBRaw("SELECT * FROM cutout_images");
+
+        foreach ($images as $image) {
+            $id = $image['cutout_id'];
+            $cutouts[$id]['images'][$image['image_id']] = $image;
+        }
+
+        $this->helper->respondToClient($cutouts);
     }
 
     public function create()
