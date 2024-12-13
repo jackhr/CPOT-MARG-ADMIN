@@ -74,7 +74,9 @@ $router->group('/', function (Router $router) {
         $router->get('', [CutoutController::class, 'listCutouts']);
         $router->get('/getAll', [CutoutController::class, 'getAll']);
         $router->post('', [CutoutController::class, 'create']);
-        $router->post('/{id}', [CutoutController::class, 'update']);
+        $router->post('/{id}/images', [CutoutController::class, 'updateImages']);
+        $router->put('/{id}', [CutoutController::class, 'update']);
+        $router->put('/{id}/restore', [CutoutController::class, 'restore']);
         $router->delete('/{id}', [CutoutController::class, 'delete']);
     });
 

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Helpers\GeneralHelper;
-use Exception;
 use PDO;
 
 class OneOfAKind extends Model

@@ -7,6 +7,7 @@ use PDO;
 class Cutout extends Model
 {
     public $cutout_id;
+    public $primary_image_id;
     public $name;
     public $description;
     public $image_url;
@@ -66,6 +67,38 @@ class Cutout extends Model
         $stmt->bindParam(":image_url", $this->image_url);
         $stmt->bindParam(":cutout_type", $this->cutout_type);
         $stmt->bindParam(":updated_by", $this->updated_by, PDO::PARAM_INT);
+        $stmt->bindParam(":cutout_id", $this->cutout_id, PDO::PARAM_INT);
+
+        // Execute the query
+        return $stmt->execute();
+    }
+
+    public function updatePrimaryImg()
+    {
+        $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id WHERE cutout_id = :cutout_id";
+        $stmt = $this->con->prepare($query);
+
+        // Sanitize input
+        $this->cutout_id = htmlspecialchars($this->cutout_id);
+        $this->primary_image_id = htmlspecialchars($this->primary_image_id);
+
+        // Bind parameters
+        $stmt->bindParam(":primary_image_id", $this->primary_image_id, PDO::PARAM_INT);
+        $stmt->bindParam(":cutout_id", $this->cutout_id, PDO::PARAM_INT);
+
+        // Execute the query
+        return $stmt->execute();
+    }
+
+    public function restore()
+    {
+        $query = "UPDATE {$this->table_name} SET deleted_at = NULL WHERE cutout_id = :cutout_id";
+        $stmt = $this->con->prepare($query);
+
+        // Sanitize input
+        $this->cutout_id = htmlspecialchars($this->cutout_id);
+
+        // Bind parameters
         $stmt->bindParam(":cutout_id", $this->cutout_id, PDO::PARAM_INT);
 
         // Execute the query
