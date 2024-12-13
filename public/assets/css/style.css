@@ -236,6 +236,10 @@ select {
     border-radius: 2px;
 }
 
+.img-input {
+    display: none;
+}
+
 .continue-btn {
     display         : flex;
     align-items     : center;
@@ -288,7 +292,7 @@ select {
 }
 
 .input-container.sconce-img-container,
-.input-container.one-of-a-kind-img-container,
+.input-container.img-container,
 .input-container.cutout-img-container {
     flex-direction: column;
     padding-bottom: 24px;
@@ -302,18 +306,18 @@ select {
 .input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.other,
 .input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.danger,
 .input-container.cutout-img-container:has(img) .cutout-img-options .continue-btn:not(.danger):not(.other),
-.input-container.one-of-a-kind-img-container:not(:has(img)) .carousel {
+.input-container.img-container:not(:has(img)) .carousel {
     display: none;
 }
 
 .input-container.sconce-img-container:not(:has(img)) .sconce-preview-container::before,
-.input-container.one-of-a-kind-img-container:not(:has(img)) .one-of-a-kind-preview-container::before,
+.input-container.img-container:not(:has(img)) .img-preview-container::before,
 .input-container.cutout-img-container:not(:has(img)) .cutout-preview-container::before {
     content: "Images will preview here.";
 }
 
 .sconce-preview-container,
-.one-of-a-kind-preview-container,
+.img-preview-container,
 .cutout-preview-container {
     display        : flex;
     align-items    : center;
@@ -325,7 +329,7 @@ select {
 }
 
 .sconce-preview-container img,
-.one-of-a-kind-preview-container img,
+.img-preview-container img,
 .cutout-preview-container img {
     width     : 100%;
     object-fit: contain;
@@ -1019,7 +1023,7 @@ form hr {
     outline: solid 1px var(--secondary);
 }
 
-.edit-options-container {
+.option-btns-container {
     display        : flex;
     align-items    : center;
     justify-content: flex-end;
@@ -1030,7 +1034,7 @@ form hr {
     width          : 0;
 }
 
-.edit-one-of-a-kind-option {
+.option-btn {
     padding        : 2px;
     width          : 28px;
     color          : var(--white);
@@ -1043,59 +1047,59 @@ form hr {
     transition     : background-color ease 0.3s, border-color ease 0.3s;
 }
 
-.edit-one-of-a-kind-option:hover {
+.option-btn:hover {
     background-color: var(--white) !important;
 }
 
-.edit-one-of-a-kind-option svg {
+.option-btn svg {
     width     : 100%;
     transition: color ease 0.3s;
 }
 
-.edit-one-of-a-kind-option.toggle-options {
+.option-btn.toggle-options {
     background-color: var(--grey-light);
 }
 
-.edit-one-of-a-kind-option.delete {
+.option-btn.delete {
     background-color: var(--red);
 }
 
-.edit-one-of-a-kind-option.restore,
-.edit-one-of-a-kind-option.images {
+.option-btn.restore,
+.option-btn.images {
     background-color: var(--green);
 }
 
-.edit-one-of-a-kind-option.reset {
+.option-btn.reset {
     background-color: var(--blue);
 }
 
-.edit-one-of-a-kind-option.toggle-options:hover {
+.option-btn.toggle-options:hover {
     color       : var(--grey-light);
     border-color: var(--grey-light);
 }
 
-.edit-one-of-a-kind-option.delete:hover {
+.option-btn.delete:hover {
     color       : var(--red);
     border-color: var(--red);
 }
 
-.edit-one-of-a-kind-option.restore:hover,
-.edit-one-of-a-kind-option.images:hover {
+.option-btn.restore:hover,
+.option-btn.images:hover {
     color       : var(--green);
     border-color: var(--green);
 }
 
-.edit-one-of-a-kind-option.reset:hover {
+.option-btn.reset:hover {
     color       : var(--blue);
     border-color: var(--blue);
 }
 
-.edit-one-of-a-kind-option.toggle-options svg {
+.option-btn.toggle-options svg {
     transition: all ease-in-out 0.6s;
     rotate    : 0deg;
 }
 
-.edit-one-of-a-kind-option.toggle-options.active svg {
+.option-btn.toggle-options.active svg {
     rotate: 180deg;
 }
 
@@ -1106,16 +1110,16 @@ form hr {
     background   : var(--grey-x-light);
 }
 
-.edit-options-container:has(+ .edit-one-of-a-kind-option.toggle-options.active) {
+.option-btns-container:has(+ .option-btn.toggle-options.active) {
     width: 130px;
 }
 
-.edit-one-of-a-kind-option.delete:not(.restore) svg.restore,
-.edit-one-of-a-kind-option.delete.restore svg.delete {
+.option-btn.delete:not(.restore) svg.restore,
+.option-btn.delete.restore svg.delete {
     display: none;
 }
 
-#images-grid {
+.images-grid {
     display              : grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap                  : 10px;

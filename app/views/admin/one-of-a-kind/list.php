@@ -14,7 +14,7 @@
             </svg>
             <span>Add New Item</span>
         </button>
-        <table id="one-of-a-kind-table">
+        <table>
             <thead>
                 <tr>
                     <th>Id #</th>
@@ -54,8 +54,8 @@
             <div class="modal-body">
                 <form id="create-one-of-a-kind-form">
                     <div class="input-container">
-                        <div class="edit-options-container">
-                            <div class="edit-one-of-a-kind-option images">
+                        <div class="option-btns-container">
+                            <div class="option-btn images">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M18 22H4a2 2 0 0 1-2-2V6" />
                                     <path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18" />
@@ -63,7 +63,7 @@
                                     <rect width="16" height="16" x="6" y="2" rx="2" />
                                 </svg>
                             </div>
-                            <div class="edit-one-of-a-kind-option reset">
+                            <div class="option-btn reset">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                                     <path d="M3 3v5h5" />
@@ -71,7 +71,7 @@
                             </div>
                             <div class="options-border"></div>
                         </div>
-                        <div class="edit-one-of-a-kind-option toggle-options">
+                        <div class="option-btn toggle-options">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
                                 <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
@@ -90,9 +90,9 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="input-container one-of-a-kind-img-container">
-                        <input multiple type="file" name="one-of-a-kind-imgs" class="one-of-a-kind-img-input" id="create-one-of-a-kind-img-input" style="display: none;">
-                        <div class="one-of-a-kind-preview-container"></div>
+                    <div class="input-container img-container">
+                        <input multiple type="file" class="img-input" id="create-img-input">
+                        <div class="img-preview-container"></div>
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
@@ -187,8 +187,8 @@
                     <div class="input-container">
                         <label>Id #</label>
                         <span id="edit-one-of-a-kind-id"></span>
-                        <div class="edit-options-container">
-                            <div class="edit-one-of-a-kind-option images">
+                        <div class="option-btns-container">
+                            <div class="option-btn images">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M18 22H4a2 2 0 0 1-2-2V6" />
                                     <path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18" />
@@ -196,13 +196,13 @@
                                     <rect width="16" height="16" x="6" y="2" rx="2" />
                                 </svg>
                             </div>
-                            <div class="edit-one-of-a-kind-option reset">
+                            <div class="option-btn reset">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                                     <path d="M3 3v5h5" />
                                 </svg>
                             </div>
-                            <div class="edit-one-of-a-kind-option delete">
+                            <div class="option-btn delete">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M3 6h18" />
                                     <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
@@ -211,7 +211,7 @@
                                     <line x1="14" x2="14" y1="11" y2="17" />
                                 </svg>
                             </div>
-                            <div class="edit-one-of-a-kind-option restore">
+                            <div class="option-btn restore">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect width="20" height="5" x="2" y="3" rx="1" />
                                     <path d="M4 8v11a2 2 0 0 0 2 2h2" />
@@ -222,7 +222,7 @@
                             </div>
                             <div class="options-border"></div>
                         </div>
-                        <div class="edit-one-of-a-kind-option toggle-options">
+                        <div class="option-btn toggle-options">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z" />
                                 <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z" />
@@ -242,9 +242,9 @@
                         </div>
                     </div>
                     <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
-                    <div class="input-container one-of-a-kind-img-container">
-                        <input multiple type="file" name="one-of-a-kind-imgs" class="one-of-a-kind-img-input" id="edit-one-of-a-kind-img-input" style="display: none;">
-                        <div class="one-of-a-kind-preview-container"></div>
+                    <div class="input-container img-container">
+                        <input multiple type="file" class="img-input" id="edit-img-input">
+                        <div class="img-preview-container"></div>
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
@@ -336,7 +336,7 @@
                 <h1>Images</h1>
             </div>
             <div class="modal-body">
-                <div id="images-grid"></div>
+                <div class="images-grid"></div>
             </div>
             <div class="modal-footer">
                 <button class="continue-btn cancel">Cancel</button>
@@ -348,7 +348,7 @@
 
 <script>
     $(document).ready(function() {
-        const dTable = new DataTable("#one-of-a-kind-table", {
+        const dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
             ajax: {
                 url: "/one-of-a-kind/getAll",
@@ -462,16 +462,16 @@
             const idx = $(".images-grid-item:not(.non-draggable)").first().data('idx');
             const file = STATE.upload.newImages[idx];
             const imgSrc = URL.createObjectURL(file);
-            modal.find(".one-of-a-kind-preview-container")
+            modal.find(".img-preview-container")
                 .html(`<img src="${imgSrc}" alt="${file.name}" title="${file.name}">`);
         }
 
         function resetImagesModal() {
-            const imagesContainer = $("#images-grid");
+            const imagesContainer = $(".images-grid");
 
             if (STATE.upload?.sortable?.el) STATE.upload.sortable.destroy();
 
-            imagesContainer.html('<label for="edit-one-of-a-kind-img-input" class="images-grid-item non-draggable">+</label>');
+            imagesContainer.html('<label for="edit-img-input" class="images-grid-item non-draggable">+</label>');
 
             // Initialize Sortable
             STATE.upload.sortable = new Sortable(imagesContainer[0], {
@@ -491,7 +491,7 @@
 
         function populateImagesModal(data, reset = false) {
             const id = data?.one_of_a_kind_id || null;
-            const imagesContainer = $("#images-grid");
+            const imagesContainer = $(".images-grid");
             let cellsHTML = "";
 
             if (STATE.activeId !== id || reset === true) {
@@ -521,7 +521,7 @@
                     `;
 
                     if (isPrimary) {
-                        $("#edit-one-of-a-kind-modal .one-of-a-kind-preview-container").html(`<img src="${image.image_url}" alt="${imageName}" title="${imageName}">`);
+                        $("#edit-one-of-a-kind-modal .img-preview-container").html(`<img src="${image.image_url}" alt="${imageName}" title="${imageName}">`);
                         cellsHTML = cellHTML + cellsHTML;
                     } else {
                         cellsHTML += cellHTML;
@@ -536,7 +536,7 @@
             imagesContainer.html(cellsHTML);
 
             if (STATE.upload.imageCount !== STATE.upload.maxImageCount) {
-                imagesContainer.append('<label for="edit-one-of-a-kind-img-input" class="images-grid-item non-draggable">+</label>');
+                imagesContainer.append('<label for="edit-img-input" class="images-grid-item non-draggable">+</label>');
             }
 
             // Initialize Sortable
@@ -562,7 +562,7 @@
             modal.find('input[name="base_price"]').val("");
             modal.find('input[name="stock_quantity"]').val("");
             modal.find('textarea[name="description"]').val("");
-            modal.find('.one-of-a-kind-preview-container').html("");
+            modal.find('.img-preview-container').html("");
 
             resetImagesModal();
         }
@@ -590,8 +590,8 @@
 
             // handle rendering option buttons
             const isDeleted = data.deleted_at !== null;
-            $(".edit-one-of-a-kind-option.restore").toggle(isDeleted);
-            $(".edit-one-of-a-kind-option:not(.restore):not(.toggle-options)").toggle(!isDeleted);
+            $(".option-btn.restore").toggle(isDeleted);
+            $(".option-btn:not(.restore):not(.toggle-options)").toggle(!isDeleted);
 
             populateImagesModal(data, reset);
         }
@@ -617,7 +617,7 @@
                     `);
 
                 rowNode.onclick = () => {
-                    $(".edit-one-of-a-kind-option.toggle-options").removeClass('active');
+                    $(".option-btn.toggle-options").removeClass('active');
                     populateEditForm(id);
                     $("#edit-one-of-a-kind-modal").addClass('showing');
                 };
@@ -678,15 +678,15 @@
         function handleMakePrimary(formData, idx, type) {
             const dataType = type.replace("Images", "");
             if (
-                $("#images-grid .images-grid-item").first().data('idx') == idx &&
-                $("#images-grid .images-grid-item").first().data(dataType)
+                $(".images-grid .images-grid-item").first().data('idx') == idx &&
+                $(".images-grid .images-grid-item").first().data(dataType)
             ) {
                 formData.append('primary_image_idx', idx);
                 formData.append('primary_image_type', type);
             }
         }
 
-        $(".edit-one-of-a-kind-option.toggle-options").on("click", function() {
+        $(".option-btn.toggle-options").on("click", function() {
             $(this).toggleClass('active');
         });
 
@@ -694,7 +694,7 @@
             $("#create-one-of-a-kind-modal").addClass("showing");
             if (STATE.activeId !== null) {
                 resetImagesModal();
-                $("#create-one-of-a-kind-modal").find(".one-of-a-kind-preview-container").html("");
+                $("#create-one-of-a-kind-modal").find(".img-preview-container").html("");
             }
         });
 
@@ -706,7 +706,7 @@
                 const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
                 data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === Number(oneOfAKindId));
             } else if ($("#create-one-of-a-kind-modal").hasClass("showing")) {
-                $("#create-one-of-a-kind-modal .one-of-a-kind-preview-container").html("");
+                $("#create-one-of-a-kind-modal .img-preview-container").html("");
             }
             setTimeout(() => populateImagesModal(data, true), 400);
         });
@@ -923,7 +923,7 @@
         $("#edit-one-of-a-kind-modal .modal-close").on("click", function() {
             $(this)
                 .closest('.modal')
-                .find('.edit-one-of-a-kind-option.toggle-options')
+                .find('.option-btn.toggle-options')
                 .removeClass('active');
         });
 
@@ -934,7 +934,7 @@
                 .trigger('click');
         });
 
-        $(".edit-one-of-a-kind-option.reset").on("click", async function() {
+        $(".option-btn.reset").on("click", async function() {
             const res = await Swal.fire({
                 icon: "warning",
                 title: "Reseting Form",
@@ -953,7 +953,7 @@
 
         });
 
-        $(".edit-one-of-a-kind-option.delete").on("click", async function() {
+        $(".option-btn.delete").on("click", async function() {
             const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
             const name = $("#edit-one-of-a-kind-form [name='name']").val();
 
@@ -1008,11 +1008,11 @@
             });
         });
 
-        $(".edit-one-of-a-kind-option.images").on("click", function() {
+        $(".option-btn.images").on("click", function() {
             $(".modal.images-modal").addClass('showing');
         });
 
-        $(".edit-one-of-a-kind-option.restore").on("click", async function() {
+        $(".option-btn.restore").on("click", async function() {
             const id = $("#edit-one-of-a-kind-id").text();
             const name = $("#edit-one-of-a-kind-form [name='name']").val();
 
@@ -1062,7 +1062,7 @@
             });
         });
 
-        $("#images-grid").on("click", ".remove-image-btn", function(e) {
+        $(".images-grid").on("click", ".remove-image-btn", function(e) {
             const container = $(this).closest('.images-grid-item');
             const idx = container.data('idx');
             const isExisting = container.data("existing");
@@ -1090,20 +1090,20 @@
                 container.remove();
                 STATE.upload.imageCount = Math.max(STATE.upload.imageCount - 1, 0);
 
-                const imagesContainer = $("#images-grid");
+                const imagesContainer = $(".images-grid");
                 if (
                     STATE.upload.imageCount < STATE.upload.maxImageCount &&
-                    imagesContainer.has('label[for="edit-one-of-a-kind-img-input"]').length === 0
+                    imagesContainer.has('label[for="edit-img-input"]').length === 0
                 ) {
-                    imagesContainer.append('<label for="edit-one-of-a-kind-img-input" class="images-grid-item non-draggable">+</label>')
+                    imagesContainer.append('<label for="edit-img-input" class="images-grid-item non-draggable">+</label>')
                 }
             }, 100);
         });
 
-        $(".one-of-a-kind-img-input").on('change', function() {
+        $(".img-input").on('change', function() {
             // only ever for adding
             const incorrectFiles = [];
-            const imagesContainer = $("#images-grid");
+            const imagesContainer = $(".images-grid");
             let hitMaxCount = false;
             let cellsHTML = "";
             let selectedCellIdx = NaN;
@@ -1168,7 +1168,7 @@
             imagesContainer.append(cellsHTML);
 
             if (STATE.upload.imageCount !== STATE.upload.maxImageCount) {
-                imagesContainer.append('<label for="edit-one-of-a-kind-img-input" class="images-grid-item non-draggable">+</label>')
+                imagesContainer.append('<label for="edit-img-input" class="images-grid-item non-draggable">+</label>')
             }
 
             STATE.upload.sortable = new Sortable(imagesContainer[0], {
