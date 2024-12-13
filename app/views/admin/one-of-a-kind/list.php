@@ -91,7 +91,6 @@
                         </div>
                     </div>
                     <div class="input-container img-container">
-                        <input multiple type="file" class="img-input" id="create-img-input">
                         <div class="img-preview-container"></div>
                     </div>
                     <div class="input-container">
@@ -366,7 +365,6 @@
                     } else {
                         console.error("Invalid response format", response);
                     }
-
                     return res;
                 }
             },
@@ -448,6 +446,37 @@
             setTimeout(() => dTable.draw(), 1000);
         })();
 
+        function handleInitTableRowEvents(reset = false) {
+            dTable.rows().every(function(idx) {
+                const rowNode = this.node();
+                if (!rowNode) {
+                    console.warn(`Row node not found for index ${idx}`);
+                    return;
+                }
+
+                const id = this.data().one_of_a_kind_id;
+                const [imageName, imageUrl] = getImageNameAndUrl(id);
+                $(rowNode)
+                    .find('td')
+                    .eq(1)
+                    .addClass("one-of-a-kind-thumb-td")
+                    .html(`
+                        <div>
+                        <img src="${imageUrl}" alt="${imageName}">
+                        </div>
+                    `);
+
+                rowNode.onclick = () => {
+                    $(".option-btn.toggle-options").removeClass('active');
+                    populateEditForm(id);
+                    $("#edit-one-of-a-kind-modal").addClass('showing');
+                };
+
+                if (this.data().deleted_at !== "-") $(rowNode).addClass('deleted_item');
+            });
+
+        }
+
         function getImageNameAndUrl(id) {
             const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
             const imageData = data.images?.[data.primary_image_id];
@@ -456,37 +485,32 @@
             return [imageName, imageUrl];
         }
 
-        function handleSetPreviewImage() {
-            const modal = $("#create-one-of-a-kind-modal");
-            if (!modal.hasClass('showing')) return;
-            const idx = $(".images-grid-item:not(.non-draggable)").first().data('idx');
-            const file = STATE.upload.newImages[idx];
-            const imgSrc = URL.createObjectURL(file);
-            modal.find(".img-preview-container")
-                .html(`<img src="${imgSrc}" alt="${file.name}" title="${file.name}">`);
-        }
+        function populateEditForm(id, reset = false) {
+            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
+            const modal = $("#edit-one-of-a-kind-modal");
+            const dimensions = data.dimensions
+                .split(" x ")
+                .map(x => x.replace(/\D+/gi, ""));
+            const weight = data.weight.replace(/\D+/gi, "");
 
-        function resetImagesModal() {
-            const imagesContainer = $(".images-grid");
+            modal.find('#edit-one-of-a-kind-id').text(id);
+            modal.find('input[name="name"]').val(data.name);
+            modal.find('input[name="width"]').val(dimensions[0]);
+            modal.find('input[name="height"]').val(dimensions[1]);
+            modal.find('input[name="depth"]').val(dimensions[2]);
+            modal.find('input[name="material"]').val(data.material);
+            modal.find('input[name="color"]').val(data.color);
+            modal.find('input[name="weight"]').val(weight);
+            modal.find('input[name="base_price"]').val(data.price);
+            modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
+            modal.find('textarea[name="description"]').val(data.description);
 
-            if (STATE.upload?.sortable?.el) STATE.upload.sortable.destroy();
+            // handle rendering option buttons
+            const isDeleted = data.deleted_at !== null;
+            $(".option-btn.restore").toggle(isDeleted);
+            $(".option-btn:not(.restore):not(.toggle-options)").toggle(!isDeleted);
 
-            imagesContainer.html('<label for="edit-img-input" class="images-grid-item non-draggable">+</label>');
-
-            // Initialize Sortable
-            STATE.upload.sortable = new Sortable(imagesContainer[0], {
-                animation: 150, // Smooth animation when dragging
-                ghostClass: 'sortable-ghost', // Class applied to ghost element
-                draggable: ".images-grid-item:not(.non-draggable)",
-                filter: ".non-draggable",
-                onEnd: () => handleSetPreviewImage()
-            });
-
-            STATE.upload.existingImages = {};
-            STATE.upload.imageCount = 0;
-            STATE.upload.newImages = {};
-            STATE.upload.deletedImages = {};
-            STATE.activeId = null;
+            populateImagesModal(data, reset);
         }
 
         function populateImagesModal(data, reset = false) {
@@ -551,6 +575,39 @@
             });
         }
 
+        function handleSetPreviewImage() {
+            const modal = $("#create-one-of-a-kind-modal");
+            if (!modal.hasClass('showing')) return;
+            const idx = $(".images-grid-item:not(.non-draggable)").first().data('idx');
+            const file = STATE.upload.newImages[idx];
+            const imgSrc = URL.createObjectURL(file);
+            modal.find(".img-preview-container")
+                .html(`<img src="${imgSrc}" alt="${file.name}" title="${file.name}">`);
+        }
+
+        function resetImagesModal() {
+            const imagesContainer = $(".images-grid");
+
+            if (STATE.upload?.sortable?.el) STATE.upload.sortable.destroy();
+
+            imagesContainer.html('<label for="edit-img-input" class="images-grid-item non-draggable">+</label>');
+
+            // Initialize Sortable
+            STATE.upload.sortable = new Sortable(imagesContainer[0], {
+                animation: 150, // Smooth animation when dragging
+                ghostClass: 'sortable-ghost', // Class applied to ghost element
+                draggable: ".images-grid-item:not(.non-draggable)",
+                filter: ".non-draggable",
+                onEnd: () => handleSetPreviewImage()
+            });
+
+            STATE.upload.existingImages = {};
+            STATE.upload.imageCount = 0;
+            STATE.upload.newImages = {};
+            STATE.upload.deletedImages = {};
+            STATE.activeId = null;
+        }
+
         function resetModal(modal) {
             modal.find('input[name="name"]').val("");
             modal.find('input[name="width"]').val("");
@@ -565,66 +622,6 @@
             modal.find('.img-preview-container').html("");
 
             resetImagesModal();
-        }
-
-        function populateEditForm(id, reset = false) {
-            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
-            const modal = $("#edit-one-of-a-kind-modal");
-            const [imageName, imageUrl] = getImageNameAndUrl(id);
-            const dimensions = data.dimensions
-                .split(" x ")
-                .map(x => x.replace(/\D+/gi, ""));
-            const weight = data.weight.replace(/\D+/gi, "");
-
-            modal.find('#edit-one-of-a-kind-id').text(id);
-            modal.find('input[name="name"]').val(data.name);
-            modal.find('input[name="width"]').val(dimensions[0]);
-            modal.find('input[name="height"]').val(dimensions[1]);
-            modal.find('input[name="depth"]').val(dimensions[2]);
-            modal.find('input[name="material"]').val(data.material);
-            modal.find('input[name="color"]').val(data.color);
-            modal.find('input[name="weight"]').val(weight);
-            modal.find('input[name="base_price"]').val(data.price);
-            modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
-            modal.find('textarea[name="description"]').val(data.description);
-
-            // handle rendering option buttons
-            const isDeleted = data.deleted_at !== null;
-            $(".option-btn.restore").toggle(isDeleted);
-            $(".option-btn:not(.restore):not(.toggle-options)").toggle(!isDeleted);
-
-            populateImagesModal(data, reset);
-        }
-
-        function handleInitTableRowEvents(reset = false) {
-            dTable.rows().every(function(idx) {
-                const rowNode = this.node();
-                if (!rowNode) {
-                    console.warn(`Row node not found for index ${idx}`);
-                    return;
-                }
-
-                const id = this.data().one_of_a_kind_id;
-                const [imageName, imageUrl] = getImageNameAndUrl(id);
-                $(rowNode)
-                    .find('td')
-                    .eq(1)
-                    .addClass("one-of-a-kind-thumb-td")
-                    .html(`
-                        <div>
-                        <img src="${imageUrl}" alt="${imageName}">
-                        </div>
-                    `);
-
-                rowNode.onclick = () => {
-                    $(".option-btn.toggle-options").removeClass('active');
-                    populateEditForm(id);
-                    $("#edit-one-of-a-kind-modal").addClass('showing');
-                };
-
-                if (this.data().deleted_at !== "-") $(rowNode).addClass('deleted_item');
-            });
-
         }
 
         function getJSONDataFromForm(form) {
@@ -860,7 +857,6 @@
             });
 
             const formData = new FormData(form[0]);
-            formData.delete("one-of-a-kind-imgs");
 
             // Include new images
             for (const idx in STATE.upload.newImages) {
