@@ -235,7 +235,6 @@
                 url: "/cutouts/getAll",
                 dataSrc: function(response) {
                     let res = [];
-                    console.log(response);
                     if (response && response.data) {
                         STATE.cutouts = structuredClone(Object.values(response.data));
                         res = Object.values(response.data).map(cutout => {

@@ -300,12 +300,6 @@ select {
     margin-bottom : 24px;
 }
 
-.input-container.sconce-img-container:not(:has(img)) .sconce-img-options .continue-btn.other,
-.input-container.sconce-img-container:not(:has(img)) .sconce-img-options .continue-btn.danger,
-.input-container.sconce-img-container:has(img) .sconce-img-options .continue-btn:not(.danger):not(.other),
-.input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.other,
-.input-container.cutout-img-container:not(:has(img)) .cutout-img-options .continue-btn.danger,
-.input-container.cutout-img-container:has(img) .cutout-img-options .continue-btn:not(.danger):not(.other),
 .input-container.img-container:not(:has(img)) .carousel {
     display: none;
 }
@@ -334,14 +328,6 @@ select {
     width     : 100%;
     object-fit: contain;
     height    : auto;
-}
-
-.sconce-img-options,
-.one-of-a-kind-img-options,
-.cutout-img-options {
-    display: flex;
-    gap    : 16px;
-    width  : 100%;
 }
 
 #drop-alert {

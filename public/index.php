@@ -55,8 +55,11 @@ $router->group('/', function (Router $router) {
 
     $router->group('sconces', function (Router $router) {
         $router->get('', [SconceController::class, 'listSconces']);
+        $router->get('/getAll', [SconceController::class, 'getAll']);
         $router->post('', [SconceController::class, 'create']);
-        $router->post('/{id}', [SconceController::class, 'update']);
+        $router->post('/{id}/images', [SconceController::class, 'updateImages']);
+        $router->put('/{id}', [SconceController::class, 'update']);
+        $router->put('/{id}/restore', [SconceController::class, 'restore']);
         $router->delete('/{id}', [SconceController::class, 'delete']);
     });
 

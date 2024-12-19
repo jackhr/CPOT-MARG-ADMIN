@@ -4,62 +4,174 @@ namespace App\Controllers;
 
 use App\Helpers\GeneralHelper;
 use App\Models\Sconce;
+use App\Models\SconceImage;
 use Exception;
 
 class SconceController extends Controller
 {
     private $sconceModel;
+    private $sconceImageModel;
     private $helper;
 
     public function __construct(GeneralHelper $helper)
     {
         $this->sconceModel = new Sconce();
+        $this->sconceImageModel = new SconceImage();
         $this->helper = $helper;
     }
 
     public function listSconces()
     {
         $logged_in_user = $_SESSION['user'];
-        $override_query = "SELECT sconces.*, users_c.email AS created_by_email, users_u.email AS updated_by_email 
-            FROM sconces
-            LEFT JOIN users users_c ON sconces.created_by = users_c.user_id
-            LEFT JOIN users users_u ON sconces.updated_by = users_u.user_id";
-        $sconces = $this->sconceModel->readAll($override_query);
-        if ($logged_in_user['role_id'] > 1) {
-            $sconces = array_filter($sconces, function ($sconce) {
-                return !isset($sconce['deleted_at']);
-            });
-        }
         $this->view("admin/sconces/list.php", [
             "user" => $logged_in_user,
-            "sconces" => $sconces,
             "title" => "Sconces"
         ]);
     }
 
+    public function getAll()
+    {
+        $logged_in_user = $_SESSION['user'];
+        $override_query = "SELECT sconces.*, users_c.email AS created_by_email, users_u.email AS updated_by_email 
+            FROM sconces
+            LEFT JOIN users users_c ON sconces.created_by = users_c.user_id
+            LEFT JOIN users users_u ON sconces.updated_by = users_u.user_id";
+        $sconces = $this->sconceModel->readAll($override_query, "sconce_id");
+        if ($logged_in_user['role_id'] > 1) {
+            $sconces = array_filter($sconces, function ($sconces) {
+                return !isset($sconces['deleted_at']);
+            });
+        }
+
+        $sconce_images = $this->sconceImageModel->DBRaw("SELECT * FROM sconce_images");
+
+        foreach ($sconce_images as $sconce_image) {
+            $oak_id = $sconce_image['sconce_id'];
+            $sconces[$oak_id]['images'][$sconce_image['image_id']] = $sconce_image;
+        }
+
+        $this->helper->respondToClient($sconces);
+    }
+
+    public function updateImages($sconce_id)
+    {
+        $sconce = $this->sconceModel->findById($sconce_id);
+        $name = $sconce['name'];
+        $primary_image_idx = trim($_POST['primary_image_idx']);
+        $primary_image_type = trim($_POST['primary_image_type']);
+        $new_sconce = [];
+        $status = 200;
+        $message = "Images updated successfully.";
+        $public_directory = __DIR__ . '/../../public';
+        $relative_directory = "/assets/images/gallery/sconces/";
+
+        if (!$sconce) {
+            $status = 409;
+            $message = "There is no sconce with this id.";
+        }
+
+        if ($status !== 200) {
+            $this->helper->respondToClient(null, $status, $message);
+        }
+
+        if (isset($_POST['deletedImages'])) {
+            try {
+                foreach ($_POST['deletedImages'] as $image_id) {
+                    $image = $this->sconceImageModel->findById($image_id);
+                    $delete_image_path = $public_directory . $image['image_url'];
+                    if (!unlink($delete_image_path)) {
+                        $status = 500;
+                        throw new Exception("Failed to delete the old image.");
+                    } else {
+                        $this->sconceImageModel->image_id = $image_id;
+                        $this->sconceImageModel->delete();
+                    }
+                }
+            } catch (Exception $e) {
+                $message = $e->getMessage();
+            }
+        }
+
+        if ($status !== 200) {
+            $this->helper->respondToClient(null, $status, $message);
+        }
+
+        if (isset($_FILES['newImages'])) {
+            try {
+                foreach ($_FILES['newImages']['type'] as $index => $fileType) {
+                    $this->sconceImageModel->sconce_id = $sconce_id;
+                    $image_id = $this->sconceImageModel->create();
+                    $extension = $this->helper->getFileExtension($fileType);
+
+                    if (!strlen($extension)) {
+                        $status = 415;
+                        throw new Exception("The file type was not recognized. Please use jpeg, png, webp, avif, or tiff.");
+                    } else if (!$this->helper->checkIfFileTypeIsAcceptable($fileType)) {
+                        $status = 409;
+                        throw new Exception("The file type is not acceptable. Please use jpeg, png, webp, avif, or tiff.");
+                    }
+
+                    if ($primary_image_type === "newImages" && (int)$index == (int)$primary_image_idx) {
+                        $this->sconceModel->sconce_id = $sconce_id;
+                        $this->sconceModel->primary_image_id = $image_id;
+                        $this->sconceModel->updatePrimaryImg();
+                    }
+
+                    $tmpName = $_FILES['newImages']['tmp_name'][$index];
+                    $newFileName = sprintf("%s_%d_%d%s", $name, $sconce_id, $image_id, $extension);
+                    $image_url = $relative_directory . $newFileName;
+                    $destination = $public_directory . $image_url;
+
+                    $this->sconceImageModel->image_id = $image_id;
+                    $this->sconceImageModel->image_url = $image_url;
+                    $this->sconceImageModel->update();
+
+                    // Move the uploaded file to the target directory
+                    if (!move_uploaded_file($tmpName, $destination)) {
+                        $status = 500;
+                        $message = "Sconce was created but the file upload failed.";
+                    }
+                }
+            } catch (Exception $e) {
+                $message = $e->getMessage();
+            }
+        }
+
+        if ($status !== 200) {
+            $this->helper->respondToClient($new_sconce, $status, $message);
+        }
+
+        if ($primary_image_type === "existingImages") {
+            $this->sconceModel->sconce_id = $sconce_id;
+            $this->sconceModel->primary_image_id = $primary_image_idx;
+            $this->sconceModel->updatePrimaryImg();
+        }
+
+        $this->helper->respondToClient($sconce, $status, $message);
+    }
+
     public function create()
     {
-        $name = $_POST['name'];
-        $uploadedFile = null;
+        $name = trim($_POST['name']);
         $new_sconce = [];
         $status = 200;
         $message = "";
+        $file_data = [];
+        $public_directory = __DIR__ . '/../../public';
+        $relative_directory = "/assets/images/gallery/sconces/";
 
-        if (isset($_FILES['sconce-img'])) {
-            $uploadedFile = $_FILES['sconce-img'];
-            $fileType = $uploadedFile['type'];
-            $extension = $this->helper->getFileExtension($fileType);
+        if (isset($_FILES['newImages'])) {
+            foreach ($_FILES['newImages']['type'] as $index => $fileType) {
+                $extension = $this->helper->getFileExtension($fileType);
+                $file_data['extension'][$index] = $extension;
 
-            $public_directory = "/assets/images/gallery/sconces/";
-            $newFileName = $name . $extension;
-            $image_url = $public_directory . $newFileName;
-
-            if (!strlen($extension)) {
-                $status = 415;
-                $message = "The file type was not recognized. Please use jpeg, png, webp, avif, or tiff.";
-            } else if (!$this->helper->checkIfFileTypeIsAcceptable($fileType)) {
-                $status = 409;
-                $message = "The file type is not acceptable. Please use jpeg, png, webp, avif, or tiff.";
+                if (!strlen($extension)) {
+                    $status = 415;
+                    $message = "The file type was not recognized. Please use jpeg, png, webp, avif, or tiff.";
+                } else if (!$this->helper->checkIfFileTypeIsAcceptable($fileType)) {
+                    $status = 409;
+                    $message = "The file type is not acceptable. Please use jpeg, png, webp, avif, or tiff.";
+                }
             }
         } else {
             $status = 409;
@@ -79,7 +191,7 @@ class SconceController extends Controller
             "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
-            "breadth" => $breadth,
+            "depth" => $depth,
             "material" => $material,
             "color" => $color,
             "weight" => $weight,
@@ -88,14 +200,15 @@ class SconceController extends Controller
             "stock_quantity" => $stock_quantity,
             "status" => $sconce_status,
             "description" => $description,
+            "primary_image_idx" => $primary_image_idx,
         ] = $_POST;
 
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
-        $breadth = $this->helper->truncateToThreeDecimals($breadth);
+        $depth = $this->helper->truncateToThreeDecimals($depth);
         $weight = $this->helper->truncateToThreeDecimals($weight);
 
-        $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
+        $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
         $this->sconceModel->name = $name;
@@ -107,23 +220,39 @@ class SconceController extends Controller
         $this->sconceModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->sconceModel->status = $sconce_status;
         $this->sconceModel->description = $description;
-        $this->sconceModel->image_url = $image_url;
         $this->sconceModel->created_by = $_SESSION['user']['user_id'];
 
         if ($this->sconceModel->create()) {
-            $message = "sconce created successfully.";
+            $message = "Sconce created successfully.";
             $new_sconce = $this->sconceModel->findByName($name);
-            $tmpName = $uploadedFile['tmp_name'];
 
-            $uploadDirectory = __DIR__ . '/../../public' . $public_directory;
-            $destination = $uploadDirectory . $newFileName;
+            foreach ($_FILES['newImages']['tmp_name'] as $index => $tmpName) {
+                $sconce_id = $new_sconce['sconce_id'];
+                $this->sconceImageModel->sconce_id = $sconce_id;
+                $image_id = $this->sconceImageModel->create();
 
-            // Move the uploaded file to the target directory
-            if (move_uploaded_file($tmpName, $destination)) {
-                $message = "File uploaded successfully.";
-            } else {
-                $status = 500;
-                $message = "Sconce was created but the file upload failed.";
+                if ((int)$index == (int)$primary_image_idx) {
+                    $this->sconceModel->sconce_id = $sconce_id;
+                    $this->sconceModel->primary_image_id = $image_id;
+                    $this->sconceModel->updatePrimaryImg();
+                }
+
+                $extension = $file_data['extension'][$index];
+                $newFileName = sprintf("%s_%d_%d%s", $name, $sconce_id, $image_id, $extension);
+                $image_url = $relative_directory . $newFileName;
+                $destination = $public_directory . $image_url;
+
+                $this->sconceImageModel->image_id = $image_id;
+                $this->sconceImageModel->image_url = $image_url;
+                $this->sconceImageModel->update();
+
+                // Move the uploaded file to the target directory
+                if (move_uploaded_file($tmpName, $destination)) {
+                    $message = "File uploaded successfully.";
+                } else {
+                    $status = 500;
+                    $message = "Sconce was created but the file upload failed.";
+                }
             }
         } else {
             $status = 409;
@@ -135,13 +264,12 @@ class SconceController extends Controller
 
     public function update($sconce_id)
     {
-        $name = $_POST['name'];
-        $uploadedFile = null;
-        $new_sconce = [];
+        $inputData = file_get_contents('php://input');
+        $data = json_decode($inputData, true);
+
+        $name = trim($data['name']);
         $status = 200;
         $message = "";
-        $changing_image = isset($_FILES['sconce-img']);
-
         $sconce = $this->sconceModel->findById($sconce_id);
         $sconce_with_same_name = $this->sconceModel->findByName($name);
 
@@ -155,105 +283,65 @@ class SconceController extends Controller
                 ($sconce_with_same_name['name'] === $name)
             ) {
                 $status = 409;
-                $message = "There is already a unique sconce with that name.";
+                $message = "There is already a sconce with the name: \"$name\"";
             }
-        }
-
-        try {
-            if ($changing_image) {
-                $uploadedFile = $_FILES['sconce-img'];
-                $fileType = $uploadedFile['type'];
-                $extension = $this->helper->getFileExtension($fileType);
-
-                if (!strlen($extension)) {
-                    $status = 415;
-                    throw new Exception("The file type was not recognized. Please use jpeg, png, webp, avif, or tiff.");
-                } else if (!$this->helper->checkIfFileTypeIsAcceptable($fileType)) {
-                    $status = 409;
-                    throw new Exception("The file type is not acceptable. Please use jpeg, png, webp, avif, or tiff.");
-                }
-
-                // Prepare file paths
-                $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/gallery/sconces/";
-                $newFileName = $name . $extension;
-                $new_image_url = $relative_directory . $newFileName;
-                $uploadDirectory = $public_directory . $relative_directory;
-                $destination = $uploadDirectory . $newFileName;
-
-                $tmpName = $uploadedFile['tmp_name'];
-                $old_image_path = $public_directory . $sconce['image_url'];
-
-                // Handle existing file replacement or renaming
-                if (file_exists($old_image_path)) {
-                    if ($sconce['name'] === $name) {
-                        // If the name hasn't changed, just overwrite the old image
-                        if (!move_uploaded_file($tmpName, $old_image_path)) {
-                            $status = 500;
-                            throw new Exception("Failed to overwrite the existing image.");
-                        }
-
-                        if (!rename($old_image_path, $public_directory . $new_image_url)) {
-                            $status = 500;
-                            throw new Exception("Failed to rename the updated image.");
-                        }
-                    } else {
-                        // If the name has changed, delete the old image
-                        if (!unlink($old_image_path)) {
-                            $status = 500;
-                            throw new Exception("Failed to delete the old image.");
-                        }
-
-                        // Upload the new image to the new file path
-                        if (!move_uploaded_file($tmpName, $destination)) {
-                            $status = 500;
-                            throw new Exception("Failed to upload the new image.");
-                        }
-                    }
-                } else {
-                    // If the old image doesn't exist, just upload the new one
-                    if (!move_uploaded_file($tmpName, $destination)) {
-                        $status = 500;
-                        throw new Exception("Failed to upload the new image.");
-                    }
-                }
-            } else if ($sconce['name'] !== $name) {
-                // not changing image, but changing name
-                $fileInfo = pathinfo($sconce['image_url']);
-                $extension = $fileInfo['extension'];
-
-                $public_directory = __DIR__ . '/../../public';
-                $relative_directory = "/assets/images/gallery/sconces/";
-                $newFileName = "$name.$extension";
-                $new_image_url = $relative_directory . $newFileName;
-                $uploadDirectory = $public_directory . $relative_directory;
-                $destination = $uploadDirectory . $newFileName;
-
-                $old_image_path = $public_directory . $sconce['image_url'];
-
-                if (file_exists($old_image_path)) {
-                    if (!rename($old_image_path, $destination)) {
-                        $status = 500;
-                        throw new Exception("Failed to rename the image.");
-                    }
-                } else {
-                    $status = 500;
-                    throw new Exception("File does not exist.");
-                }
-            }
-        } catch (Exception $e) {
-            $message = $e->getMessage();
         }
 
         if ($status !== 200) {
-            $this->helper->respondToClient($new_sconce, $status, $message);
+            $this->helper->respondToClient(null, $status, $message);
+        }
+
+        if ($name !== $sconce['name']) {
+            /**
+             * Means that we are updating the resource name
+             * and so we must update the image urls
+             */
+            try {
+                $images = $this->sconceImageModel->findBysconceId($sconce_id);
+                $public_directory = __DIR__ . '/../../public';
+                $relative_directory = "/assets/images/gallery/sconces/";
+                foreach ($images as $image) {
+                    $fileInfo = pathinfo($image['image_url']);
+                    $extension = $fileInfo['extension'];
+                    $image_id = $image['image_id'];
+
+                    $newFileName = sprintf("%s_%d_%d.%s", $name, $sconce_id, $image_id, $extension);
+                    $uploadDirectory = $public_directory . $relative_directory;
+                    $destination = $uploadDirectory . $newFileName;
+                    $old_image_path = $public_directory . $image['image_url'];
+
+                    if (file_exists($old_image_path)) {
+                        if (rename($old_image_path, $destination)) {
+                            $newImageUrl = $relative_directory . $newFileName;
+                            $this->sconceImageModel->sconce_id = $sconce_id;
+                            $this->sconceImageModel->image_url = $newImageUrl;
+                            $this->sconceImageModel->image_id = $image_id;
+                            $this->sconceImageModel->update();
+                        } else {
+                            $status = 500;
+                            throw new Exception("Failed to rename the image.");
+                        }
+                    } else {
+                        $this->helper->dd([$image, $old_image_path, $destination]);
+                        $status = 500;
+                        throw new Exception("File does not exist.");
+                    }
+                }
+            } catch (Exception $e) {
+                $status = 500;
+                $message = $e->getMessage();
+            }
+        }
+
+        if ($status !== 200) {
+            $this->helper->respondToClient(null, $status, $message);
         }
 
         [
             "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
-            "breadth" => $breadth,
+            "depth" => $depth,
             "material" => $material,
             "color" => $color,
             "weight" => $weight,
@@ -262,14 +350,14 @@ class SconceController extends Controller
             "stock_quantity" => $stock_quantity,
             "status" => $sconce_status,
             "description" => $description,
-        ] = $_POST;
+        ] = $data;
 
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
-        $breadth = $this->helper->truncateToThreeDecimals($breadth);
+        $depth = $this->helper->truncateToThreeDecimals($depth);
         $weight = $this->helper->truncateToThreeDecimals($weight);
 
-        $dimensions = "$width{$dim_units} x $height{$dim_units} x $breadth{$dim_units}";
+        $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
         $weight = "$weight{$weight_units}";
 
         $this->sconceModel->sconce_id = $sconce_id;
@@ -282,7 +370,6 @@ class SconceController extends Controller
         $this->sconceModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->sconceModel->status = $sconce_status;
         $this->sconceModel->description = $description;
-        $this->sconceModel->image_url = isset($new_image_url) ? $new_image_url : $sconce['image_url'];
         $this->sconceModel->updated_by = $_SESSION['user']['user_id'];
 
         if ($this->sconceModel->update()) {
@@ -294,6 +381,25 @@ class SconceController extends Controller
         }
 
         $this->helper->respondToClient($updated_sconce, $status, $message);
+    }
+
+    public function restore($sconce_id)
+    {
+        $sconce_to_restore = null;
+        $status = 200;
+        $message = "";
+
+        $this->sconceModel->sconce_id = $sconce_id;
+
+        if ($this->sconceModel->restore()) {
+            $message = "Sconce restored successfully.";
+            $sconce_to_restore = $this->sconceModel->findById($sconce_id);
+        } else {
+            $status = 500;
+            $message = "Error restoring sconce.";
+        }
+
+        $this->helper->respondToClient($sconce_to_restore, $status, $message);
     }
 
     public function delete($sconce_id)

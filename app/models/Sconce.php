@@ -8,6 +8,7 @@ use PDO;
 class Sconce extends Model
 {
     public $sconce_id;
+    public $primary_image_id;
     public $name;
     public $slug;
     public $dimensions;
@@ -19,7 +20,6 @@ class Sconce extends Model
     public $status;
     public $installation_type;
     public $style;
-    public $image_url;
     public $description;
     public $availability;
     public $care_instructions;
@@ -41,9 +41,41 @@ class Sconce extends Model
         $this->helper = new GeneralHelper();
     }
 
+    public function updatePrimaryImg()
+    {
+        $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id WHERE sconce_id = :sconce_id";
+        $stmt = $this->con->prepare($query);
+
+        // Sanitize input
+        $this->sconce_id = htmlspecialchars($this->sconce_id);
+        $this->primary_image_id = htmlspecialchars($this->primary_image_id);
+
+        // Bind parameters
+        $stmt->bindParam(":primary_image_id", $this->primary_image_id, PDO::PARAM_INT);
+        $stmt->bindParam(":sconce_id", $this->sconce_id, PDO::PARAM_INT);
+
+        // Execute the query
+        return $stmt->execute();
+    }
+
+    public function restore()
+    {
+        $query = "UPDATE {$this->table_name} SET deleted_at = NULL, `status` = 'active' WHERE sconce_id = :sconce_id";
+        $stmt = $this->con->prepare($query);
+
+        // Sanitize input
+        $this->sconce_id = htmlspecialchars($this->sconce_id);
+
+        // Bind parameters
+        $stmt->bindParam(":sconce_id", $this->sconce_id, PDO::PARAM_INT);
+
+        // Execute the query
+        return $stmt->execute();
+    }
+
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, updated_by = :updated_by WHERE sconce_id = :sconce_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, updated_by = :updated_by WHERE sconce_id = :sconce_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -57,7 +89,6 @@ class Sconce extends Model
         $this->stock_quantity = htmlspecialchars($this->stock_quantity);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
-        $this->image_url = htmlspecialchars($this->image_url);
         $this->updated_by = htmlspecialchars($this->updated_by);
 
         // Bind parameters
@@ -70,7 +101,6 @@ class Sconce extends Model
         $stmt->bindParam(":stock_quantity", $this->stock_quantity);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":image_url", $this->image_url);
         $stmt->bindParam(":sconce_id", $this->sconce_id, PDO::PARAM_INT);
         $stmt->bindParam(":updated_by", $this->updated_by, PDO::PARAM_INT);
 
@@ -80,7 +110,7 @@ class Sconce extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, image_url = :image_url, created_by = :created_by";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -93,7 +123,6 @@ class Sconce extends Model
         $this->stock_quantity = htmlspecialchars($this->stock_quantity);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
-        $this->image_url = htmlspecialchars($this->image_url);
         $this->created_by = htmlspecialchars($this->created_by);
 
         // Bind parameters
@@ -106,7 +135,6 @@ class Sconce extends Model
         $stmt->bindParam(":stock_quantity", $this->stock_quantity);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":image_url", $this->image_url);
         $stmt->bindParam(":created_by", $this->created_by, PDO::PARAM_INT);
 
         // Execute the query
@@ -115,7 +143,7 @@ class Sconce extends Model
 
     public function delete()
     {
-        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP WHERE sconce_id = :sconce_id";
+        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP, `status` = 'archived' WHERE sconce_id = :sconce_id";
         $stmt = $this->con->prepare($query);
 
         $this->sconce_id = htmlspecialchars($this->sconce_id);
