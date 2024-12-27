@@ -11,19 +11,6 @@
             </svg>
             <span>Sconces</span>
         </a>
-        <a href="/dashboard">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 10V2" />
-                <path d="m4.93 10.93 1.41 1.41" />
-                <path d="M2 18h2" />
-                <path d="M20 18h2" />
-                <path d="m19.07 10.93-1.41 1.41" />
-                <path d="M22 22H2" />
-                <path d="m16 6-4 4-4-4" />
-                <path d="M16 18a4 4 0 0 0-8 0" />
-            </svg>
-            <span>Covers</span>
-        </a>
         <a href="/cutouts">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5.42 9.42 8 12" />
@@ -36,16 +23,6 @@
             </svg>
             <span>Cutouts</span>
         </a>
-        <a href="/dashboard">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
-                <path d="M20 3v4" />
-                <path d="M22 5h-4" />
-                <path d="M4 17v2" />
-                <path d="M5 18H3" />
-            </svg>
-            <span>Finishes</span>
-        </a>
         <a href="/orders">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M15 12h-5" />
@@ -54,13 +31,6 @@
                 <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
             </svg>
             <span>Orders</span>
-        </a>
-        <a href="/dashboard">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
-                <path d="m9 12 2 2 4-4" />
-            </svg>
-            <span>Promotions</span>
         </a>
         <?php if ($user['role_id'] < 3) { ?>
             <a href="/roles">
