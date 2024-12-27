@@ -521,7 +521,7 @@
             let data = {};
             if ($("#edit-cutout-modal").hasClass("showing")) {
                 const cutoutId = $("#edit-cutout-id").text();
-                data = STATE.cutout.find(x => x.one_of_a_kind_id === Number(cutoutId));
+                data = STATE.cutouts.find(x => x.one_of_a_kind_id === Number(cutoutId));
             } else if ($("#create-cutout-modal").hasClass("showing")) {
                 $("#create-cutout-modal .img-preview-container").html("");
             }
