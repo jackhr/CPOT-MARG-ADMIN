@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Helpers\GeneralHelper;
 use App\Models\Order;
-use Exception;
 
 class OrderController extends Controller
 {
@@ -29,12 +28,22 @@ class OrderController extends Controller
 
         foreach ($order_items as $order_item) {
             if (!is_null($order_item['sconce_id'])) {
-                $sconce = $this->orderModel->DBRaw("SELECT * FROM sconces WHERE sconce_id = {$order_item['sconce_id']}");
+                $sconce = $this->orderModel->DBRaw(
+                    "SELECT sconces.*, sconce_images.image_url
+                        FROM sconces
+                        LEFT JOIN sconce_images ON sconces.primary_image_id = sconce_images.image_id
+                    WHERE sconces.sconce_id = {$order_item['sconce_id']}"
+                );
                 $order_item['sconce'] = $sconce[0];
             }
 
             if (!is_null($order_item['cutout_id'])) {
-                $cutout = $this->orderModel->DBRaw("SELECT * FROM cutouts WHERE cutout_id = {$order_item['cutout_id']}");
+                $cutout = $this->orderModel->DBRaw(
+                    "SELECT cutouts.*, cutout_images.image_url
+                        FROM cutouts
+                        LEFT JOIN cutout_images ON cutouts.primary_image_id = cutout_images.image_id
+                    WHERE cutouts.cutout_id = {$order_item['cutout_id']}"
+                );
                 $order_item['cutout'] = $cutout[0];
             }
             $order_id = $order_item['order_id'];
