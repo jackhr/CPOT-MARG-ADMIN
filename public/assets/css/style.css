@@ -469,7 +469,7 @@ span.err-msg {
     max-width            : 1200px;
     grid-gap             : 48px;
     display              : grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     margin               : auto;
 }
 
@@ -1197,12 +1197,6 @@ form hr {
 
 table.dataTable>tbody>tr.deleted_item:not(:hover) {
     background-color: #f000000f;
-}
-
-@media screen and (max-width: 1256px) {
-    #dashboard-main {
-        grid-template-columns: repeat(4, 1fr);
-    }
 }
 
 @media screen and (max-width: 1008px) {
