@@ -32,8 +32,9 @@ class SconceController extends Controller
     public function getAll()
     {
         $logged_in_user = $_SESSION['user'];
-        $override_query = "SELECT sconces.*, users_c.email AS created_by_email, users_u.email AS updated_by_email 
+        $override_query = "SELECT sconces.*, sconce_images.image_url, users_c.email AS created_by_email, users_u.email AS updated_by_email 
             FROM sconces
+            LEFT JOIN sconce_images ON sconces.primary_image_id = sconce_images.image_id
             LEFT JOIN users users_c ON sconces.created_by = users_c.user_id
             LEFT JOIN users users_u ON sconces.updated_by = users_u.user_id";
         $sconces = $this->sconceModel->readAll($override_query, "sconce_id");

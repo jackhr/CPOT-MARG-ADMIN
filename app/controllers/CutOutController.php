@@ -32,8 +32,9 @@ class CutoutController extends Controller
     public function getAll()
     {
         $logged_in_user = $_SESSION['user'];
-        $override_query = "SELECT cutouts.*, users_c.email AS created_by_email, users_u.email AS updated_by_email 
+        $override_query = "SELECT cutouts.*, cutout_images.image_url, users_c.email AS created_by_email, users_u.email AS updated_by_email 
             FROM cutouts
+            LEFT JOIN cutout_images ON cutouts.primary_image_id = cutout_images.image_id
             LEFT JOIN users users_c ON cutouts.created_by = users_c.user_id
             LEFT JOIN users users_u ON cutouts.updated_by = users_u.user_id";
         $cutouts = $this->cutoutModel->readAll($override_query, "cutout_id");
