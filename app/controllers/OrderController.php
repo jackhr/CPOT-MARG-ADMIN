@@ -68,4 +68,25 @@ class OrderController extends Controller
             "title" => "Orders"
         ]);
     }
+
+    public function updateStatus($order_id)
+    {
+        $inputData = file_get_contents('php://input');
+        $data = json_decode($inputData, true);
+
+        $this->orderModel->order_id = $order_id;
+        $this->orderModel->previous_status = $data['current_status'];
+        $this->orderModel->current_status = $data['new_status'];
+
+        if ($this->orderModel->updateStatus()) {
+            $status = 200;
+            $message = "Order status updated successfully.";
+            $updated_cutout = $this->orderModel->findById($order_id);
+        } else {
+            $status = 409;
+            $message = "Error updating cutout.";
+        }
+
+        $this->helper->respondToClient($updated_cutout, $status, $message);
+    }
 }

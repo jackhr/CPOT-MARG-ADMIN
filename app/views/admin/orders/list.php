@@ -29,76 +29,131 @@
                     <span class="modal-close">×</span>
                 </div>
                 <h1>Order</h1>
+                <div id="order-options-container">
+                    <a href="" class="continue-btn order-option other email-client" target="_blank">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                        </svg>
+                        <span>Email Client</span>
+                    </a>
+                    <div data-status="in process" class="continue-btn order-option">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 2v6h6"></path>
+                            <path d="M21 12A9 9 0 0 0 6 5.3L3 8"></path>
+                            <path d="M21 22v-6h-6"></path>
+                            <path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"></path>
+                            <circle cx="12" cy="12" r="1"></circle>
+                        </svg>
+                        <span>Make In Process</span>
+                    </div>
+                    <div data-status="completed" class="continue-btn order-option success">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21.801 10A10 10 0 1 1 17 3.335"></path>
+                            <path d="m9 11 3 3L22 4"></path>
+                        </svg>
+                        <span>Complete</span>
+                    </div>
+                    <div data-status="canceled" class="continue-btn order-option danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="m4.9 4.9 14.2 14.2"></path>
+                        </svg>
+                        <span>Cancel</span>
+                    </div>
+                </div>
             </div>
             <div class="modal-body">
                 <form id="order-details-form">
-                    <div class="mutiple-input-container">
-                        <h4>Order Info</h4>
-                        <button id="view-items-btn" class="continue-btn">View Items</button>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="total_amount">Total</label>
-                            <span data-total_amount></span>
+                    <div class="order-info-container">
+                        <div class="order-info-container-title">
+                            <h4>Client Info</h4>
+                            <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
                         </div>
-                        <div class="input-container">
-                            <label for="order_type">Order Type</label>
-                            <span data-order_type></span>
+                        <div class="order-info-container-content">
+                            <div class="mutiple-input-container">
+                                <div class="input-container">
+                                    <label for="name">Name</label>
+                                    <span data-full_name></span>
+                                </div>
+                                <div class="input-container">
+                                    <label for="email">Email</label>
+                                    <a data-email></a>
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <label for="phone">Phone</label>
+                                <a data-phone></a>
+                            </div>
+                            <div class="mutiple-input-container" style="margin-top: 36px;">
+                                <div class="input-container">
+                                    <label for="address_1">Street Address</label>
+                                    <span data-address_1></span>
+                                </div>
+                                <div class="input-container">
+                                    <label for="town_or_city">Town / City</label>
+                                    <span data-town_or_city></span>
+                                </div>
+                            </div>
+                            <div class="mutiple-input-container">
+                                <div class="input-container">
+                                    <label for="state">State</label>
+                                    <span data-state></span>
+                                </div>
+                                <div class="input-container">
+                                    <label for="country">Country</label>
+                                    <span data-country></span>
+                                </div>
+                            </div>
+                            <div class="input-container" style="margin: 24px 0 0;">
+                                <label for="message">Message</label>
+                                <p data-message></p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="current_status">Status</label>
-                            <span data-current_status></span>
-                        </div>
-                        <div class="input-container">
-                            <label for="created_at">Ordered</label>
-                            <span data-created_at></span>
-                        </div>
-                    </div>
-                    <div class="input-container">
-                        <label for="items">Items</label>
-                        <span data-order_item_count></span>
                     </div>
                     <hr>
-                    <h4>Client Info</h4>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="name">Name</label>
-                            <span data-full_name></span>
+                    <div class="order-info-container">
+                        <div class="order-info-container-title">
+                            <h4>Order Info</h4>
+                            <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
                         </div>
-                        <div class="input-container">
-                            <label for="email">Email</label>
-                            <a data-email></a>
-                        </div>
-                    </div>
-                    <div class="input-container">
-                        <label for="phone">Phone</label>
-                        <a data-phone></a>
-                    </div>
-                    <div class="mutiple-input-container" style="margin-top: 36px;">
-                        <div class="input-container">
-                            <label for="address_1">Street Address</label>
-                            <span data-address_1></span>
-                        </div>
-                        <div class="input-container">
-                            <label for="town_or_city">Town / City</label>
-                            <span data-town_or_city></span>
-                        </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="state">State</label>
-                            <span data-state></span>
-                        </div>
-                        <div class="input-container">
-                            <label for="country">Country</label>
-                            <span data-country></span>
+                        <div class="order-info-container-content">
+                            <div class="mutiple-input-container">
+                                <div class="input-container">
+                                    <label for="total_amount">Total</label>
+                                    <span data-total_amount></span>
+                                </div>
+                                <div class="input-container">
+                                    <label for="order_type">Order Type</label>
+                                    <span data-order_type></span>
+                                </div>
+                            </div>
+                            <div class="mutiple-input-container">
+                                <div class="input-container">
+                                    <label for="current_status">Status</label>
+                                    <span data-current_status></span>
+                                </div>
+                                <div class="input-container">
+                                    <label for="created_at">Ordered</label>
+                                    <span data-created_at></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="input-container" style="margin-top: 24px;">
-                        <label for="message">Message</label>
-                        <p data-message></p>
+                    <hr>
+                    <div class="order-info-container line-items">
+                        <div class="order-info-container-title">
+                            <h4>Line Items</h4>
+                            <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </div>
+                        <div class="order-info-container-content"></div>
+                        <button id="view-items-btn" class="continue-btn">View Items In Detail</button>
                     </div>
                 </form>
             </div>
@@ -190,6 +245,20 @@
             }
         });
 
+        function renderLineItems(order) {
+            const lineItemsHTML = order.order_items.reduce((html, item) => {
+                html += `<div>${item.description}</div><div>$${formatPrice(item.price)}</div>`;
+                return html;
+            }, "");
+
+            const totalHTML = `<div>Total</div><div>$${formatPrice(order.total_amount)}</div>`;
+
+            $(".order-info-container.line-items .order-info-container-content")
+                .html(lineItemsHTML + totalHTML);
+            $(".order-info-container.line-items .order-info-container-title h4")
+                .text(`Line Items (${order.order_item_count})`);
+        }
+
         function handleInitTableRowEvents() {
             dTable.rows().every(function(idx) {
                 const rowNode = this.node();
@@ -207,10 +276,11 @@
                     modal.find('#order-details-id').text(orderId);
                     modal.find('.modal-header h1').text(`Order #${orderId}`);
                     modal.find('[data-order_type]').text(data.order_type);
-                    modal.find('[data-order_item_count]').text(data.order_item_count);
                     modal.find('[data-created_at]').text(data.created_at);
                     modal.find('[data-total_amount]').text(`$${formatPrice(data.total_amount)}`);
-                    modal.find('[data-current_status]').text(data.current_status);
+                    modal.find('[data-current_status]')
+                        .text(data.current_status)
+                        .attr('data-current_status', data.current_status);
                     modal.find('[data-full_name]').text(data.full_name);
                     modal.find('[data-email]')
                         .text(data.email)
@@ -223,6 +293,9 @@
                     modal.find('[data-state]').text(data.state);
                     modal.find('[data-country]').text(data.country);
                     modal.find('[data-message]').text(data.message);
+                    modal.find('.continue-btn.email-client').attr('href', `mailto:${data.email}`);
+
+                    renderLineItems(data);
 
                     modal.addClass('showing');
                     STATE.activeOrder = data;
@@ -230,6 +303,61 @@
             });
 
         }
+
+        $(".order-option[data-status]").on('click', async function() {
+            const statusData = {
+                current_status: STATE.activeOrder.current_status,
+                new_status: $(this).data('status'),
+            };
+
+            const css = 'style="text-transform: capitalize;"';
+            
+            const choice = await Swal.fire({
+                icon: "warning",
+                title: "Updating Order Status",
+                html: `Please confirm that you would like to change the status of <strong>Order #${STATE.activeOrder.order_id}</strong> from <strong ${css}>"${STATE.activeOrder.current_status}"</strong> to <strong ${css}>"${statusData.new_status}"</strong>`,
+                confirmButtonText: "confirm",
+                showCancelButton: true
+            });
+
+            if (!choice.isConfirmed) return;
+
+            $.ajax({
+                url: `/orders/${STATE.activeOrder.order_id}/status`,
+                method: "PUT",
+                dataType: "JSON",
+                contentType: "application/json",
+                data: JSON.stringify(statusData),
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    Swal.fire({
+                        icon: success ? "success" : "error",
+                        title: success ? "Success" : "Error",
+                        text: message,
+                    });
+
+                    if (success) {
+                        $("#order-details-modal [data-current_status]")
+                            .attr('data-current_status', data.current_status)
+                            .text(data.current_status);
+                    }
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        });
+
+        $(".order-info-container-title").on("click", function() {
+            $(this).closest('.order-info-container').toggleClass('hidden');
+        });
+
         $("#order-items-modal .modal-close").on("click", function() {
             setTimeout(() => {
                 $("#order-details-modal").addClass("showing");
