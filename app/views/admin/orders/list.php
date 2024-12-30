@@ -189,7 +189,7 @@
             }
         }
 
-        const dTable = new DataTable("#orders-table", {
+        STATE.dTable = new DataTable("#orders-table", {
             ...STATE.dtDefaultOpts,
             ajax: {
                 url: "/orders/getAll",
@@ -245,6 +245,10 @@
             }
         });
 
+        function reloadOrdersTable() {
+            STATE.dTable.ajax.reload(null, false); // false ensures the current paging stays the same
+        }
+
         function renderLineItems(order) {
             const lineItemsHTML = order.order_items.reduce((html, item) => {
                 html += `<div>${item.description}</div><div>$${formatPrice(item.price)}</div>`;
@@ -260,7 +264,7 @@
         }
 
         function handleInitTableRowEvents() {
-            dTable.rows().every(function(idx) {
+            STATE.dTable.rows().every(function(idx) {
                 const rowNode = this.node();
                 if (!rowNode) {
                     console.warn(`Row node not found for index ${idx}`);
@@ -311,7 +315,7 @@
             };
 
             const css = 'style="text-transform: capitalize;"';
-            
+
             const choice = await Swal.fire({
                 icon: "warning",
                 title: "Updating Order Status",
@@ -346,6 +350,8 @@
                         $("#order-details-modal [data-current_status]")
                             .attr('data-current_status', data.current_status)
                             .text(data.current_status);
+
+                        reloadOrdersTable();
                     }
                 },
                 error: function() {
