@@ -32,9 +32,9 @@ class OneOfAKindController extends Controller
     public function getAll()
     {
         $logged_in_user = $_SESSION['user'];
-        $override_query = "SELECT one_of_a_kinds.*, one_of_a_kind_images.image_url, users_c.email AS created_by_email, users_u.email AS updated_by_email 
-            FROM one_of_a_kinds
-            LEFT JOIN one_of_a_kind_images ON one_of_a_kinds.primary_image_id = one_of_a_kind_images.image_id
+        $override_query = "SELECT one_of_a_kind.*, one_of_a_kind_images.image_url, users_c.email AS created_by_email, users_u.email AS updated_by_email 
+            FROM one_of_a_kind
+            LEFT JOIN one_of_a_kind_images ON one_of_a_kind.primary_image_id = one_of_a_kind_images.image_id
             LEFT JOIN users users_c ON one_of_a_kind.created_by = users_c.user_id
             LEFT JOIN users users_u ON one_of_a_kind.updated_by = users_u.user_id";
         $one_of_a_kinds = $this->oneOfAKindModel->readAll($override_query, "one_of_a_kind_id");
