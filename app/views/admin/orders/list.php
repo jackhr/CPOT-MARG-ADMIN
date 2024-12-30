@@ -67,6 +67,37 @@
                 <form id="order-details-form">
                     <div class="order-info-container">
                         <div class="order-info-container-title">
+                            <h4>Order Info</h4>
+                            <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </div>
+                        <div class="order-info-container-content">
+                            <div class="mutiple-input-container">
+                                <div class="input-container">
+                                    <label for="total_amount">Total</label>
+                                    <span data-total_amount></span>
+                                </div>
+                                <div class="input-container">
+                                    <label for="order_type">Order Type</label>
+                                    <span data-order_type></span>
+                                </div>
+                            </div>
+                            <div class="mutiple-input-container">
+                                <div class="input-container">
+                                    <label for="current_status">Status</label>
+                                    <span data-current_status></span>
+                                </div>
+                                <div class="input-container">
+                                    <label for="created_at">Ordered</label>
+                                    <span data-created_at></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="order-info-container">
+                        <div class="order-info-container-title">
                             <h4>Client Info</h4>
                             <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m6 9 6 6 6-6" />
@@ -110,37 +141,6 @@
                             <div class="input-container" style="margin: 24px 0 0;">
                                 <label for="message">Message</label>
                                 <p data-message></p>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="order-info-container">
-                        <div class="order-info-container-title">
-                            <h4>Order Info</h4>
-                            <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="m6 9 6 6 6-6" />
-                            </svg>
-                        </div>
-                        <div class="order-info-container-content">
-                            <div class="mutiple-input-container">
-                                <div class="input-container">
-                                    <label for="total_amount">Total</label>
-                                    <span data-total_amount></span>
-                                </div>
-                                <div class="input-container">
-                                    <label for="order_type">Order Type</label>
-                                    <span data-order_type></span>
-                                </div>
-                            </div>
-                            <div class="mutiple-input-container">
-                                <div class="input-container">
-                                    <label for="current_status">Status</label>
-                                    <span data-current_status></span>
-                                </div>
-                                <div class="input-container">
-                                    <label for="created_at">Ordered</label>
-                                    <span data-created_at></span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -231,7 +231,11 @@
                     data: 'order_type'
                 },
                 {
-                    data: 'current_status'
+                    data: 'current_status',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('status');
+                    }
                 },
                 {
                     data: 'created_at'
@@ -274,9 +278,12 @@
                 const orderId = this.data().order_id;
                 const data = STATE.orders.find(x => x.order_id === orderId);
 
+                $(rowNode).addClass(`${data.current_status}_order`);
+
                 rowNode.onclick = () => {
                     const modal = $("#order-details-modal");
 
+                    modal.attr('data-status', data.current_status);
                     modal.find('#order-details-id').text(orderId);
                     modal.find('.modal-header h1').text(`Order #${orderId}`);
                     modal.find('[data-order_type]').text(data.order_type);
@@ -316,6 +323,14 @@
 
             const css = 'style="text-transform: capitalize;"';
 
+            if (statusData.current_status === statusData.new_status) {
+                return Swal.fire({
+                    icon: "info",
+                    title: "Same Status",
+                    html: `<strong>Order #${STATE.activeOrder.order_id}</strong> already has a status of <strong ${css}>"${statusData.new_status}"</strong>`,
+                })
+            }
+
             const choice = await Swal.fire({
                 icon: "warning",
                 title: "Updating Order Status",
@@ -350,6 +365,7 @@
                         $("#order-details-modal [data-current_status]")
                             .attr('data-current_status', data.current_status)
                             .text(data.current_status);
+                        $("#order-details-modal").attr('data-status', data.current_status);
 
                         reloadOrdersTable();
                     }

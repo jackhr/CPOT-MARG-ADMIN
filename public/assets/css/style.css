@@ -1204,8 +1204,23 @@ form hr {
     color           : var(--white) !important;
 }
 
-table.dataTable>tbody>tr.deleted_item:not(:hover) {
+table.dataTable>tbody>tr.deleted_item:not(:hover),
+table.dataTable>tbody>tr.canceled_order:not(:hover) {
     background-color: #f000000f;
+}
+
+table.dataTable>tbody>tr.completed_order:not(:hover) {
+    background-color: #39bf1330;
+}
+
+table.dataTable>tbody>tr.canceled_order td.status {
+    color      : var(--red);
+    font-weight: 600;
+}
+
+table.dataTable>tbody>tr.completed_order td.status {
+    color      : var(--green);
+    font-weight: 600;
 }
 
 .order-info-container-title {
@@ -1284,7 +1299,10 @@ table.dataTable>tbody>tr.deleted_item:not(:hover) {
 }
 
 [data-current_status] {
-    font-weight: 600;
+    font-weight    : 800;
+    font-size      : 20px;
+    text-decoration: underline;
+    text-transform : uppercase;
 }
 
 [data-current_status="pending"] {
@@ -1301,6 +1319,22 @@ table.dataTable>tbody>tr.deleted_item:not(:hover) {
 
 [data-current_status="canceled"] {
     color: var(--red);
+}
+
+#order-details-modal[data-status="pending"] .modal-content {
+    border-color: var(--blue);
+}
+
+#order-details-modal[data-status="in process"] .modal-content {
+    border-color: var(--primary);
+}
+
+#order-details-modal[data-status="completed"] .modal-content {
+    border-color: var(--green);
+}
+
+#order-details-modal[data-status="canceled"] .modal-content {
+    border-color: var(--red);
 }
 
 @media screen and (max-width: 1008px) {
