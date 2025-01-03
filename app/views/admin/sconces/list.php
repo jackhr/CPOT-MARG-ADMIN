@@ -104,8 +104,8 @@
                             <input type="text" name="height" placeholder="24" required>
                         </div>
                         <div class="input-container">
-                            <label for="breadth">Breadth</label>
-                            <input type="text" name="breadth" placeholder="6" required>
+                            <label for="depth">Depth</label>
+                            <input type="text" name="depth" placeholder="6" required>
                         </div>
                     </div>
                     <div class="input-container">
@@ -258,8 +258,8 @@
                             <input type="text" name="height" placeholder="24" required>
                         </div>
                         <div class="input-container">
-                            <label for="breadth">Breadth</label>
-                            <input type="text" name="breadth" placeholder="6" required>
+                            <label for="depth">Depth</label>
+                            <input type="text" name="depth" placeholder="6" required>
                         </div>
                     </div>
                     <div class="input-container">
