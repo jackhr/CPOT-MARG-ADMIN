@@ -1337,6 +1337,12 @@ table.dataTable>tbody>tr.completed_order td.status {
     border-color: var(--red);
 }
 
+[data-is_covered],
+[data-is_glazed] {
+    font-weight   : bold;
+    text-transform: uppercase;
+}
+
 @media screen and (max-width: 1008px) {
     #dashboard-main {
         grid-template-columns: 1fr 1fr 1fr;

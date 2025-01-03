@@ -11,6 +11,8 @@
                     <th>Items</th>
                     <th>Total</th>
                     <th>Client Message</th>
+                    <th>Has A Cover</th>
+                    <th>Glazed Finish</th>
                     <th>Notes</th>
                     <th>Order Type</th>
                     <th>Status</th>
@@ -81,6 +83,16 @@
                                 <div class="input-container">
                                     <label for="order_type">Order Type</label>
                                     <span data-order_type></span>
+                                </div>
+                            </div>
+                            <div class="mutiple-input-container">
+                                <div class="input-container">
+                                    <label for="is_covered">Has A Cover?</label>
+                                    <span data-is_covered></span>
+                                </div>
+                                <div class="input-container">
+                                    <label for="is_glazed">Is Glazed?</label>
+                                    <span data-is_glazed></span>
                                 </div>
                             </div>
                             <div class="mutiple-input-container">
@@ -195,16 +207,19 @@
                 url: "/orders/getAll",
                 dataSrc: function(response) {
                     let res = [];
+                    STATE.orders = [];
                     if (response && response.data) {
                         res = Object.values(response.data).map(order => {
+                            STATE.orders.push(structuredClone(order));
                             order.internal_notes = order.internal_notes ? order.internal_notes : "-";
+                            order.total_amount = "$" + formatPrice(order.total_amount);
+                            order.is_covered = order.is_covered ? "Yes" : "No";
+                            order.is_glazed = order.is_glazed ? "Yes" : "No";
                             return order;
                         });
                     } else {
                         console.error("Invalid response format", response);
                     }
-
-                    STATE.orders = res;
 
                     return res;
                 }
@@ -223,6 +238,12 @@
                 },
                 {
                     data: 'message'
+                },
+                {
+                    data: 'is_covered'
+                },
+                {
+                    data: 'is_glazed'
                 },
                 {
                     data: 'internal_notes'
@@ -289,6 +310,8 @@
                     modal.find('[data-order_type]').text(data.order_type);
                     modal.find('[data-created_at]').text(data.created_at);
                     modal.find('[data-total_amount]').text(`$${formatPrice(data.total_amount)}`);
+                    modal.find('[data-is_covered]').text(data.is_covered ? "Yes" : "No");
+                    modal.find('[data-is_glazed]').text(data.is_glazed ? "Yes" : "No");
                     modal.find('[data-current_status]')
                         .text(data.current_status)
                         .attr('data-current_status', data.current_status);
