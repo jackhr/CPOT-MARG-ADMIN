@@ -64,4 +64,8 @@ $(document).ready(function () {
             modal.find(".modal-close").trigger("click");
         }
     });
+
+    $("input").on('input', function () {
+        $(this).removeClass('form-error');
+    });
 });

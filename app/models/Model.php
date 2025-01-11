@@ -12,10 +12,15 @@ class Model
     protected $table_name;
     protected $primary_key;
 
-    public function __construct()
+    public function __construct(PDO $connection = null)
     {
-        $database = new Database();
-        $this->con = $database->getConnection();
+        if ($connection) {
+            $this->con = $connection;
+        } else {
+            error_log("No PDO connection provided. Creating a new connection.");
+            $database = new Database();
+            $this->con = $database->getConnection();
+        }
     }
 
     // Method to fetch all records

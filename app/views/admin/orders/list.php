@@ -3,6 +3,15 @@
 
 <main>
     <div class="table-wrapper">
+        <button class="create-btn continue-btn open-modal-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 12h-5" />
+                <path d="M15 8h-5" />
+                <path d="M19 17V5a2 2 0 0 0-2-2H4" />
+                <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
+            </svg>
+            <span>Add New Item</span>
+        </button>
         <table id="orders-table">
             <thead>
                 <tr>
@@ -189,39 +198,252 @@
     </div>
 </div>
 
+<div id="create-order-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-options">
+                    <span class="modal-close">×</span>
+                </div>
+                <h1>New Order</h1>
+            </div>
+            <div class="modal-body">
+                <div class="gallery"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="continue-btn cancel">Cancel</button>
+                <button class="continue-btn">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="sconce-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-options">
+                <span class="modal-close">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="img-container">
+                    <img src="/assets/images/sconces/single/IMG_9516.jpg" alt="">
+                </div>
+                <div class="info-container">
+                    <div class="info-section">
+                        <h3 data-name></h3>
+                        <span data-base_price>
+                            $
+                            <span></span>
+                            <sub>(usd)</sub>
+                        </span>
+                        <span data-dimensions></span>
+                        <p>Made to order<br>Ships in 4 - 6 weeks<br>SKU - <span data-sku></span></p>
+                    </div>
+                    <div class="info-section">
+                        <h5>Cutouts</h5>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus asperiores perspiciatis perferendis blanditiis!</p>
+                        <button class="continue-btn" data-cutout="">
+                            <span>No Cutout Selected</span>
+                            <img src="/assets/icons/right-arrow.svg" alt="">
+                        </button>
+                    </div>
+                    <div class="info-section">
+                        <h5>Quantity</h5>
+                        <input data-quantity type="text" name="" id="">
+                    </div>
+                    <div class="info-section final-price">
+                        <h5>Total Price</h5>
+                        <div>
+                            <div data-total_price>
+                                $
+                                <span></span>
+                                <sub>(usd)</sub>
+                            </div>
+                            <button class="continue-btn" id="add-to-order">Add to Order</button>
+                        </div>
+                    </div>
+                    <div class="info-section collapsible">
+                        <h5>Overview</h5>
+                        <p data-description>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum ab, consequuntur deserunt nam quasi consequatur corporis?</p>
+                    </div>
+                    <div class="info-section collapsible">
+                        <h5>Specification</h5>
+                        <div class="sconce-spec-pair">
+                            <span>Size:</span>
+                            <span data-dimensions></span>
+                        </div>
+                        <div class="sconce-spec-pair">
+                            <span>Material:</span>
+                            <span data-material></span>
+                        </div>
+                        <div class="sconce-spec-pair">
+                            <span>Colour:</span>
+                            <span data-color></span>
+                        </div>
+                        <div class="sconce-spec-pair">
+                            <span>Finish:</span>
+                            <span data-finish></span>
+                        </div>
+                        <div class="sconce-spec-pair">
+                            <span>Mounting Type:</span>
+                            <span data-mounting_type></span>
+                        </div>
+                        <div class="sconce-spec-pair">
+                            <span>Fitting Type:</span>
+                            <span data-fitting_type></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="cutout-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-options">
+                <span class="modal-close">×</span>
+            </div>
+            <div class="modal-body">
+                <div id="cutout-selection-container">
+                    <h3>Select a Cutout</h3>
+                    <div id="cutout-list">
+                        <div class="cutout-list-item selected no-cutout">
+                            <div class="cutout-list-item-img-container"></div>
+                            <div class="cutout-list-item-info">
+                                <span>No Cutout</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="continue-btn">Confirm Selection</button>
+                </div>
+                <div id="cutout-preview-container">
+                    <img style="display: none;" src="" alt="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="confirmation-modal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-options">
+                    <span class="modal-close">×</span>
+                </div>
+                <h3>Complete Your Request</h3>
+                <p>Provide the client's details below. An email will be sent to them once the order has been created.</p>
+            </div>
+            <div class="modal-body">
+                <form id="create-order-form" action="">
+                    <h3>Contact Info</h3>
+                    <div class="multiple-input-container">
+                        <div class="input-container">
+                            <input type="text" name="first_name" placeholder="First Name" required>
+                        </div>
+                        <div class="input-container">
+                            <input type="text" name="last_name" placeholder="Last Name" required>
+                        </div>
+                    </div>
+                    <div class="multiple-input-container">
+                        <div class="input-container">
+                            <input type="text" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="input-container">
+                            <input type="text" name="phone" placeholder="Phone" required>
+                        </div>
+                    </div>
+                    <h3>Address Info</h3>
+                    <div class="input-container">
+                        <input type="text" name="address_1" placeholder="Street Address" required>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" name="town_or_city" placeholder="Town / City" required>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" name="state" placeholder="State" required>
+                    </div>
+                    <div class="input-container">
+                        <input type="text" name="country" placeholder="Country" required>
+                    </div>
+                    <div class="input-container">
+                        <textarea name="message" placeholder="Client's Message (optional)" required></textarea>
+                    </div>
+                    <h3>Internal</h3>
+                    <div class="input-container">
+                        <textarea name="internal_notes" placeholder="Any notes you may like to record (optional)" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button for="create-order-form">Create Order</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $(document).ready(function() {
-        function parseType(item) {
-            if (item.sconce_id) {
-                return "sconce";
-            } else if (item.one_of_a_kind_id) {
-                return "one of a kind";
-            } else if (item.cutout_id) {
-                return "cutout";
-            }
-        }
+        STATE.cart = [];
+        STATE.emailRegEx = /[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
 
         STATE.dTable = new DataTable("#orders-table", {
             ...STATE.dtDefaultOpts,
-            ajax: {
-                url: "/orders/getAll",
-                dataSrc: function(response) {
-                    let res = [];
+            ajax: async function(data, callback) {
+                const cachedData = getDataFromLocalStorage('ordersLookup');
+                if (cachedData) {
+                    // Use cached data
                     STATE.orders = [];
-                    if (response && response.data) {
-                        res = Object.values(response.data).map(order => {
-                            STATE.orders.push(structuredClone(order));
-                            order.internal_notes = order.internal_notes ? order.internal_notes : "-";
-                            order.total_amount = "$" + formatPrice(order.total_amount);
-                            order.is_covered = order.is_covered ? "Yes" : "No";
-                            order.is_glazed = order.is_glazed ? "Yes" : "No";
-                            return order;
-                        });
-                    } else {
-                        console.error("Invalid response format", response);
-                    }
+                    const processedData = Object.values(cachedData).map(order => {
+                        STATE.orders.push(structuredClone(order));
+                        order.internal_notes = order.internal_notes ? order.internal_notes : "-";
+                        order.total_amount = "$" + formatPrice(order.total_amount);
+                        order.is_covered = order.is_covered ? "Yes" : "No";
+                        order.is_glazed = order.is_glazed ? "Yes" : "No";
+                        return order;
+                    });
+                    callback({
+                        data: processedData
+                    });
+                } else {
+                    // Perform AJAX request
+                    await $.ajax({
+                        url: "/orders/getAll",
+                        method: "GET",
+                        dataType: "json",
+                        success: function(response) {
+                            STATE.orders = [];
+                            if (response && response.data) {
+                                const processedData = Object.values(response.data).map(order => {
+                                    STATE.orders.push(structuredClone(order));
+                                    order.internal_notes = order.internal_notes ? order.internal_notes : "-";
+                                    order.total_amount = "$" + formatPrice(order.total_amount);
+                                    order.is_covered = order.is_covered ? "Yes" : "No";
+                                    order.is_glazed = order.is_glazed ? "Yes" : "No";
+                                    return order;
+                                });
 
-                    return res;
+                                saveDataToLocalStorage('ordersLookup', response.data);
+                                saveDataToLocalStorage('orders', STATE.orders);
+
+                                callback({
+                                    data: processedData
+                                });
+                            } else {
+                                console.error("Invalid response format", response);
+                                callback({
+                                    data: []
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("AJAX error:", status, error);
+                            callback({
+                                data: []
+                            });
+                        }
+                    });
                 }
             },
             columns: [{
@@ -262,13 +484,83 @@
                     data: 'created_at'
                 }
             ],
-            initComplete: function() {
-                handleInitTableRowEvents()
-                this.api().on('draw', function() {
+            initComplete: async function() {
+                setTimeout(() => {
                     handleInitTableRowEvents();
-                });
+                    loadSconces();
+                    loadCutouts();
+                    this.api().on('draw', function() {
+                        handleInitTableRowEvents();
+                    });
+                }, 100);
             }
         });
+
+        function handleInvalidFormData() {
+            const data = $("#create-order-form").serializeObject();
+            let text;
+
+            if (data.first_name === '') {
+                text = "Please enter the client's first name.";
+                element = $('input[name="first_name"]');
+            } else if (data.last_name === '') {
+                text = "Please enter the client's last name.";
+                element = $('input[name="last_name"]');
+            } else if (data.email === '') {
+                text = "Please enter the client's email address.";
+                element = $('input[name="email"]');
+            } else if (!STATE.emailRegEx.test(data.email)) {
+                text = "Please enter a valid email address.";
+                element = $('input[name="email"]');
+            } else if (data.phone === '') {
+                text = "Please enter the client's phone number.";
+                element = $('input[name="phone"]');
+            } else if (data.address_1 === '') {
+                text = "Please enter the client's address.";
+                element = $('input[name="address_1"]');
+            } else if (data.town_or_city === '') {
+                text = "Please enter the client's town or city.";
+                element = $('input[name="town_or_city"]');
+            } else if (data.state === '') {
+                text = "Please enter the client's state.";
+                element = $('input[name="state"]');
+            } else if (data.country === '') {
+                text = "Please enter the client's country.";
+                element = $('input[name="country"]');
+            }
+
+            if (text) {
+                Swal.fire({
+                    text,
+                    title: "Incomplete form",
+                    icon: "warning",
+                });
+                element.addClass('form-error');
+            }
+
+            return !text;
+        }
+
+        function parseType(item) {
+            if (item.sconce_id) {
+                return "sconce";
+            } else if (item.one_of_a_kind_id) {
+                return "one of a kind";
+            } else if (item.cutout_id) {
+                return "cutout";
+            }
+        }
+
+        // Function to load data from localStorage
+        function getDataFromLocalStorage(localStorageKey) {
+            const storedData = localStorage.getItem(localStorageKey);
+            return storedData ? JSON.parse(storedData) : null;
+        }
+
+        // Function to save data to localStorage
+        function saveDataToLocalStorage(localStorageKey, data) {
+            localStorage.setItem(localStorageKey, JSON.stringify(data));
+        }
 
         function reloadOrdersTable() {
             STATE.dTable.ajax.reload(null, false); // false ensures the current paging stays the same
@@ -335,8 +627,448 @@
                     STATE.activeOrder = data;
                 };
             });
-
         }
+
+        function recalculateCartCount() {
+            $(".sconce-panel .counter").html("");
+            STATE.cart.forEach(item => {
+                const id = item.item.sconce_id;
+                const counter = $(`.sconce-panel[data-id="${id}"] .counter`);
+                const currentCount = Number(counter.html());
+                counter.html(currentCount + item.quantity);
+            });
+        }
+
+        async function loadSconces() {
+            if (getDataFromLocalStorage('sconcesLookup')) {
+                STATE.sconcesLookup = getDataFromLocalStorage('sconcesLookup');
+                STATE.sconces = getDataFromLocalStorage('sconces');
+            } else {
+                await $.ajax({
+                    type: "GET",
+                    url: "/sconces/getAll?only_active=true",
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: res => {
+                        if (res.status === 200) {
+                            if (res && res.data) {
+                                STATE.sconcesLookup = structuredClone(res.data);
+                                STATE.sconces = Object.values(res.data).map(s => {
+                                    s.base_price = formatPrice(s.base_price);
+                                    s.description = s.description ? s.description : "-";
+                                    s.deleted_at = s.deleted_at ? s.deleted_at : "-";
+                                    s.updated_by_email = s.updated_by_email ? s.updated_by_email : "-";
+                                    return s;
+                                });
+
+                                saveDataToLocalStorage('sconcesLookup', STATE.sconcesLookup);
+                                saveDataToLocalStorage('sconces', STATE.sconces);
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: res.message
+                            });
+                        }
+                    },
+                    error: function() {
+                        console.log(arguments);
+                    }
+                });
+
+            }
+            STATE.sconces.forEach(sconce => {
+                sconce = formatResource(sconce);
+                STATE.sconcesLookup[sconce.sconce_id] = sconce;
+                // sconce.image_url = "/assets/images/logo.png";
+                const sconceEl = $(`
+                    <div data-id="${sconce.sconce_id}" class="sconce-panel">
+                        <span class="counter"></span>
+                        <span class="cancel">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 6 6 18"/>
+                                <path d="m6 6 12 12"/>
+                            </svg>
+                        </span>
+                        <img src="${sconce.image_url}" alt="Oops">
+                        <div>
+                            <h4>${sconce.name}</h4>
+                            <span>${sconce.dimensions}</span>
+                            <div>
+                                <span>${sconce.base_price}<sub>(usd)</sub></span>
+                                <span>View More...</span>
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                sconceEl.on('click', () => setActiveSconce(sconce));
+
+                $(".gallery").append(sconceEl);
+            });
+        }
+
+        async function loadCutouts() {
+            if (getDataFromLocalStorage('cutoutsLookup')) {
+                STATE.cutoutsLookup = getDataFromLocalStorage('cutoutsLookup');
+                STATE.cutouts = getDataFromLocalStorage('cutouts');
+            } else {
+                await $.ajax({
+                    type: "GET",
+                    url: "/cutouts/getAll",
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: res => {
+                        if (res.status === 200) {
+                            if (res && res.data) {
+                                STATE.cutoutsLookup = structuredClone(res.data);
+                                STATE.cutouts = Object.values(res.data).map(c => {
+                                    c.price = formatPrice(c.price);
+                                    c.description = c.description ? c.description : "-";
+                                    c.deleted_at = c.deleted_at ? c.deleted_at : "-";
+                                    c.updated_by_email = c.updated_by_email ? c.updated_by_email : "-";
+                                    return c;
+                                });
+
+                                saveDataToLocalStorage('cutoutsLookup', STATE.cutoutsLookup);
+                                saveDataToLocalStorage('cutouts', STATE.cutouts);
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: res.message
+                            });
+                        }
+                    },
+                    error: function() {
+                        console.log(arguments);
+                    }
+                });
+            }
+
+            STATE.cutouts.forEach(cutout => {
+                cutout = formatResource(cutout);
+                STATE.cutoutsLookup[cutout.cutout_id] = cutout;
+                // cutout.image_url = "/assets/images/logo.png";
+                const cutoutEl = $(`
+                    <div data-id="${cutout.cutout_id}" class="cutout-list-item">
+                        <div class="cutout-list-item-img-container">
+                            <img src="${cutout.image_url}" alt="">
+                        </div>
+                        <div class="cutout-list-item-info">
+                            <span>${cutout.name}</span>
+                            <div>
+                                <span>$${cutout.base_price}</span>
+                                <sub>(usd)</sub>
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                $("#cutout-list").append(cutoutEl);
+            });
+
+            $(".cutout-list-item").on('click', function() {
+                const selectedCutoutImg = $(this).find(".cutout-list-item-img-container img").attr('src');
+                $(".cutout-list-item").removeClass('selected');
+                $(this).addClass('selected');
+                if ($(this).hasClass('no-cutout')) {
+                    $("#cutout-preview-container img").hide();
+                } else {
+                    $("#cutout-preview-container img").attr('src', selectedCutoutImg).show();
+                }
+            });
+        }
+
+        function resetSconceModal() {
+            $("#sconce-modal [data-quantity]").val(1);
+            $(".cutout-list-item.no-cutout").trigger('click');
+            $("#cutout-selection-container button").trigger('click');
+        }
+
+        function setActiveSconce(item, editingCart = false) {
+            $("#sconce-modal").addClass('showing');
+            const sconce = editingCart ? item.item : item;
+            const quantity = editingCart ? item.quantity : 1;
+
+            if (sconce.sconce_id === STATE.activeSconce?.sconce_id && !editingCart) return;
+
+            resetSconceModal();
+
+            $("#sconce-modal .img-container img").attr("src", sconce.image_url);
+            $("#sconce-modal [data-name]").text(sconce.name);
+            $("#sconce-modal [data-base_price]>span").text(sconce.base_price);
+            $("#sconce-modal [data-sku]").text("#" + sconce.sconce_id);
+            $("#sconce-modal [data-description]").text(sconce.description);
+            $("#sconce-modal [data-dimensions]").text(sconce.dimensions);
+            $("#sconce-modal [data-material]").text(sconce.material);
+            $("#sconce-modal [data-color]").text(sconce.color);
+            $("#sconce-modal [data-quantity]").val(quantity);
+            $("#sconce-modal [data-total_price]>span").text(sconce.base_price);
+            $("#sconce-modal [data-finish]").text(sconce.finish || "-");
+            $("#sconce-modal [data-mounting_type]").text(sconce.mounting_type || "-");
+            $("#sconce-modal [data-fitting_type]").text(sconce.fitting_type || "-");
+
+            if (editingCart) {
+                $("[data-cutout] span").text(sconce.cutout?.name || "No Cutout Selected");
+                const cutoutId = sconce.cutout?.cutout_id;
+                const cutoutEl = cutoutId ? $(`.cutout-list-item[data-id="${cutoutId}"]`) : $(".cutout-list-item.no-cutout");
+                cutoutEl.trigger('click');
+                $("[data-cutout] span").text(STATE.cutoutsLookup[cutoutId]?.name || "No Cutout Selected");
+            }
+
+            STATE.activeSconce = sconce;
+        }
+
+        function setActiveCutout(cutout) {
+            STATE.activeCutout = cutout;
+            $("[data-cutout] span").text(cutout?.name || "No Cutout Selected");
+        }
+
+        function calculateNewTotal() {
+            const quantity = Number($("[data-quantity]").val());
+            const basePrice = Number(STATE?.activeSconce?.base_price);
+            const cutoutPrice = Number(STATE?.activeCutout?.base_price) || 0;
+            const newPrice = formatPrice((basePrice + cutoutPrice) * quantity);
+            $("#sconce-modal [data-total_price]>span").text(newPrice);
+        }
+
+        function getLineItemDescription(quantity) {
+            let desc = `${quantity} x "${STATE.activeSconce.name}" sconce`;
+
+            if (STATE.activeCutout) {
+                desc += ` with "${STATE.activeCutout.name}"`;
+            } else {
+                desc += ` without a`;
+            }
+            desc += " cutout";
+
+            return desc;
+        };
+
+        $(".sconce-panel .cancel").on('click', function(e) {
+            e.stopImmediatePropagation();
+            const id = $(this).closest('.sconce-panel').data('id');
+            const copiedCart = structuredClone(STATE.cart);
+
+            if (copiedCart.length > 1) {
+                var html = `
+                    <p style="margin: 0 0 30px;">Please select which item(s) you'd like to remove from this order:</p>
+                    <form id="this-one-form">
+                        ${copiedCart.reduce((itemsStr, item, idx) => {
+                            if (item.item.sconce_id !== id) return itemsStr;
+                            return itemsStr + `
+                                <div style="margin: 0;" class="input-container">
+                                    <input id="cancel-item-${idx}" style="width: 20px;" type="checkbox" value="${idx}">
+                                    <label for="cancel-item-${idx}" style="max-width: 100%;">${item.lineItemDesc}</label>
+                                </div>
+                            `;
+                        }, "")}
+                    </form>
+                `;
+            } else {
+                var html = `Please confirm that you'd like to remove the following item from the order:<br><br> <strong>${copiedCart[0].lineItemDesc}</strong>`;
+            }
+
+            Swal.fire({
+                icon: "warning",
+                title: "Removing Item Fom Order",
+                html,
+                confirmButtonText: "Confirm",
+                showCancelButton: true,
+                preConfirm: () => {
+                    try {
+                        const idxToRemove = [];
+                        if (copiedCart.length > 1) {
+                            $("#this-one-form input:checked").each((_idx, el) => {
+                                const idx = Number($(el).val());
+                                idxToRemove.push(idx);
+                            });
+                        } else {
+                            idxToRemove.push(0);
+                        }
+
+                        if (!idxToRemove.length) {
+                            throw new Error('Please select at least one item, or click "Cancel".');
+                        }
+
+                        STATE.cart = copiedCart.filter((item, idx) => !idxToRemove.includes(idx));
+
+                        if (idxToRemove.length) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Success",
+                                text: `Item${idxToRemove.length > 1 ? "s" : ""} successfully removed from the order`
+                            });
+
+                            recalculateCartCount();
+                        }
+                    } catch ($e) {
+                        return Swal.showValidationMessage($e.message);
+                    }
+                }
+            });
+        });
+
+        $("button[for='create-order-form']").off('click').on('click', function() {
+            if (!handleInvalidFormData()) return;
+
+            const data = {
+                action: "create",
+                first_name: $('input[name="first_name"]').val().trim(),
+                last_name: $('input[name="last_name"]').val().trim(),
+                email: $('input[name="email"]').val().trim(),
+                phone: $('input[name="phone"]').val().trim(),
+                internal_notes: $('textarea[name="internal_notes"]').val().trim(),
+                message: $('textarea[name="message"]').val().trim(),
+                address_1: $('input[name="address_1"]').val().trim(),
+                town_or_city: $('input[name="town_or_city"]').val().trim(),
+                state: $('input[name="state"]').val().trim(),
+                country: $('input[name="country"]').val().trim(),
+                total_amount: STATE.cart.reduce((total, item) => {
+                    const basePrice = parseFloat(item.item.base_price || 0);
+                    const cutoutPrice = item.item.cutout ? parseFloat(item.item.cutout.base_price || 0) : 0;
+                    return total + (basePrice + cutoutPrice) * item.quantity;
+                }, 0),
+                order_items: STATE.cart.map(item => ({
+                    item_type: item.type,
+                    sconce_id: item.item.sconce_id || null,
+                    cutout_id: item.item.cutout ? item.item.cutout.cutout_id : null,
+                    ceramic_id: null,
+                    finish_option_id: null,
+                    cover_option_id: null,
+                    quantity: item.quantity,
+                    price: (parseFloat(item.item.base_price || 0) + (item.item.cutout ? parseFloat(item.item.cutout.base_price || 0) : 0)) * item.quantity,
+                    description: item.lineItemDesc,
+                    is_covered: false,
+                    is_glazed: false
+                }))
+            };
+
+            $.ajax({
+                url: "/orders",
+                method: "POST",
+                dataType: "JSON",
+                data,
+                success: async (res) => {
+                    await Swal.fire({
+                        icon: res.status === 200 ? "success" : "error",
+                        title: res.status === 200 ? "Success" : "Error",
+                        text: res.message,
+                    });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(arguments);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: errorThrown,
+                    });
+                }
+            });
+        });
+
+        $("#create-order-modal .modal-footer .continue-btn.cancel").on('click', function() {
+            STATE.cart = [];
+            recalculateCartCount();
+            $("#create-order-modal .modal-close").trigger('click');
+        });
+
+        $("#create-order-modal .modal-footer .continue-btn:not(.cancel)").on('click', function() {
+            if (!STATE.cart.length) {
+                return Swal.fire({
+                    icon: "warning",
+                    title: "No Items in Order",
+                    text: "Please add at least one item to the order before continuing."
+                });
+            }
+            $(this).closest('.modal').find('.modal-close').trigger('click');
+            $("#confirmation-modal").addClass('showing');
+        });
+
+        $("#add-to-order").on('click', function() {
+            const quantity = Number($("#sconce-modal [data-quantity]").val());
+            const lineItemDesc = getLineItemDescription(quantity);
+            let title = "Success";
+            let text = `${lineItemDesc} successfully added to order!`;
+            try {
+                const itemInCartIdx = STATE.cart.findIndex(item => {
+                    return item.item.sconce_id === STATE.activeSconce.sconce_id &&
+                        item?.item?.cutout?.cutout_id === STATE?.activeCutout?.cutout_id
+                });
+
+                if (itemInCartIdx > -1) {
+                    const currentQuantity = STATE.cart[itemInCartIdx].quantity;
+                    const newQuantity = currentQuantity + quantity;
+                    text = `The item (${getLineItemDescription(currentQuantity)}) is already in the order so we updated the quantity to "${newQuantity}"!`;
+                    STATE.cart[itemInCartIdx] = {
+                        ...STATE.cart[itemInCartIdx],
+                        quantity: newQuantity,
+                        lineItemDesc: getLineItemDescription(newQuantity)
+                    }
+                } else {
+                    STATE.cart.push({
+                        type: "sconce",
+                        item: {
+                            ...STATE.activeSconce,
+                            cutout: !STATE.activeCutout ? null : {
+                                ...STATE.activeCutout
+                            }
+                        },
+                        quantity: Number(quantity),
+                        lineItemDesc
+                    });
+                }
+
+                resetSconceModal();
+                recalculateCartCount();
+            } catch (err) {
+                title = "Error";
+                text = err;
+                console.log(err);
+            }
+
+            Swal.fire({
+                title,
+                text,
+                icon: title.toLocaleLowerCase()
+            });
+        });
+
+        $("[data-quantity]").on('input', function(evt) {
+            const currentQuantity = $(this).val();
+            const match = currentQuantity.match(/\d+/g);
+            let newQuantity = match === null ? "" : match.join("");
+            if (newQuantity > 100) newQuantity = 100;
+            $(this).val(newQuantity);
+            calculateNewTotal();
+        });
+
+        $("#cutout-list + button").on('click', function() {
+            const selectedCutout = $(".cutout-list-item.selected");
+            const cutoutId = selectedCutout.data('id');
+            $("#cutout-modal .modal-close").trigger('click');
+            setActiveCutout(STATE.cutoutsLookup[cutoutId]);
+            calculateNewTotal();
+        });
+
+        $("[data-cutout]").on('click', async function(evt) {
+            if ($(".cutout-list-item").length <= 1) await loadCutouts();
+            $(".cutout-list-item").removeClass('selected');
+            const activeId = STATE.activeCutout?.cutout_id;
+            if (Number(activeId)) {
+                $(`.cutout-list-item[data-id="${activeId}"]`).trigger('click');
+            } else {
+                $(`.cutout-list-item.no-cutout`).trigger('click');
+            }
+            $("#cutout-modal").addClass('showing');
+        });
+
+        $(".create-btn").on("click", () => {
+            $("#create-order-modal").addClass("showing");
+        });
 
         $(".order-option[data-status]").on('click', async function() {
             const statusData = {
@@ -527,6 +1259,7 @@
             });
 
         });
+
     });
 </script>
 

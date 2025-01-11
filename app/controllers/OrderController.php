@@ -2,17 +2,29 @@
 
 namespace App\Controllers;
 
+use App\Config\Database;
 use App\Helpers\GeneralHelper;
+use App\Models\Contact;
 use App\Models\Order;
+use App\Models\OrderItem;
+use Exception;
 
 class OrderController extends Controller
 {
     private $orderModel;
+    private $contactModel;
+    private $orderItemModel;
     private $helper;
+    private $dbConnection;
 
     public function __construct()
     {
-        $this->orderModel = new Order();
+        $database = new Database();
+        $this->dbConnection = $database->getConnection();
+
+        $this->orderModel = new Order($this->dbConnection);
+        $this->contactModel = new Contact($this->dbConnection);
+        $this->orderItemModel = new OrderItem($this->dbConnection);
         $this->helper = new GeneralHelper();
     }
 
@@ -81,12 +93,90 @@ class OrderController extends Controller
         if ($this->orderModel->updateStatus()) {
             $status = 200;
             $message = "Order status updated successfully.";
-            $updated_cutout = $this->orderModel->findById($order_id);
+            $updated_order = $this->orderModel->findById($order_id);
         } else {
             $status = 409;
-            $message = "Error updating cutout.";
+            $message = "Error updating order status.";
         }
 
-        $this->helper->respondToClient($updated_cutout, $status, $message);
+        $this->helper->respondToClient($updated_order, $status, $message);
+    }
+
+    public function create()
+    {
+        $new_order = [];
+        $status = 200;
+        $message = "Order created successfully";
+
+        [
+            "message" => $message_from_client,
+            "total_amount" => $total_amount,
+            "internal_notes" => $internal_notes,
+            "first_name" => $first_name,
+            "last_name" => $last_name,
+            "email" => $email,
+            "phone" => $phone,
+            "address_1" => $address_1,
+            "town_or_city" => $town_or_city,
+            "state" => $state,
+            "country" => $country,
+            "order_items" => $order_items,
+        ] = $_POST;
+
+        try {
+            // Begin transaction
+            $this->dbConnection->beginTransaction();
+
+            // Create contact
+            $this->contactModel->first_name = $first_name;
+            $this->contactModel->last_name = $last_name;
+            $this->contactModel->email = $email;
+            $this->contactModel->phone = $phone;
+            $this->contactModel->address_1 = $address_1;
+            $this->contactModel->town_or_city = $town_or_city;
+            $this->contactModel->state = $state;
+            $this->contactModel->country = $country;
+
+            $contact_id = $this->contactModel->create();
+
+            // Create order
+            $this->orderModel->contact_id = $contact_id;
+            $this->orderModel->message = $message_from_client;
+            $this->orderModel->internal_notes = $internal_notes;
+            $this->orderModel->total_amount = $total_amount;
+
+            $order_id = $this->orderModel->create();
+
+            // throw new Error("oops");
+
+            // Create order items
+            if (!empty($order_items) && is_array($order_items)) {
+                foreach ($order_items as $idx => $item) {
+                    $this->orderItemModel->order_id = $order_id;
+                    $this->orderItemModel->item_type = $item['item_type'] ?? "sconce";
+                    $this->orderItemModel->sconce_id = (!empty($item['sconce_id']) && $item['sconce_id'] !== "") ? $item['sconce_id'] : null;
+                    $this->orderItemModel->cutout_id = (!empty($item['cutout_id']) && $item['cutout_id'] !== "") ? $item['cutout_id'] : null;
+                    $this->orderItemModel->is_covered = $item['is_covered'] === "true" ? 1 : 0;
+                    $this->orderItemModel->is_glazed = $item['is_glazed'] === "true" ? 1 : 0;
+                    $this->orderItemModel->quantity = $item['quantity'];
+                    $this->orderItemModel->price = $item['price'];
+                    $this->orderItemModel->description = $item['description'];
+                    $this->orderItemModel->create();
+                }
+            }
+
+            // Commit transaction
+            $this->dbConnection->commit();
+
+            // Fetch the newly created order
+            $new_order = $this->orderModel->findById($order_id);
+        } catch (Exception $e) {
+            // Rollback transaction on failure
+            $this->dbConnection->rollBack();
+            $status = 500;
+            $message = "Transaction failed: " . $e->getMessage();
+        }
+
+        $this->helper->respondToClient($new_order, $status, $message);
     }
 }

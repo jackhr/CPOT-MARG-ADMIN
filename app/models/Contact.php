@@ -20,9 +20,9 @@ class Contact extends Model
     public $created_at;
     public $updated_at;
 
-    public function __construct()
+    public function __construct(PDO $connection = null)
     {
-        parent::__construct();
+        parent::__construct($connection);
         $this->table_name = "contact_info";
         $this->primary_key = "contact_id";
     }
