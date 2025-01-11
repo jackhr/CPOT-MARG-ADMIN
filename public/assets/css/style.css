@@ -605,12 +605,13 @@ main {
 .modal-options {
     position       : absolute;
     right          : 0;
-    line-height    : 0.5;
-    font-size      : 35px;
     top            : 0;
+    line-height    : 0.5;
     display        : flex;
     align-items    : center;
     justify-content: space-between;
+    font-size      : 54px;
+    z-index        : 10;
 }
 
 .modal-close {
@@ -1496,6 +1497,19 @@ table.dataTable>tbody>tr.completed_order td.status {
     color    : var(--secondary);
 }
 
+.sconce-spec-pair {
+    display      : flex;
+    align-items  : center;
+    margin-bottom: 8px;
+}
+
+.sconce-spec-pair span:first-child {
+    min-width  : 150px;
+    font-weight: 500;
+    font-size  : 16px;
+    line-height: 26px;
+}
+
 #cutout-modal .modal-content {
     width        : max-content;
     padding      : 0;
@@ -1600,6 +1614,7 @@ table.dataTable>tbody>tr.completed_order td.status {
 }
 
 #cutout-selection-container .continue-btn {
+    width : auto;
     margin: 20px;
 }
 
@@ -1619,6 +1634,12 @@ table.dataTable>tbody>tr.completed_order td.status {
     padding: 24px;
     display: flex;
     gap    : 20px;
+}
+
+#sconce-modal .modal-options,
+#cutout-modal .modal-options {
+    right: 24px;
+    top  : 24px;
 }
 
 .img-container {
@@ -1726,6 +1747,8 @@ table.dataTable>tbody>tr.completed_order td.status {
     align-items    : center;
     width          : 100%;
     justify-content: space-between;
+    padding        : 16px;
+    font-weight    : 500;
 }
 
 .info-container .info-section [data-quantity] {
@@ -1766,7 +1789,8 @@ table.dataTable>tbody>tr.completed_order td.status {
 }
 
 .info-container .info-section [data-total_price]+button {
-    width: 100%;
+    width : 100%;
+    height: auto;
 }
 
 .info-container .info-section [data-total_price]+button:hover {

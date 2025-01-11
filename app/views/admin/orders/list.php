@@ -212,7 +212,7 @@
             </div>
             <div class="modal-footer">
                 <button class="continue-btn cancel">Cancel</button>
-                <button class="continue-btn">Continue</button>
+                <button class="continue-btn disabled">Continue</button>
             </div>
         </div>
     </div>
@@ -244,7 +244,7 @@
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus asperiores perspiciatis perferendis blanditiis!</p>
                         <button class="continue-btn" data-cutout="">
                             <span>No Cutout Selected</span>
-                            <img src="/assets/icons/right-arrow.svg" alt="">
+                            <img src="/assets/images/icons/right-arrow.svg" alt="">
                         </button>
                     </div>
                     <div class="info-section">
@@ -333,7 +333,7 @@
                 <div class="modal-options">
                     <span class="modal-close">×</span>
                 </div>
-                <h3>Complete Your Request</h3>
+                <h2>Client Info</h2>
                 <p>Provide the client's details below. An email will be sent to them once the order has been created.</p>
             </div>
             <div class="modal-body">
@@ -378,72 +378,37 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button for="create-order-form">Create Order</button>
+                <button class="continue-btn" for="create-order-form">Create Order</button>
             </div>
         </div>
     </div>
 </div>
 <script>
     $(document).ready(function() {
+        STATE.orders = [];
         STATE.cart = [];
         STATE.emailRegEx = /[a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9.-]+\.[a-z]{2,}$/;
 
         STATE.dTable = new DataTable("#orders-table", {
             ...STATE.dtDefaultOpts,
-            ajax: async function(data, callback) {
-                const cachedData = getDataFromLocalStorage('ordersLookup');
-                if (cachedData) {
-                    // Use cached data
-                    STATE.orders = [];
-                    const processedData = Object.values(cachedData).map(order => {
-                        STATE.orders.push(structuredClone(order));
-                        order.internal_notes = order.internal_notes ? order.internal_notes : "-";
-                        order.total_amount = "$" + formatPrice(order.total_amount);
-                        order.is_covered = order.is_covered ? "Yes" : "No";
-                        order.is_glazed = order.is_glazed ? "Yes" : "No";
-                        return order;
-                    });
-                    callback({
-                        data: processedData
-                    });
-                } else {
-                    // Perform AJAX request
-                    await $.ajax({
-                        url: "/orders/getAll",
-                        method: "GET",
-                        dataType: "json",
-                        success: function(response) {
-                            STATE.orders = [];
-                            if (response && response.data) {
-                                const processedData = Object.values(response.data).map(order => {
-                                    STATE.orders.push(structuredClone(order));
-                                    order.internal_notes = order.internal_notes ? order.internal_notes : "-";
-                                    order.total_amount = "$" + formatPrice(order.total_amount);
-                                    order.is_covered = order.is_covered ? "Yes" : "No";
-                                    order.is_glazed = order.is_glazed ? "Yes" : "No";
-                                    return order;
-                                });
-
-                                saveDataToLocalStorage('ordersLookup', response.data);
-                                saveDataToLocalStorage('orders', STATE.orders);
-
-                                callback({
-                                    data: processedData
-                                });
-                            } else {
-                                console.error("Invalid response format", response);
-                                callback({
-                                    data: []
-                                });
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("AJAX error:", status, error);
-                            callback({
-                                data: []
-                            });
-                        }
-                    });
+            ajax: {
+                url: "/orders/getAll",
+                dataSrc: function(response) {
+                    let res = [];
+                    STATE.ordersLookup = response.data;
+                    if (response && response.data) {
+                        STATE.orders = structuredClone(Object.values(response.data));
+                        res = Object.values(response.data).map(order => {
+                            order.internal_notes = order.internal_notes ? order.internal_notes : "-";
+                            order.total_amount = "$" + formatPrice(order.total_amount);
+                            order.is_covered = order.is_covered ? "Yes" : "No";
+                            order.is_glazed = order.is_glazed ? "Yes" : "No";
+                            return order;
+                        });
+                    } else {
+                        console.error("Invalid response format", response);
+                    }
+                    return res;
                 }
             },
             columns: [{
@@ -551,17 +516,6 @@
             }
         }
 
-        // Function to load data from localStorage
-        function getDataFromLocalStorage(localStorageKey) {
-            const storedData = localStorage.getItem(localStorageKey);
-            return storedData ? JSON.parse(storedData) : null;
-        }
-
-        // Function to save data to localStorage
-        function saveDataToLocalStorage(localStorageKey, data) {
-            localStorage.setItem(localStorageKey, JSON.stringify(data));
-        }
-
         function reloadOrdersTable() {
             STATE.dTable.ajax.reload(null, false); // false ensures the current paging stays the same
         }
@@ -637,51 +591,45 @@
                 const currentCount = Number(counter.html());
                 counter.html(currentCount + item.quantity);
             });
+
+            const cartIsEmpty = !STATE.cart.length;
+            $("#create-order-modal .modal-footer .continue-btn:not(.cancel)").toggleClass('disabled', cartIsEmpty);
         }
 
         async function loadSconces() {
-            if (getDataFromLocalStorage('sconcesLookup')) {
-                STATE.sconcesLookup = getDataFromLocalStorage('sconcesLookup');
-                STATE.sconces = getDataFromLocalStorage('sconces');
-            } else {
-                await $.ajax({
-                    type: "GET",
-                    url: "/sconces/getAll?only_active=true",
-                    contentType: "application/json",
-                    dataType: "json",
-                    success: res => {
-                        if (res.status === 200) {
-                            if (res && res.data) {
-                                STATE.sconcesLookup = structuredClone(res.data);
-                                STATE.sconces = Object.values(res.data).map(s => {
-                                    s.base_price = formatPrice(s.base_price);
-                                    s.description = s.description ? s.description : "-";
-                                    s.deleted_at = s.deleted_at ? s.deleted_at : "-";
-                                    s.updated_by_email = s.updated_by_email ? s.updated_by_email : "-";
-                                    return s;
-                                });
-
-                                saveDataToLocalStorage('sconcesLookup', STATE.sconcesLookup);
-                                saveDataToLocalStorage('sconces', STATE.sconces);
-                            }
-                        } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error",
-                                text: res.message
+            await $.ajax({
+                type: "GET",
+                url: "/sconces/getAll?only_active=true",
+                contentType: "application/json",
+                dataType: "json",
+                success: res => {
+                    if (res.status === 200) {
+                        if (res && res.data) {
+                            STATE.sconcesLookup = structuredClone(res.data);
+                            STATE.sconces = Object.values(res.data).map(s => {
+                                s.base_price = formatPrice(s.base_price);
+                                s.description = s.description ? s.description : "-";
+                                s.deleted_at = s.deleted_at ? s.deleted_at : "-";
+                                s.updated_by_email = s.updated_by_email ? s.updated_by_email : "-";
+                                return s;
                             });
                         }
-                    },
-                    error: function() {
-                        console.log(arguments);
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: res.message
+                        });
                     }
-                });
+                },
+                error: function() {
+                    console.log(arguments);
+                }
+            });
 
-            }
             STATE.sconces.forEach(sconce => {
                 sconce = formatResource(sconce);
                 STATE.sconcesLookup[sconce.sconce_id] = sconce;
-                // sconce.image_url = "/assets/images/logo.png";
                 const sconceEl = $(`
                     <div data-id="${sconce.sconce_id}" class="sconce-panel">
                         <span class="counter"></span>
@@ -705,53 +653,108 @@
 
                 sconceEl.on('click', () => setActiveSconce(sconce));
 
+                sconceEl.find("span.cancel").on('click', function(e) {
+                    e.stopImmediatePropagation();
+                    const id = $(this).closest('.sconce-panel').data('id');
+                    const copiedCart = structuredClone(STATE.cart);
+
+                    if (copiedCart.length > 1) {
+                        var html = `
+                            <p style="margin: 0 0 30px;">Please select which item(s) you'd like to remove from this order:</p>
+                            <form id="this-one-form">
+                                ${copiedCart.reduce((itemsStr, item, idx) => {
+                                    if (item.item.sconce_id !== id) return itemsStr;
+                                    return itemsStr + `
+                                        <div style="margin: 0;" class="input-container">
+                                            <input id="cancel-item-${idx}" style="width: 20px;" type="checkbox" value="${idx}">
+                                            <label for="cancel-item-${idx}" style="max-width: 100%;">${item.lineItemDesc}</label>
+                                        </div>
+                                    `;
+                                }, "")}
+                            </form>
+                        `;
+                    } else {
+                        var html = `Please confirm that you'd like to remove the following item from the order:<br><br> <strong>${copiedCart[0].lineItemDesc}</strong>`;
+                    }
+
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Removing Item Fom Order",
+                        html,
+                        confirmButtonText: "Confirm",
+                        showCancelButton: true,
+                        preConfirm: () => {
+                            try {
+                                const idxToRemove = [];
+                                if (copiedCart.length > 1) {
+                                    $("#this-one-form input:checked").each((_idx, el) => {
+                                        const idx = Number($(el).val());
+                                        idxToRemove.push(idx);
+                                    });
+                                } else {
+                                    idxToRemove.push(0);
+                                }
+
+                                if (!idxToRemove.length) {
+                                    throw new Error('Please select at least one item, or click "Cancel".');
+                                }
+
+                                STATE.cart = copiedCart.filter((item, idx) => !idxToRemove.includes(idx));
+
+                                if (idxToRemove.length) {
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "Success",
+                                        text: `Item${idxToRemove.length > 1 ? "s" : ""} successfully removed from the order`
+                                    });
+
+                                    recalculateCartCount();
+                                }
+                            } catch ($e) {
+                                return Swal.showValidationMessage($e.message);
+                            }
+                        }
+                    });
+                });
+
                 $(".gallery").append(sconceEl);
             });
         }
 
         async function loadCutouts() {
-            if (getDataFromLocalStorage('cutoutsLookup')) {
-                STATE.cutoutsLookup = getDataFromLocalStorage('cutoutsLookup');
-                STATE.cutouts = getDataFromLocalStorage('cutouts');
-            } else {
-                await $.ajax({
-                    type: "GET",
-                    url: "/cutouts/getAll",
-                    contentType: "application/json",
-                    dataType: "json",
-                    success: res => {
-                        if (res.status === 200) {
-                            if (res && res.data) {
-                                STATE.cutoutsLookup = structuredClone(res.data);
-                                STATE.cutouts = Object.values(res.data).map(c => {
-                                    c.price = formatPrice(c.price);
-                                    c.description = c.description ? c.description : "-";
-                                    c.deleted_at = c.deleted_at ? c.deleted_at : "-";
-                                    c.updated_by_email = c.updated_by_email ? c.updated_by_email : "-";
-                                    return c;
-                                });
-
-                                saveDataToLocalStorage('cutoutsLookup', STATE.cutoutsLookup);
-                                saveDataToLocalStorage('cutouts', STATE.cutouts);
-                            }
-                        } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Error",
-                                text: res.message
+            await $.ajax({
+                type: "GET",
+                url: "/cutouts/getAll",
+                contentType: "application/json",
+                dataType: "json",
+                success: res => {
+                    if (res.status === 200) {
+                        if (res && res.data) {
+                            STATE.cutoutsLookup = structuredClone(res.data);
+                            STATE.cutouts = Object.values(res.data).map(c => {
+                                c.price = formatPrice(c.price);
+                                c.description = c.description ? c.description : "-";
+                                c.deleted_at = c.deleted_at ? c.deleted_at : "-";
+                                c.updated_by_email = c.updated_by_email ? c.updated_by_email : "-";
+                                return c;
                             });
                         }
-                    },
-                    error: function() {
-                        console.log(arguments);
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: res.message
+                        });
                     }
-                });
-            }
+                },
+                error: function() {
+                    console.log(arguments);
+                }
+            });
 
             STATE.cutouts.forEach(cutout => {
                 cutout = formatResource(cutout);
                 STATE.cutoutsLookup[cutout.cutout_id] = cutout;
-                // cutout.image_url = "/assets/images/logo.png";
                 const cutoutEl = $(`
                     <div data-id="${cutout.cutout_id}" class="cutout-list-item">
                         <div class="cutout-list-item-img-container">
@@ -848,71 +851,11 @@
             return desc;
         };
 
-        $(".sconce-panel .cancel").on('click', function(e) {
-            e.stopImmediatePropagation();
-            const id = $(this).closest('.sconce-panel').data('id');
-            const copiedCart = structuredClone(STATE.cart);
-
-            if (copiedCart.length > 1) {
-                var html = `
-                    <p style="margin: 0 0 30px;">Please select which item(s) you'd like to remove from this order:</p>
-                    <form id="this-one-form">
-                        ${copiedCart.reduce((itemsStr, item, idx) => {
-                            if (item.item.sconce_id !== id) return itemsStr;
-                            return itemsStr + `
-                                <div style="margin: 0;" class="input-container">
-                                    <input id="cancel-item-${idx}" style="width: 20px;" type="checkbox" value="${idx}">
-                                    <label for="cancel-item-${idx}" style="max-width: 100%;">${item.lineItemDesc}</label>
-                                </div>
-                            `;
-                        }, "")}
-                    </form>
-                `;
-            } else {
-                var html = `Please confirm that you'd like to remove the following item from the order:<br><br> <strong>${copiedCart[0].lineItemDesc}</strong>`;
-            }
-
-            Swal.fire({
-                icon: "warning",
-                title: "Removing Item Fom Order",
-                html,
-                confirmButtonText: "Confirm",
-                showCancelButton: true,
-                preConfirm: () => {
-                    try {
-                        const idxToRemove = [];
-                        if (copiedCart.length > 1) {
-                            $("#this-one-form input:checked").each((_idx, el) => {
-                                const idx = Number($(el).val());
-                                idxToRemove.push(idx);
-                            });
-                        } else {
-                            idxToRemove.push(0);
-                        }
-
-                        if (!idxToRemove.length) {
-                            throw new Error('Please select at least one item, or click "Cancel".');
-                        }
-
-                        STATE.cart = copiedCart.filter((item, idx) => !idxToRemove.includes(idx));
-
-                        if (idxToRemove.length) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "Success",
-                                text: `Item${idxToRemove.length > 1 ? "s" : ""} successfully removed from the order`
-                            });
-
-                            recalculateCartCount();
-                        }
-                    } catch ($e) {
-                        return Swal.showValidationMessage($e.message);
-                    }
-                }
-            });
+        $(".info-container .info-section.collapsible h5").on("click", function() {
+            $(this).closest('.info-section').toggleClass("collapsed");
         });
 
-        $("button[for='create-order-form']").off('click').on('click', function() {
+        $("button[for='create-order-form']").on('click', function() {
             if (!handleInvalidFormData()) return;
 
             const data = {
@@ -958,6 +901,13 @@
                         title: res.status === 200 ? "Success" : "Error",
                         text: res.message,
                     });
+
+                    if (res.status === 200) {
+                        STATE.cart = [];
+                        recalculateCartCount();
+                        $(".modal").removeClass('showing');
+                        reloadOrdersTable();
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(arguments);
@@ -1138,6 +1088,12 @@
         $("#order-items-modal .modal-close").on("click", function() {
             setTimeout(() => {
                 $("#order-details-modal").addClass("showing");
+            }, STATE.modalDelay);
+        });
+
+        $("#confirmation-modal .modal-close").on("click", function() {
+            setTimeout(() => {
+                $("#sconce-modal").addClass("showing");
             }, STATE.modalDelay);
         });
 
