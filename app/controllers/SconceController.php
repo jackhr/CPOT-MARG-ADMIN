@@ -38,7 +38,7 @@ class SconceController extends Controller
             LEFT JOIN users users_c ON sconces.created_by = users_c.user_id
             LEFT JOIN users users_u ON sconces.updated_by = users_u.user_id";
         $sconces = $this->sconceModel->readAll($override_query, "sconce_id");
-        if ($logged_in_user['role_id'] > 1) {
+        if ($logged_in_user['role_id'] > 1 || isset($_GET['only_active'])) {
             $sconces = array_filter($sconces, function ($sconces) {
                 return !isset($sconces['deleted_at']);
             });
@@ -48,7 +48,9 @@ class SconceController extends Controller
 
         foreach ($sconce_images as $sconce_image) {
             $oak_id = $sconce_image['sconce_id'];
-            $sconces[$oak_id]['images'][$sconce_image['image_id']] = $sconce_image;
+            if (isset($sconces[$oak_id])) {
+                $sconces[$oak_id]['images'][$sconce_image['image_id']] = $sconce_image;
+            }
         }
 
         $this->helper->respondToClient($sconces);
