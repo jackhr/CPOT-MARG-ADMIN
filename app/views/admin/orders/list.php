@@ -1021,8 +1021,8 @@
                     quantity: item.quantity,
                     price: (parseFloat(item.item.base_price || 0) + (item.item.cutout ? parseFloat(item.item.cutout.base_price || 0) : 0)) * item.quantity,
                     description: item.lineItemDesc,
-                    is_covered: false,
-                    is_glazed: false
+                    is_covered: item.item.is_covered,
+                    is_glazed: item.item.is_glazed
                 }))
             };
 

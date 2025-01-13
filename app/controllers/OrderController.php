@@ -147,18 +147,16 @@ class OrderController extends Controller
 
             $order_id = $this->orderModel->create();
 
-            // throw new Error("oops");
-
             // Create order items
             if (!empty($order_items) && is_array($order_items)) {
-                foreach ($order_items as $idx => $item) {
+                foreach ($order_items as $item) {
                     $this->orderItemModel->order_id = $order_id;
                     $this->orderItemModel->item_type = $item['item_type'] ?? "sconce";
                     $this->orderItemModel->sconce_id = (!empty($item['sconce_id']) && $item['sconce_id'] !== "") ? $item['sconce_id'] : null;
                     $this->orderItemModel->cutout_id = (!empty($item['cutout_id']) && $item['cutout_id'] !== "") ? $item['cutout_id'] : null;
-                    $this->orderItemModel->is_covered = $item['is_covered'] === "true" ? 1 : 0;
-                    $this->orderItemModel->is_glazed = $item['is_glazed'] === "true" ? 1 : 0;
-                    $this->orderItemModel->quantity = $item['quantity'];
+                    $this->orderItemModel->is_covered = $item['is_covered'];
+                    $this->orderItemModel->is_glazed = (int)$item['is_glazed'];
+                    $this->orderItemModel->quantity = (int)$item['quantity'];
                     $this->orderItemModel->price = $item['price'];
                     $this->orderItemModel->description = $item['description'];
                     $this->orderItemModel->create();
