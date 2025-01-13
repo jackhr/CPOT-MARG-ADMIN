@@ -247,6 +247,17 @@
                             <img src="/assets/images/icons/right-arrow.svg" alt="">
                         </button>
                     </div>
+                    <div class="info-section sconce-options">
+                        <h5>Options</h5>
+                        <div class="input-container">
+                            <input id="is_covered_input" type="checkbox" name="is_covered" required>
+                            <label for="is_covered_input"><span>Cover: </span>Have a cover placed atop your sconce to protect it from the elements.</label>
+                        </div>
+                        <div class="input-container sconce-options">
+                            <input id="is_glazed_input" type="checkbox" name="is_glazed" required>
+                            <label for="is_glazed_input"><span>Glazed Finish: </span>A clean, sleek, glazed finish to be applied to your cutout.</label>
+                        </div>
+                    </div>
                     <div class="info-section">
                         <h5>Quantity</h5>
                         <input data-quantity type="text" name="" id="">
@@ -627,6 +638,8 @@
                 }
             });
 
+            $(".gallery").html("");
+
             STATE.sconces.forEach(sconce => {
                 sconce = formatResource(sconce);
                 STATE.sconcesLookup[sconce.sconce_id] = sconce;
@@ -653,7 +666,7 @@
 
                 sconceEl.on('click', () => setActiveSconce(sconce));
 
-                sconceEl.find("span.cancel").on('click', function(e) {
+                sconceEl.find("span.cancel").on('click', async function(e) {
                     e.stopImmediatePropagation();
                     const id = $(this).closest('.sconce-panel').data('id');
                     const copiedCart = structuredClone(STATE.cart);
@@ -661,11 +674,11 @@
                     if (copiedCart.length > 1) {
                         var html = `
                             <p style="margin: 0 0 30px;">Please select which item(s) you'd like to remove from this order:</p>
-                            <form id="this-one-form">
+                            <form id="remove-item-from-order-form">
                                 ${copiedCart.reduce((itemsStr, item, idx) => {
                                     if (item.item.sconce_id !== id) return itemsStr;
                                     return itemsStr + `
-                                        <div style="margin: 0;" class="input-container">
+                                        <div class="input-container">
                                             <input id="cancel-item-${idx}" style="width: 20px;" type="checkbox" value="${idx}">
                                             <label for="cancel-item-${idx}" style="max-width: 100%;">${item.lineItemDesc}</label>
                                         </div>
@@ -677,7 +690,7 @@
                         var html = `Please confirm that you'd like to remove the following item from the order:<br><br> <strong>${copiedCart[0].lineItemDesc}</strong>`;
                     }
 
-                    Swal.fire({
+                    const choice = await Swal.fire({
                         icon: "warning",
                         title: "Removing Item Fom Order",
                         html,
@@ -685,36 +698,161 @@
                         showCancelButton: true,
                         preConfirm: () => {
                             try {
-                                const idxToRemove = [];
+                                const indexesToRemove = [];
                                 if (copiedCart.length > 1) {
-                                    $("#this-one-form input:checked").each((_idx, el) => {
+                                    $("#remove-item-from-order-form input:checked").each((_idx, el) => {
                                         const idx = Number($(el).val());
-                                        idxToRemove.push(idx);
+                                        indexesToRemove.push(idx);
                                     });
                                 } else {
-                                    idxToRemove.push(0);
+                                    indexesToRemove.push(0);
                                 }
 
-                                if (!idxToRemove.length) {
+                                if (!indexesToRemove.length) {
                                     throw new Error('Please select at least one item, or click "Cancel".');
                                 }
 
-                                STATE.cart = copiedCart.filter((item, idx) => !idxToRemove.includes(idx));
+                                let needToClarify = false;
 
-                                if (idxToRemove.length) {
+                                const newCart = copiedCart.filter((item, idx) => {
+                                    let res = true;
+                                    if (indexesToRemove.includes(idx)) {
+                                        if (item.quantity > 1) needToClarify = true;
+                                        res = false;
+                                    }
+
+                                    return res;
+                                });
+
+                                if (needToClarify) {
+                                    return indexesToRemove;
+                                } else if (indexesToRemove.length) {
+                                    STATE.cart = newCart;
+
                                     Swal.fire({
                                         icon: "success",
                                         title: "Success",
-                                        text: `Item${idxToRemove.length > 1 ? "s" : ""} successfully removed from the order`
+                                        text: `Item${indexesToRemove.length > 1 ? "s" : ""} successfully removed from the order`
                                     });
 
                                     recalculateCartCount();
+
+                                    return null;
                                 }
                             } catch ($e) {
                                 return Swal.showValidationMessage($e.message);
                             }
                         }
                     });
+
+                    if (!choice.isConfirmed || choice.value === null) return;
+
+                    let indexesToRemove = choice.value;
+
+                    const quantitiesChoice = await Swal.fire({
+                        icon: "warning",
+                        title: "Select Quantities",
+                        confirmButtonText: "Confirm",
+                        showCancelButton: true,
+                        html: `
+                            <p style="margin: 0 0 30px;">Please select the quantity of each item listen below that you'd like to remove from this order:</p>
+                            <form id="remove-item-from-order-form-quantity">
+                                ${copiedCart.reduce((itemsStr, item, idx) => {
+                                    if (!indexesToRemove.includes(idx)) return itemsStr;
+                                    return itemsStr + `
+                                        <div class="input-container">
+                                            <input placeholder="" data-idx="${idx}" id="cancel-item-${idx}-quantity" type="number" value="${item.quantity}">
+                                            <label for="cancel-item-${idx}-quantity">${item.lineItemDesc}</label>
+                                        </div>
+                                    `;
+                                }, "")}
+                            </form>
+                        `,
+                        didOpen: () => {
+                            $("#remove-item-from-order-form-quantity input").on('input', function(evt) {
+                                const idx = $(this).data('idx');
+                                const maxQuantity = STATE.cart[idx].quantity;
+                                const currentQuantity = $(this).val();
+                                const match = currentQuantity.match(/\d+/g);
+                                let newQuantity = match === null ? "" : match.join("");
+                                if (newQuantity > maxQuantity) newQuantity = maxQuantity;
+                                $(this).val(newQuantity);
+                            });
+                        },
+                        preConfirm: () => {
+                            let emptyInputs = false;
+                            $("#remove-item-from-order-form-quantity input").each((_idx, el) => {
+                                if (el.value === "") emptyInputs = true;
+                            })
+
+                            if (emptyInputs) {
+                                Swal.showValidationMessage("All inputs need a value.");
+                                setTimeout(() => {
+                                    $('#remove-item-from-order-form-quantity input:placeholder-shown').first().focus();
+                                }, 300);
+                            } else {
+                                const test = $("#remove-item-from-order-form-quantity input")
+                                    .toArray()
+                                    .reduce((lookup, input) => {
+                                        lookup[$(input).data('idx')] = $(input).val();
+                                        return lookup;
+                                    }, {});
+                                return test;
+                            }
+                        },
+                    });
+
+                    if (!quantitiesChoice.isConfirmed) return;
+
+                    let unchangedItemsCount = 0;
+                    let updatedItemsCount = 0;
+                    let deletedItemsCount = 0;
+
+                    STATE.cart = STATE.cart.reduce((newCart, item, idx) => {
+                        const newQuantity = item.quantity - Number(quantitiesChoice.value[idx]);
+                        if (isNaN(newQuantity)) {
+                            // not editing this item's quantity in the cart
+                            newCart.push(item);
+                        } else {
+                            let staysInCart = true;
+
+                            if (newQuantity === item.quantity) {
+                                unchangedItemsCount++;
+                            } else if (newQuantity > 0) {
+                                updatedItemsCount++;
+                                item = {
+                                    ...item,
+                                    quantity: newQuantity,
+                                    lineItemDesc: getLineItemDescription(newQuantity, !!item.item.is_covered, !!item.item.is_glazed)
+                                };
+                            } else {
+                                deletedItemsCount++;
+                                staysInCart = false;
+                            }
+
+                            if (staysInCart) newCart.push(item);
+                        }
+
+                        return newCart;
+                    }, []);
+
+                    const unS = unchangedItemsCount === 1 ? "" : "s";
+                    const upS = updatedItemsCount === 1 ? "" : "s";
+                    const deS = deletedItemsCount === 1 ? "" : "s";
+
+                    const unPlural = unchangedItemsCount === 1 ? "s" : "";
+                    const upPlural = updatedItemsCount === 1 ? "its" : "their";
+                    const dePlural = deletedItemsCount === 1 ? "was" : "were";
+
+                    const text = `${unchangedItemsCount} item${unS} remain${unPlural} unchanged, ${updatedItemsCount} item${upS} had ${upPlural} quantity updated, and ${deletedItemsCount} item${deS} ${dePlural} removed from the order.`;
+
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text
+                    });
+
+                    recalculateCartCount();
                 });
 
                 $(".gallery").append(sconceEl);
@@ -789,6 +927,8 @@
             $("#sconce-modal [data-quantity]").val(1);
             $(".cutout-list-item.no-cutout").trigger('click');
             $("#cutout-selection-container button").trigger('click');
+            if ($("#is_covered_input").is(":checked")) $("#is_covered_input").trigger('click');
+            if ($("#is_glazed_input").is(":checked")) $("#is_glazed_input").trigger('click');
         }
 
         function setActiveSconce(item, editingCart = false) {
@@ -838,17 +978,12 @@
             $("#sconce-modal [data-total_price]>span").text(newPrice);
         }
 
-        function getLineItemDescription(quantity) {
-            let desc = `${quantity} x "${STATE.activeSconce.name}" sconce`;
+        function getLineItemDescription(quantity, is_covered = false, is_glazed = true) {
+            const cutoutStr = STATE.activeCutout ? `With "${STATE.activeCutout.name} Cutout"` : "Without Cutout";
+            const coveredStr = is_covered ? "With Cover" : "Without Cover";
+            const glazedStr = is_glazed ? "Glazed Finish" : "Unglazed Finish";
 
-            if (STATE.activeCutout) {
-                desc += ` with "${STATE.activeCutout.name}"`;
-            } else {
-                desc += ` without a`;
-            }
-            desc += " cutout";
-
-            return desc;
+            return `${quantity} x "${STATE.activeSconce.name}" sconce, ${cutoutStr}, ${coveredStr}, ${glazedStr}`;
         };
 
         $(".info-container .info-section.collapsible h5").on("click", function() {
@@ -940,23 +1075,30 @@
 
         $("#add-to-order").on('click', function() {
             const quantity = Number($("#sconce-modal [data-quantity]").val());
-            const lineItemDesc = getLineItemDescription(quantity);
+            const is_covered = Number($("#is_covered_input").is(':checked'));
+            const is_glazed = Number($("#is_glazed_input").is(':checked'));
+            const lineItemDesc = getLineItemDescription(quantity, !!is_covered, !!is_glazed);
             let title = "Success";
             let text = `${lineItemDesc} successfully added to order!`;
+
             try {
                 const itemInCartIdx = STATE.cart.findIndex(item => {
-                    return item.item.sconce_id === STATE.activeSconce.sconce_id &&
-                        item?.item?.cutout?.cutout_id === STATE?.activeCutout?.cutout_id
+                    return (
+                        item.item.sconce_id === STATE.activeSconce.sconce_id &&
+                        item?.item?.cutout?.cutout_id === STATE?.activeCutout?.cutout_id &&
+                        item?.item?.is_covered === is_covered &&
+                        item?.item?.is_glazed === is_glazed
+                    );
                 });
 
                 if (itemInCartIdx > -1) {
                     const currentQuantity = STATE.cart[itemInCartIdx].quantity;
                     const newQuantity = currentQuantity + quantity;
-                    text = `The item (${getLineItemDescription(currentQuantity)}) is already in the order so we updated the quantity to "${newQuantity}"!`;
+                    text = `The item (${getLineItemDescription(currentQuantity, !!is_covered, !!is_glazed)}) is already in the order so we updated the quantity to "${newQuantity}"!`;
                     STATE.cart[itemInCartIdx] = {
                         ...STATE.cart[itemInCartIdx],
                         quantity: newQuantity,
-                        lineItemDesc: getLineItemDescription(newQuantity)
+                        lineItemDesc: getLineItemDescription(newQuantity, !!is_covered, !!is_glazed)
                     }
                 } else {
                     STATE.cart.push({
@@ -965,7 +1107,9 @@
                             ...STATE.activeSconce,
                             cutout: !STATE.activeCutout ? null : {
                                 ...STATE.activeCutout
-                            }
+                            },
+                            is_covered,
+                            is_glazed,
                         },
                         quantity: Number(quantity),
                         lineItemDesc
@@ -1215,7 +1359,6 @@
             });
 
         });
-
     });
 </script>
 

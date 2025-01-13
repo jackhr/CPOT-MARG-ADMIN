@@ -1799,6 +1799,57 @@ table.dataTable>tbody>tr.completed_order td.status {
     color       : var(--secondary);
 }
 
+.info-section.sconce-options input {
+    width: 20px;
+}
+
+.info-section.sconce-options label {
+    font-size  : 14px;
+    max-width  : initial !important;
+    font-weight: 400;
+    line-height: 24px;
+}
+
+.info-section.sconce-options label span {
+    font-weight   : 600;
+    text-transform: uppercase;
+}
+
+#remove-item-from-order-form,
+#remove-item-from-order-form-quantity {
+    display       : flex;
+    flex-direction: column;
+    gap           : 24px;
+    padding       : 4px 0;
+}
+
+#remove-item-from-order-form .input-container,
+#remove-item-from-order-form-quantity .input-container {
+    text-align : left;
+    align-items: flex-start;
+    margin     : 0;
+}
+
+#remove-item-from-order-form .input-container label,
+#remove-item-from-order-form-quantity .input-container label {
+    max-width: 100% !important;
+}
+
+#remove-item-from-order-form .input-container input {
+    width : 20px;
+    height: 24px;
+}
+
+#remove-item-from-order-form-quantity .input-container {
+    padding: 0 2px;
+    gap    : 24px;
+}
+
+#remove-item-from-order-form-quantity .input-container input {
+    width : 80px;
+    height: 44px;
+}
+
 @media screen and (max-width: 1008px) {
     #dashboard-main {
         grid-template-columns: 1fr 1fr 1fr;
