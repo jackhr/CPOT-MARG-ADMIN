@@ -932,6 +932,7 @@
         }
 
         function setActiveSconce(item, editingCart = false) {
+            $("#create-order-modal .modal-close").trigger('click');
             $("#sconce-modal").addClass('showing');
             const sconce = editingCart ? item.item : item;
             const quantity = editingCart ? item.quantity : 1;
@@ -1235,10 +1236,8 @@
             }, STATE.modalDelay);
         });
 
-        $("#confirmation-modal .modal-close").on("click", function() {
-            setTimeout(() => {
-                $("#sconce-modal").addClass("showing");
-            }, STATE.modalDelay);
+        $("#confirmation-modal .modal-close, #sconce-modal .modal-close").on("click", function() {
+            $("#create-order-modal").addClass("showing");
         });
 
         $("#view-items-btn").on('click', function(e) {
