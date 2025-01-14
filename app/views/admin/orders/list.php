@@ -20,8 +20,6 @@
                     <th>Items</th>
                     <th>Total</th>
                     <th>Client Message</th>
-                    <th>Has A Cover</th>
-                    <th>Glazed Finish</th>
                     <th>Notes</th>
                     <th>Order Type</th>
                     <th>Status</th>
@@ -92,16 +90,6 @@
                                 <div class="input-container">
                                     <label for="order_type">Order Type</label>
                                     <span data-order_type></span>
-                                </div>
-                            </div>
-                            <div class="mutiple-input-container">
-                                <div class="input-container">
-                                    <label for="is_covered">Has A Cover?</label>
-                                    <span data-is_covered></span>
-                                </div>
-                                <div class="input-container">
-                                    <label for="is_glazed">Is Glazed?</label>
-                                    <span data-is_glazed></span>
                                 </div>
                             </div>
                             <div class="mutiple-input-container">
@@ -247,17 +235,7 @@
                             <img src="/assets/images/icons/right-arrow.svg" alt="">
                         </button>
                     </div>
-                    <div class="info-section sconce-options">
-                        <h5>Options</h5>
-                        <div class="input-container">
-                            <input id="is_covered_input" type="checkbox" name="is_covered" required>
-                            <label for="is_covered_input"><span>Cover: </span>Have a cover placed atop your sconce to protect it from the elements.</label>
-                        </div>
-                        <div class="input-container sconce-options">
-                            <input id="is_glazed_input" type="checkbox" name="is_glazed" required>
-                            <label for="is_glazed_input"><span>Glazed Finish: </span>A clean, sleek, glazed finish to be applied to your cutout.</label>
-                        </div>
-                    </div>
+                    <div class="info-section sconce-add-ons"></div>
                     <div class="info-section">
                         <h5>Quantity</h5>
                         <input data-quantity type="text" name="" id="">
@@ -405,6 +383,7 @@
             ajax: {
                 url: "/orders/getAll",
                 dataSrc: function(response) {
+                    console.log("response:", response);
                     let res = [];
                     STATE.ordersLookup = response.data;
                     if (response && response.data) {
@@ -412,8 +391,6 @@
                         res = Object.values(response.data).map(order => {
                             order.internal_notes = order.internal_notes ? order.internal_notes : "-";
                             order.total_amount = "$" + formatPrice(order.total_amount);
-                            order.is_covered = order.is_covered ? "Yes" : "No";
-                            order.is_glazed = order.is_glazed ? "Yes" : "No";
                             return order;
                         });
                     } else {
@@ -438,12 +415,6 @@
                     data: 'message'
                 },
                 {
-                    data: 'is_covered'
-                },
-                {
-                    data: 'is_glazed'
-                },
-                {
                     data: 'internal_notes'
                 },
                 {
@@ -465,6 +436,7 @@
                     handleInitTableRowEvents();
                     loadSconces();
                     loadCutouts();
+                    loadAddOns();
                     this.api().on('draw', function() {
                         handleInitTableRowEvents();
                     });
@@ -567,8 +539,6 @@
                     modal.find('[data-order_type]').text(data.order_type);
                     modal.find('[data-created_at]').text(data.created_at);
                     modal.find('[data-total_amount]').text(`$${formatPrice(data.total_amount)}`);
-                    modal.find('[data-is_covered]').text(data.is_covered ? "Yes" : "No");
-                    modal.find('[data-is_glazed]').text(data.is_glazed ? "Yes" : "No");
                     modal.find('[data-current_status]')
                         .text(data.current_status)
                         .attr('data-current_status', data.current_status);
@@ -605,6 +575,46 @@
 
             const cartIsEmpty = !STATE.cart.length;
             $("#create-order-modal .modal-footer .continue-btn:not(.cancel)").toggleClass('disabled', cartIsEmpty);
+        }
+
+        async function loadAddOns() {
+            await $.ajax({
+                type: "GET",
+                url: "/add-ons/getAll",
+                contentType: "application/json",
+                dataType: "json",
+                success: res => {
+                    if (res.status === 200 && res.data) {
+                        STATE.addOnsLookup = res.data;
+                        $(".info-section.sconce-add-ons").html("<h5>Add Ons</h5>");
+                        Object.values(res.data).forEach(addOn => {
+                            addOn = formatResource(addOn);
+                            if ($(".info-section.sconce-add-ons").length) {
+                                const addOnIdHTML = `${addOn.name.replaceAll(" ", "_").toLowerCase()}_add_on`;
+                                const addOnEl = $(`
+                                    <div class="input-container">
+                                        <input id="${addOnIdHTML}" class="sconce-add-on" type="checkbox" value="${addOn.add_on_id}">
+                                        <label for="${addOnIdHTML}"><span>${addOn.name}: </span>${addOn.description} ($${addOn.price})</label>
+                                    </div>
+                                `);
+
+                                addOnEl.on('change', () => calculateNewTotal());
+
+                                $(".info-section.sconce-add-ons").append(addOnEl);
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "There was a problem"
+                        });
+                    }
+                },
+                error: function(_a, _b, errTxt) {
+                    console.error(errTxt);
+                }
+            });
         }
 
         async function loadSconces() {
@@ -821,9 +831,9 @@
                             } else if (newQuantity > 0) {
                                 updatedItemsCount++;
                                 item = {
-                                    ...item,
+                                    ...structuredClone(item),
                                     quantity: newQuantity,
-                                    lineItemDesc: getLineItemDescription(newQuantity, !!item.item.is_covered, !!item.item.is_glazed)
+                                    lineItemDesc: getLineItemDescription(newQuantity)
                                 };
                             } else {
                                 deletedItemsCount++;
@@ -927,8 +937,7 @@
             $("#sconce-modal [data-quantity]").val(1);
             $(".cutout-list-item.no-cutout").trigger('click');
             $("#cutout-selection-container button").trigger('click');
-            if ($("#is_covered_input").is(":checked")) $("#is_covered_input").trigger('click');
-            if ($("#is_glazed_input").is(":checked")) $("#is_glazed_input").trigger('click');
+            $(".sconce-add-on").each((_, el) => $(el).is(":checked") && $(el).trigger('click'));
         }
 
         function setActiveSconce(item, editingCart = false) {
@@ -973,19 +982,49 @@
 
         function calculateNewTotal() {
             const quantity = Number($("[data-quantity]").val());
-            const basePrice = Number(STATE?.activeSconce?.base_price);
+            const sconcePrice = Number(STATE?.activeSconce?.base_price);
             const cutoutPrice = Number(STATE?.activeCutout?.base_price) || 0;
-            const newPrice = formatPrice((basePrice + cutoutPrice) * quantity);
+            const basePrice = Object.values(getSelectedAddOnsInfo()).reduce((price, addOn) => {
+                if (addOn.checked) price += Number(addOn.price);
+                return price;
+            }, sconcePrice + cutoutPrice);
+            const newPrice = formatPrice(basePrice * quantity);
             $("#sconce-modal [data-total_price]>span").text(newPrice);
         }
 
-        function getLineItemDescription(quantity, is_covered = false, is_glazed = true) {
+        function getLineItemDescription(quantity) {
+            const addOnsInfo = getSelectedAddOnsInfo();
             const cutoutStr = STATE.activeCutout ? `With "${STATE.activeCutout.name} Cutout"` : "Without Cutout";
-            const coveredStr = is_covered ? "With Cover" : "Without Cover";
-            const glazedStr = is_glazed ? "Glazed Finish" : "Unglazed Finish";
+            let initialDesc = `${quantity} x "${STATE.activeSconce.name}" sconce, ${cutoutStr}`;
 
-            return `${quantity} x "${STATE.activeSconce.name}" sconce, ${cutoutStr}, ${coveredStr}, ${glazedStr}`;
+            return Object.values(addOnsInfo).reduce((lineItemDesc, addOn) => {
+                const addOnStr = (addOn.checked ? `With ` : `Without `) + addOn.name;
+                return `${lineItemDesc}, ${addOnStr}`;
+            }, initialDesc);
         };
+
+        function getSelectedAddOnsInfo() {
+            return $(".sconce-add-on").toArray().reduce((lookup, input) => {
+                const id = $(input).val();
+                lookup[id] = {
+                    checked: $(input).is(":checked"),
+                    ...STATE.addOnsLookup[id]
+                }
+                return lookup;
+            }, {});
+        }
+
+        function generateOrderItemPrice(item) {
+            const itemPrice = Number(item?.item?.base_price || 0);
+            const cutoutPrice = Number(item?.item?.cutout?.base_price) || 0;
+            const quantity = Number(item.quantity);
+            const basePrice = Object.values(item.item.addOnIds || []).reduce((price, id) => {
+                const addOn = STATE.addOnsLookup[id];
+                return price + Number(addOn.price);
+            }, itemPrice + cutoutPrice);
+
+            return basePrice * quantity;
+        }
 
         $(".info-container .info-section.collapsible h5").on("click", function() {
             $(this).closest('.info-section').toggleClass("collapsed");
@@ -1006,23 +1045,15 @@
                 town_or_city: $('input[name="town_or_city"]').val().trim(),
                 state: $('input[name="state"]').val().trim(),
                 country: $('input[name="country"]').val().trim(),
-                total_amount: STATE.cart.reduce((total, item) => {
-                    const basePrice = parseFloat(item.item.base_price || 0);
-                    const cutoutPrice = item.item.cutout ? parseFloat(item.item.cutout.base_price || 0) : 0;
-                    return total + (basePrice + cutoutPrice) * item.quantity;
-                }, 0),
+                total_amount: STATE.cart.reduce((total, item) => (total + generateOrderItemPrice(item)), 0),
                 order_items: STATE.cart.map(item => ({
                     item_type: item.type,
                     sconce_id: item.item.sconce_id || null,
                     cutout_id: item.item.cutout ? item.item.cutout.cutout_id : null,
-                    ceramic_id: null,
-                    finish_option_id: null,
-                    cover_option_id: null,
                     quantity: item.quantity,
-                    price: (parseFloat(item.item.base_price || 0) + (item.item.cutout ? parseFloat(item.item.cutout.base_price || 0) : 0)) * item.quantity,
+                    price: generateOrderItemPrice(item),
                     description: item.lineItemDesc,
-                    is_covered: item.item.is_covered,
-                    is_glazed: item.item.is_glazed
+                    add_on_ids: item.item.addOnIds
                 }))
             };
 
@@ -1076,41 +1107,50 @@
 
         $("#add-to-order").on('click', function() {
             const quantity = Number($("#sconce-modal [data-quantity]").val());
-            const is_covered = Number($("#is_covered_input").is(':checked'));
-            const is_glazed = Number($("#is_glazed_input").is(':checked'));
-            const lineItemDesc = getLineItemDescription(quantity, !!is_covered, !!is_glazed);
+            if (quantity < 1) {
+                return Swal.fire({
+                    icon: "warning",
+                    title: "No Quantity",
+                    text: "In order to add a sconce to your cart, you must have a quantity of 1 more."
+                });
+            }
+
+            const lineItemDesc = getLineItemDescription(quantity);
+            const addOnsInfo = getSelectedAddOnsInfo();
             let title = "Success";
             let text = `${lineItemDesc} successfully added to order!`;
+            const addOnIds = Object.values(addOnsInfo).reduce((arr, addOn) => {
+                if (addOn.checked) arr.push(addOn.add_on_id);
+                return arr;
+            }, []);
 
             try {
                 const itemInCartIdx = STATE.cart.findIndex(item => {
                     return (
                         item.item.sconce_id === STATE.activeSconce.sconce_id &&
                         item?.item?.cutout?.cutout_id === STATE?.activeCutout?.cutout_id &&
-                        item?.item?.is_covered === is_covered &&
-                        item?.item?.is_glazed === is_glazed
+                        arraysAreEqual(item?.item.addOnIds, addOnIds)
                     );
                 });
 
                 if (itemInCartIdx > -1) {
                     const currentQuantity = STATE.cart[itemInCartIdx].quantity;
                     const newQuantity = currentQuantity + quantity;
-                    text = `The item (${getLineItemDescription(currentQuantity, !!is_covered, !!is_glazed)}) is already in the order so we updated the quantity to "${newQuantity}"!`;
+                    text = `The item (${getLineItemDescription(currentQuantity)}) is already in the order so we updated the quantity to "${newQuantity}"!`;
                     STATE.cart[itemInCartIdx] = {
-                        ...STATE.cart[itemInCartIdx],
+                        ...structuredClone(STATE.cart[itemInCartIdx]),
                         quantity: newQuantity,
-                        lineItemDesc: getLineItemDescription(newQuantity, !!is_covered, !!is_glazed)
+                        lineItemDesc: getLineItemDescription(newQuantity)
                     }
                 } else {
                     STATE.cart.push({
                         type: "sconce",
                         item: {
-                            ...STATE.activeSconce,
+                            ...structuredClone(STATE.activeSconce),
                             cutout: !STATE.activeCutout ? null : {
-                                ...STATE.activeCutout
+                                ...structuredClone(STATE.activeCutout)
                             },
-                            is_covered,
-                            is_glazed,
+                            addOnIds
                         },
                         quantity: Number(quantity),
                         lineItemDesc
@@ -1130,6 +1170,10 @@
                 text,
                 icon: title.toLocaleLowerCase()
             });
+        });
+
+        $(".sconce-add-on").on('change', function() {
+            calculateNewTotal();
         });
 
         $("[data-quantity]").on('input', function(evt) {
@@ -1298,8 +1342,8 @@
                                             <span>${item.color}</span>
                                         </div>
                                         <div>
-                                            <span>Finish:</span>
-                                            <span>${item.finish || "-"}</span>
+                                            <span>Description:</span>
+                                            <span>${item.description || "-"}</span>
                                         </div>
                                         <div>
                                             <span>Mounting Type:</span>
@@ -1309,47 +1353,66 @@
                                             <span>Fitting Type:</span>
                                             <span>${item.fitting_type || "-"}</span>
                                         </div>
-                                        <div>
-                                            <span>Description:</span>
-                                            <span>${item.description || "-"}</span>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        ${orderType === "sconce" ? (
-                            `<hr>
-                            <div class="line-item cutout" data-type="cutout">
-                                <div>
-                                    <h3>Cutout</h3>
+                        <hr>
+                        <div class="line-item cutout" data-type="cutout">
+                            <div>
+                                <h3>Cutout</h3>
+                            </div>
+                            <div>
+                                <div class="img-container">
+                                    <img src="${orderItem?.cutout?.image_url || ""}" alt="">
                                 </div>
-                                <div>
-                                    <div class="img-container">
-                                        <img src="${orderItem?.cutout?.image_url || ""}" alt="">
-                                    </div>
-                                    <div class="line-item-info">
+                                <div class="line-item-info">
+                                    <div>
+                                        <h5>${orderItem?.cutout?.name || "No Cutout"}</h5>
                                         <div>
-                                            <h5>${orderItem?.cutout?.name || "No Cutout"}</h5>
-                                            <div>
-                                                <span>$${orderItem?.cutout?.base_price || 0}</span>
-                                                <sub>(usd)</sub>
-                                            </div>
+                                            <span>$${orderItem?.cutout?.base_price || 0}</span>
+                                            <sub>(usd)</sub>
                                         </div>
-                                        <div class="bottom">
-                                            ${orderItem?.cutout?.description ? (
-                                                `<div>
-                                                    <span>${orderItem.cutout.description}</span>
-                                                </div>`
-                                            ) : ""}
-                                        </div>
+                                    </div>
+                                    <div class="bottom">
+                                        ${orderItem?.cutout?.description ? (
+                                            `<div>
+                                                <span>${orderItem.cutout.description}</span>
+                                            </div>`
+                                        ) : ""}
                                     </div>
                                 </div>
                             </div>
-                            <div class="line-item-total">
-                                <p>${orderItem.description}</p>
-                                <span data-price>$${formattedItemSubTotal}</span>
-                            </div>`
-                        ) : ""}
+                        </div>
+                        <hr>
+                        <div class="line-item add-ons" data-type="add-ons">
+                            <div>
+                                <h3>Add Ons</h3>
+                            </div>
+                            <div>
+                                <div class="line-item-info">
+                                    <div class="bottom">
+                                        ${Object.values(STATE.addOnsLookup).map(addOn => {
+                                            const addOnIsApplied = item?.item?.addOnIds.includes(addOn.add_on_id);
+                                            const finalAddOnStr = (addOnIsApplied ? "With" : "Without") + ` ${addOn.name}`
+                                            return `
+                                                <div>
+                                                    <span>${finalAddOnStr}:</span>
+                                                    <div>
+                                                        <span>$${addOnIsApplied ? addOn.price : 0}</span>
+                                                        <sub>(usd)</sub>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="line-item-total">
+                            <p>${orderItem.description}</p>
+                            <span data-price>$${formattedItemSubTotal}</span>
+                        </div>
                     </div>
                 `;
 

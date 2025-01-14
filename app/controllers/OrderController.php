@@ -7,6 +7,7 @@ use App\Helpers\GeneralHelper;
 use App\Models\Contact;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderItemAddOns;
 use Exception;
 
 class OrderController extends Controller
@@ -14,6 +15,7 @@ class OrderController extends Controller
     private $orderModel;
     private $contactModel;
     private $orderItemModel;
+    private $orderItemAddOnsModel;
     private $helper;
     private $dbConnection;
 
@@ -25,6 +27,7 @@ class OrderController extends Controller
         $this->orderModel = new Order($this->dbConnection);
         $this->contactModel = new Contact($this->dbConnection);
         $this->orderItemModel = new OrderItem($this->dbConnection);
+        $this->orderItemAddOnsModel = new OrderItemAddOns($this->dbConnection);
         $this->helper = new GeneralHelper();
     }
 
@@ -154,12 +157,21 @@ class OrderController extends Controller
                     $this->orderItemModel->item_type = $item['item_type'] ?? "sconce";
                     $this->orderItemModel->sconce_id = (!empty($item['sconce_id']) && $item['sconce_id'] !== "") ? $item['sconce_id'] : null;
                     $this->orderItemModel->cutout_id = (!empty($item['cutout_id']) && $item['cutout_id'] !== "") ? $item['cutout_id'] : null;
-                    $this->orderItemModel->is_covered = $item['is_covered'];
-                    $this->orderItemModel->is_glazed = (int)$item['is_glazed'];
                     $this->orderItemModel->quantity = (int)$item['quantity'];
                     $this->orderItemModel->price = $item['price'];
                     $this->orderItemModel->description = $item['description'];
-                    $this->orderItemModel->create();
+                    
+                    // Get the last inserted order_item_id
+                    $order_item_id = $this->orderItemModel->create();
+
+                    // Insert add-ons for this order item if they exist
+                    if (!empty($item['add_on_ids']) && is_array($item['add_on_ids'])) {                        
+                        foreach ($item['add_on_ids'] as $add_on_id) {
+                            $this->orderItemAddOnsModel->order_item_id = $order_item_id;
+                            $this->orderItemAddOnsModel->add_on_id = $add_on_id;
+                            $this->orderItemAddOnsModel->attachAddOnsToOrderItem();
+                        }
+                    }
                 }
             }
 

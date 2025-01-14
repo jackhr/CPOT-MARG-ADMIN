@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../app/core/bootstrap.php';
 
+use App\Controllers\AddOnController;
 use App\Controllers\CutoutController;
 use App\Controllers\OrderController;
 use App\Controllers\RoleController;
@@ -88,6 +89,10 @@ $router->group('/', function (Router $router) {
         $router->get('/getAll', [OrderController::class, 'getAll']);
         $router->post('', [OrderController::class, 'create']);
         $router->put('/{id}/status', [OrderController::class, 'updateStatus']);
+    });
+
+    $router->group('add-ons', function (Router $router) {
+        $router->get('/getAll', [AddOnController::class, 'getAll']);
     });
 }, [AuthMiddleware::class]);
 

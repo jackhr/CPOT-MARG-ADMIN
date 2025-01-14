@@ -2,6 +2,7 @@
 
 namespace App\Core;
 
+use App\Controllers\AddOnController;
 use App\Controllers\CutoutController;
 use App\Controllers\UserController;
 use App\Controllers\HttpErrorController;
@@ -17,6 +18,8 @@ class ControllerFactory
     public static function create($controllerName)
     {
         switch ($controllerName) {
+            case AddOnController::class:
+                return new AddOnController();
             case OrderController::class:
                 return new OrderController();
             case CutoutController::class:

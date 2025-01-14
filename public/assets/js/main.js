@@ -26,10 +26,19 @@ function formatPrice(price) {
 }
 
 function formatResource(resource) {
-    return {
-        ...resource,
-        base_price: formatPrice(resource.base_price)
+    const res = structuredClone(resource);
+
+    if (res.price) res.price = formatPrice(resource.price);
+    if (res.base_price) res.base_price = formatPrice(resource.base_price);
+
+    return res;
+}
+
+function arraysAreEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) {
+        return false; // Arrays have different lengths, so not equal
     }
+    return arr1.every((value, index) => value === arr2[index]);
 }
 
 $(document).ready(function () {

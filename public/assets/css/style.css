@@ -689,9 +689,12 @@ form hr {
 }
 
 .line-item-container {
-    box-shadow   : 0 0 48px 0px #31313114;
-    border       : solid 1px var(--grey-light);
-    overflow     : hidden;
+    box-shadow: 0 0 48px 0px #31313114;
+    border    : solid 1px var(--grey-light);
+    overflow  : hidden;
+}
+
+.line-item-container:not(:last-child) {
     margin-bottom: 48px;
 }
 
@@ -1283,6 +1286,21 @@ table.dataTable>tbody>tr.completed_order td.status {
     font-weight: 600;
 }
 
+.line-item.add-ons .bottom {
+    border : none !important;
+    margin : 0 !important;
+    padding: 0 !important;
+}
+
+.line-item.add-ons .bottom>div {
+    font-size: 18px;
+    color    : var(--black);
+}
+
+.line-item.add-ons .bottom div div {
+    font-size: inherit;
+}
+
 #order-options-container {
     display        : flex;
     align-items    : flex-end;
@@ -1340,12 +1358,6 @@ table.dataTable>tbody>tr.completed_order td.status {
 
 #order-details-modal[data-status="canceled"] .modal-content {
     border-color: var(--red);
-}
-
-[data-is_covered],
-[data-is_glazed] {
-    font-weight   : bold;
-    text-transform: uppercase;
 }
 
 #create-order-modal .modal-content {
@@ -1799,18 +1811,18 @@ table.dataTable>tbody>tr.completed_order td.status {
     color       : var(--secondary);
 }
 
-.info-section.sconce-options input {
+.info-section.sconce-add-ons input {
     width: 20px;
 }
 
-.info-section.sconce-options label {
+.info-section.sconce-add-ons label {
     font-size  : 14px;
     max-width  : initial !important;
     font-weight: 400;
     line-height: 24px;
 }
 
-.info-section.sconce-options label span {
+.info-section.sconce-add-ons label span {
     font-weight   : 600;
     text-transform: uppercase;
 }
