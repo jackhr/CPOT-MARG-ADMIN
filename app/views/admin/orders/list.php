@@ -981,7 +981,7 @@
         }
 
         function calculateNewTotal() {
-            const quantity = Number($("[data-quantity]").val());
+            const quantity = Number($("#sconce-modal [data-quantity]").val());
             const sconcePrice = Number(STATE?.activeSconce?.base_price);
             const cutoutPrice = Number(STATE?.activeCutout?.base_price) || 0;
             const basePrice = Object.values(getSelectedAddOnsInfo()).reduce((price, addOn) => {
@@ -1297,6 +1297,7 @@
 
             activeOrder.order_items.forEach((orderItem, idx) => {
                 const item = formatResource(orderItem[orderType]);
+                console.log(item);
                 orderItem.cutout && (orderItem.cutout = formatResource(orderItem.cutout));
                 const itemPrice = Number(item.base_price);
                 const cutoutPrice = Number(orderItem?.cutout?.base_price) || 0;
@@ -1393,7 +1394,8 @@
                                 <div class="line-item-info">
                                     <div class="bottom">
                                         ${Object.values(STATE.addOnsLookup).map(addOn => {
-                                            const addOnIsApplied = item?.item?.addOnIds.includes(addOn.add_on_id);
+                                            const addOnIds = orderItem.add_ons.map(addOn => addOn.add_on_id);
+                                            const addOnIsApplied = addOnIds.includes(addOn.add_on_id);
                                             const finalAddOnStr = (addOnIsApplied ? "With" : "Without") + ` ${addOn.name}`
                                             return `
                                                 <div>

@@ -61,6 +61,14 @@ class OrderController extends Controller
                 );
                 $order_item['cutout'] = $cutout[0];
             }
+
+            $order_item['add_ons'] = $this->orderModel->DBRaw(
+                "SELECT ao.add_on_id, ao.name, ao.price
+                    FROM order_item_add_ons oia
+                    JOIN add_ons ao ON oia.add_on_id = ao.add_on_id
+                WHERE oia.order_item_id = {$order_item['order_item_id']};"
+            );
+
             $order_id = $order_item['order_id'];
 
             if (isset($orders[$order_id]['order_items'])) {
