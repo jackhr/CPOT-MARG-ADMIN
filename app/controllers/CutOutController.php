@@ -43,14 +43,14 @@ class CutoutController extends Controller
                 return !isset($cutout['deleted_at']);
             });
         }
-        
+
         $images = $this->cutoutModel->DBRaw("SELECT * FROM cutout_images");
-        
+
         foreach ($images as $image) {
             $id = $image['cutout_id'];
             $cutouts[$id]['images'][$image['image_id']] = $image;
         }
-        
+
         $this->helper->respondToClient($cutouts);
     }
 
@@ -190,12 +190,14 @@ class CutoutController extends Controller
 
         [
             "name" => $name,
+            "code" => $code,
             "description" => $description,
             "cutout_type" => $cutout_type,
             "primary_image_idx" => $primary_image_idx
         ] = $_POST;
 
         $this->cutoutModel->name = $name;
+        $this->cutoutModel->code = $code;
         $this->cutoutModel->description = $description;
         $this->cutoutModel->cutout_type = $cutout_type;
         $this->cutoutModel->created_by = $_SESSION['user']['user_id'];
@@ -316,15 +318,15 @@ class CutoutController extends Controller
 
         [
             "name" => $name,
+            "code" => $code,
             "description" => $description,
             "cutout_type" => $cutout_type,
-        ] = $_POST;
-
+        ] = $data;
 
         $this->cutoutModel->cutout_id = $cutout_id;
         $this->cutoutModel->name = $name;
+        $this->cutoutModel->code = $code;
         $this->cutoutModel->description = $description;
-        $this->cutoutModel->image_url = isset($new_image_url) ? $new_image_url : $cutout['image_url'];
         $this->cutoutModel->cutout_type = $cutout_type;
         $this->cutoutModel->updated_by = $_SESSION['user']['user_id'];
 

@@ -21,6 +21,7 @@
                     <th>Id #</th>
                     <th>Image</th>
                     <th>Name</th>
+                    <th>Code</th>
                     <th>Description</th>
                     <th>Cutout Type</th>
                     <th>Created</th>
@@ -93,9 +94,13 @@
                             <input type="text" name="name" placeholder="New Cutout" required>
                         </div>
                         <div class="input-container">
-                            <label for="cutout_type">Cutout Type</label>
-                            <input type="text" name="cutout_type" placeholder="Nature" required>
+                            <label for="code">Code</label>
+                            <input type="text" name="code" placeholder="C54" required>
                         </div>
+                    </div>
+                    <div class="input-container">
+                        <label for="cutout_type">Cutout Type</label>
+                        <input type="text" name="cutout_type" placeholder="Nature" required>
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
@@ -189,9 +194,13 @@
                             <input type="text" name="name" placeholder="New Cutout" required>
                         </div>
                         <div class="input-container">
-                            <label for="cutout_type">Cutout Type</label>
-                            <input type="text" name="cutout_type" placeholder="Nature" required>
+                            <label for="code">Code</label>
+                            <input type="text" name="code" placeholder="C54" required>
                         </div>
+                    </div>
+                    <div class="input-container">
+                        <label for="cutout_type">Cutout Type</label>
+                        <input type="text" name="cutout_type" placeholder="Nature" required>
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
@@ -229,16 +238,19 @@
 
 <script>
     $(document).ready(function() {
-        const dTable = new DataTable("table", {
+
+        STATE.dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
             ajax: {
                 url: "/cutouts/getAll",
                 dataSrc: function(response) {
+                    console.log("herererer");
                     let res = [];
                     if (response && response.data) {
                         STATE.cutouts = structuredClone(Object.values(response.data));
                         res = Object.values(response.data).map(cutout => {
                             cutout.price = formatPrice(cutout.price);
+                            cutout.code = cutout.code ? cutout.code : "-";
                             cutout.description = cutout.description ? cutout.description : "-";
                             cutout.deleted_at = cutout.deleted_at ? cutout.deleted_at : "-";
                             cutout.updated_by_email = cutout.updated_by_email ? cutout.updated_by_email : "-";
@@ -247,6 +259,8 @@
                     } else {
                         console.error("Invalid response format", response);
                     }
+
+                    STATE.fetchingData = false;
                     return res;
                 }
             },
@@ -258,6 +272,9 @@
                 },
                 {
                     data: 'name'
+                },
+                {
+                    data: 'code'
                 },
                 {
                     data: 'description'
@@ -291,6 +308,7 @@
         });
 
         (function init() {
+            STATE.fetchingData = false;
             STATE.activeId = null;
             STATE.upload = {
                 maxImageCount: 9,
@@ -307,8 +325,21 @@
             setTimeout(() => dTable.draw(), 1000);
         })();
 
+        function reloadTable(populateForm = false) {
+            STATE.dTable.ajax.reload(null, false); // false ensures the current paging stays the same
+            if (!populateForm) return;
+
+            STATE.fetchingData = true;
+            const populateFormInterval = setInterval(() => {
+                if (STATE.fetchingData === false) {
+                    populateEditForm(STATE.activeId, true);
+                    clearInterval(populateFormInterval);
+                }
+            }, 250);
+        }
+
         function handleInitTableRowEvents(reset = false) {
-            dTable.rows().every(function(idx) {
+            STATE.dTable.rows().every(function(idx) {
                 const rowNode = this.node();
                 if (!rowNode) {
                     console.warn(`Row node not found for index ${idx}`);
@@ -350,6 +381,7 @@
             const modal = $("#edit-cutout-modal");
             modal.find('#edit-cutout-id').text(id);
             modal.find('input[name="name"]').val(data.name);
+            modal.find('input[name="code"]').val(data.code);
             modal.find('input[name="cutout_type"]').val(data.cutout_type);
             modal.find('textarea[name="description"]').val(data.description);
 
@@ -458,6 +490,7 @@
 
         function resetModal(modal) {
             modal.find('input[name="name"]').val("");
+            modal.find('input[name="code"]').val("");
             modal.find('input[name="width"]').val("");
             modal.find('input[name="height"]').val("");
             modal.find('input[name="depth"]').val("");
@@ -528,7 +561,7 @@
             setTimeout(() => populateImagesModal(data, true), 400);
         });
 
-        $(".images-modal button.confirm").on('click', function(e) {
+        $(".images-modal button.confirm").off('click').on('click', function(e) {
             e.preventDefault();
             if ($("#create-cutout-modal").hasClass("showing")) {
                 return $(this).closest('.modal').find(".modal-close").trigger("click");
@@ -591,9 +624,9 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    reloadTable(true);
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -643,9 +676,9 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    reloadTable(true);
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -704,9 +737,9 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    reloadTable();
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -792,9 +825,9 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    reloadTable();
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -846,9 +879,9 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    reloadTable(true);
                 },
                 error: function() {
                     console.log("arguments:", arguments);

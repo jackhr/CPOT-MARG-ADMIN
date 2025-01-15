@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\GeneralHelper;
 use PDO;
 
 class Cutout extends Model
@@ -9,8 +10,8 @@ class Cutout extends Model
     public $cutout_id;
     public $primary_image_id;
     public $name;
+    public $code;
     public $description;
-    public $image_url;
     public $cutout_type;
     public $created_at;
     public $updated_at;
@@ -27,20 +28,20 @@ class Cutout extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, description = :description, image_url = :image_url, cutout_type = :cutout_type, created_by = :created_by";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, code = :code, description = :description, cutout_type = :cutout_type, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
         $this->name = htmlspecialchars($this->name);
+        $this->code = htmlspecialchars($this->code);
         $this->description = htmlspecialchars($this->description);
-        $this->image_url = htmlspecialchars($this->image_url);
         $this->cutout_type = htmlspecialchars($this->cutout_type);
         $this->created_by = htmlspecialchars($this->created_by);
 
         // Bind parameters
         $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":code", $this->code);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":image_url", $this->image_url);
         $stmt->bindParam(":cutout_type", $this->cutout_type);
         $stmt->bindParam(":created_by", $this->created_by, PDO::PARAM_INT);
 
@@ -50,21 +51,21 @@ class Cutout extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, description = :description, image_url = :image_url, cutout_type = :cutout_type, updated_by = :updated_by WHERE cutout_id = :cutout_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, code = :code, description = :description, cutout_type = :cutout_type, updated_by = :updated_by WHERE cutout_id = :cutout_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
         $this->cutout_id = htmlspecialchars($this->cutout_id);
         $this->name = htmlspecialchars($this->name);
+        $this->code = htmlspecialchars($this->code);
         $this->description = htmlspecialchars($this->description);
-        $this->image_url = htmlspecialchars($this->image_url);
         $this->cutout_type = htmlspecialchars($this->cutout_type);
         $this->updated_by = htmlspecialchars($this->updated_by);
 
         // Bind parameters
         $stmt->bindParam(":name", $this->name);
+        $stmt->bindParam(":code", $this->code);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":image_url", $this->image_url);
         $stmt->bindParam(":cutout_type", $this->cutout_type);
         $stmt->bindParam(":updated_by", $this->updated_by, PDO::PARAM_INT);
         $stmt->bindParam(":cutout_id", $this->cutout_id, PDO::PARAM_INT);
