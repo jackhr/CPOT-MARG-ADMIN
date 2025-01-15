@@ -307,7 +307,7 @@
                     </div>
                     <button class="continue-btn">Confirm Selection</button>
                 </div>
-                <div id="cutout-preview-container">
+                <div id="img-preview-container">
                     <img style="display: none;" src="" alt="">
                 </div>
             </div>
@@ -926,9 +926,9 @@
                 $(".cutout-list-item").removeClass('selected');
                 $(this).addClass('selected');
                 if ($(this).hasClass('no-cutout')) {
-                    $("#cutout-preview-container img").hide();
+                    $("#img-preview-container img").hide();
                 } else {
-                    $("#cutout-preview-container img").attr('src', selectedCutoutImg).show();
+                    $("#img-preview-container img").attr('src', selectedCutoutImg).show();
                 }
             });
         }

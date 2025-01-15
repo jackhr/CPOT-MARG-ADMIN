@@ -111,19 +111,18 @@
                     <div class="input-container">
                         <label for="dimension-units">Units</label>
                         <select name="dimension-units" id="dimension-units">
-                            <option value="cm">cm</option>
-                            <option value="mm">mm</option>
                             <option value="in">in</option>
+                            <option value="cm">cm</option>
                         </select>
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="material">Material</label>
-                            <input type="text" name="material" placeholder="Porcelain" required>
+                            <input type="text" name="material" placeholder="Porcelain" value="Ceramic" required>
                         </div>
                         <div class="input-container">
                             <label for="color">Color</label>
-                            <input type="text" name="color" placeholder="Pearl white" required>
+                            <input type="text" name="color" placeholder="Pearl white" value="Off White" required>
                         </div>
                     </div>
                     <div class="mutiple-input-container">
@@ -136,7 +135,6 @@
                             <select name="weight-units" id="weight-units">
                                 <option selected value="lbs">lbs</option>
                                 <option value="kgs">kgs</option>
-                                <option value="ozs">ozs</option>
                             </select>
                         </div>
                     </div>
@@ -240,7 +238,7 @@
                         </div>
                     </div>
                     <hr style="border: solid 0.5px #d3d3d3;margin: 24px 0;">
-                    <div class="input-container sconce-img-container">
+                    <div class="input-container img-container">
                         <input multiple type="file" class="img-input" id="edit-img-input">
                         <div class="img-preview-container"></div>
                     </div>
@@ -265,19 +263,18 @@
                     <div class="input-container">
                         <label for="dimension-units">Units</label>
                         <select name="dimension-units" id="dimension-units">
-                            <option value="cm">cm</option>
-                            <option value="mm">mm</option>
                             <option value="in">in</option>
+                            <option value="cm">cm</option>
                         </select>
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="material">Material</label>
-                            <input type="text" name="material" placeholder="Porcelain" required>
+                            <input type="text" name="material" placeholder="Ceramic" value="Ceramic" required>
                         </div>
                         <div class="input-container">
                             <label for="color">Color</label>
-                            <input type="text" name="color" placeholder="Pearl white" required>
+                            <input type="text" name="color" placeholder="Off White" value="Off White" required>
                         </div>
                     </div>
                     <div class="mutiple-input-container">
@@ -290,7 +287,6 @@
                             <select name="weight-units" id="weight-units">
                                 <option selected value="lbs">lbs</option>
                                 <option value="kgs">kgs</option>
-                                <option value="ozs">ozs</option>
                             </select>
                         </div>
                     </div>
@@ -614,8 +610,8 @@
             modal.find('input[name="width"]').val("");
             modal.find('input[name="height"]').val("");
             modal.find('input[name="depth"]').val("");
-            modal.find('input[name="material"]').val("");
-            modal.find('input[name="color"]').val("");
+            modal.find('input[name="material"]').val("Ceramic");
+            modal.find('input[name="color"]').val("Off White");
             modal.find('input[name="weight"]').val("");
             modal.find('input[name="base_price"]').val("");
             modal.find('input[name="stock_quantity"]').val("");

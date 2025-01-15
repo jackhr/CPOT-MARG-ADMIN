@@ -304,9 +304,7 @@ select {
     color: var(--blue) !important;
 }
 
-.input-container.sconce-img-container,
-.input-container.img-container,
-.input-container.cutout-img-container {
+.input-container.img-container {
     flex-direction: column;
     padding-bottom: 24px;
     border-bottom : solid 1px var(--grey-x-light);
@@ -317,27 +315,29 @@ select {
     display: none;
 }
 
-.input-container.sconce-img-container:not(:has(img)) .sconce-preview-container::before,
-.input-container.img-container:not(:has(img)) .img-preview-container::before,
-.input-container.cutout-img-container:not(:has(img)) .cutout-preview-container::before {
+.input-container.img-container:not(:has(img)) {
+    height: 17vh !important;
+}
+
+.input-container.img-container:has(img) {
+    height: 35vh !important;
+}
+
+.input-container.img-container:not(:has(img)) .img-preview-container::before {
     content: "Images will preview here.";
 }
 
-.sconce-preview-container,
-.img-preview-container,
-.cutout-preview-container {
+.img-preview-container {
     display        : flex;
     align-items    : center;
     justify-content: center;
     width          : 100%;
     min-height     : 100px;
-    max-width      : 300px;
+    max-width      : 400px;
     margin-bottom  : 12px;
 }
 
-.sconce-preview-container img,
-.img-preview-container img,
-.cutout-preview-container img {
+.img-preview-container img {
     width     : 100%;
     object-fit: contain;
     height    : auto;
@@ -1550,16 +1550,6 @@ table.dataTable>tbody>tr.completed_order td.status {
     margin     : 0;
 }
 
-#cutout-preview-container {
-    width: 530px;
-}
-
-#cutout-preview-container img {
-    width     : 100%;
-    height    : 100%;
-    object-fit: cover;
-}
-
 #cutout-selection-container h3,
 #cutout-list {
     background: var(--grey-x-light);
@@ -1656,13 +1646,17 @@ table.dataTable>tbody>tr.completed_order td.status {
 
 .img-container {
     width : clamp(200px, 100%, 750px);
-    height: clamp(200px, 40vw, 750px);
+    height: clamp(200px, 35vh, 750px);
 }
 
 .img-container img {
     width     : 100%;
     height    : 100%;
     object-fit: cover;
+}
+
+.img-preview-container img {
+    object-fit: contain;
 }
 
 .info-container {
