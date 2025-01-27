@@ -27,8 +27,8 @@
                     <th>Weight</th>
                     <th>Price</th>
                     <th>Status</th>
-                    <th>Description</th>
                     <th>Availability</th>
+                    <th>Description</th>
                     <th>Created</th>
                     <th>Last updated</th>
                     <?php if ($user['role_id'] === 1) { ?>
@@ -357,7 +357,9 @@
                         res = Object.values(response.data).map(oak => {
                             oak.price = formatPrice(oak.price);
                             oak.description = oak.description ? oak.description : "-";
-                            oak.deleted_at = oak.deleted_at ? oak.deleted_at : "-";
+                            oak.created_at = oak.created_at ? formateReadableDate(oak.created_at, false) : "-";
+                            oak.updated_at = oak.updated_at ? formateReadableDate(oak.updated_at, false) : "-";
+                            oak.deleted_at = oak.deleted_at ? formateReadableDate(oak.deleted_at, false) : "-";
                             oak.updated_by_email = oak.updated_by_email ? oak.updated_by_email : "-";
                             return oak;
                         });
@@ -380,7 +382,11 @@
                     data: 'artist'
                 },
                 {
-                    data: 'dimensions'
+                    data: 'dimensions',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-dimensions');
+                    }
                 },
                 {
                     data: 'material'
@@ -398,22 +404,37 @@
                     data: 'status'
                 },
                 {
-                    data: 'description'
-                },
-                {
                     data: 'availability'
                 },
                 {
-                    data: 'created_at'
+                    data: 'description',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-description');
+                    }
                 },
                 {
-                    data: 'updated_at'
+                    data: 'created_at',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-type-date');
+                    }
                 },
-                <?php if ($user['role_id'] === 1) {
-                    echo "{
-                        data: 'deleted_at'
-                    },";
-                } ?> {
+                {
+                    data: 'updated_at',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-type-date');
+                    }
+                },
+                <?php if ($user['role_id'] === 1) { ?> {
+                        data: 'deleted_at',
+                        createdCell: function(td, cellData, rowData, row, col) {
+                            // Add class based on current_status value
+                            $(td).addClass('dt-type-date');
+                        }
+                    },
+                <?php } ?> {
                     data: 'created_by_email'
                 },
                 {

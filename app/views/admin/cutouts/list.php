@@ -22,8 +22,8 @@
                     <th>Image</th>
                     <th>Name</th>
                     <th>Code</th>
+                    <th>Base Price</th>
                     <th>Description</th>
-                    <th>Cutout Type</th>
                     <th>Created</th>
                     <th>Last updated</th>
                     <?php if ($user['role_id'] === 1) { ?>
@@ -99,8 +99,8 @@
                         </div>
                     </div>
                     <div class="input-container">
-                        <label for="cutout_type">Cutout Type</label>
-                        <input type="text" name="cutout_type" placeholder="Nature" required>
+                        <label for="base_price">Base Price</label>
+                        <input type="text" name="base_price" placeholder="10" required>
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
@@ -199,8 +199,8 @@
                         </div>
                     </div>
                     <div class="input-container">
-                        <label for="cutout_type">Cutout Type</label>
-                        <input type="text" name="cutout_type" placeholder="Nature" required>
+                        <label for="base_price">Base Price</label>
+                        <input type="text" name="base_price" placeholder="10" required>
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
@@ -241,6 +241,13 @@
 
         STATE.dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
+            columnDefs: [{
+                type: 'natural',
+                target: 2
+            }],
+            order: [
+                [2, 'asc']
+            ],
             ajax: {
                 url: "/cutouts/getAll",
                 dataSrc: function(response) {
@@ -252,7 +259,9 @@
                             cutout.price = formatPrice(cutout.price);
                             cutout.code = cutout.code ? cutout.code : "-";
                             cutout.description = cutout.description ? cutout.description : "-";
-                            cutout.deleted_at = cutout.deleted_at ? cutout.deleted_at : "-";
+                            cutout.created_at = cutout.created_at ? formateReadableDate(cutout.created_at, false) : "-";
+                            cutout.updated_at = cutout.updated_at ? formateReadableDate(cutout.updated_at, false) : "-";
+                            cutout.deleted_at = cutout.deleted_at ? formateReadableDate(cutout.deleted_at, false) : "-";
                             cutout.updated_by_email = cutout.updated_by_email ? cutout.updated_by_email : "-";
                             return cutout;
                         });
@@ -277,22 +286,37 @@
                     data: 'code'
                 },
                 {
-                    data: 'description'
+                    data: 'base_price'
                 },
                 {
-                    data: 'cutout_type'
+                    data: 'description',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-description');
+                    }
                 },
                 {
-                    data: 'created_at'
+                    data: 'created_at',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-type-date');
+                    }
                 },
                 {
-                    data: 'updated_at'
+                    data: 'updated_at',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-type-date');
+                    }
                 },
-                <?php if ($user['role_id'] === 1) {
-                    echo "{
-                        data: 'deleted_at'
-                    },";
-                } ?> {
+                <?php if ($user['role_id'] === 1) { ?> {
+                        data: 'deleted_at',
+                        createdCell: function(td, cellData, rowData, row, col) {
+                            // Add class based on current_status value
+                            $(td).addClass('dt-type-date');
+                        }
+                    },
+                <?php } ?> {
                     data: 'created_by_email'
                 },
                 {
@@ -322,7 +346,7 @@
             };
             resetImagesModal();
 
-            setTimeout(() => dTable.draw(), 1000);
+            setTimeout(() => STATE.dTable.draw(), 1000);
         })();
 
         function reloadTable(populateForm = false) {
@@ -382,7 +406,7 @@
             modal.find('#edit-cutout-id').text(id);
             modal.find('input[name="name"]').val(data.name);
             modal.find('input[name="code"]').val(data.code);
-            modal.find('input[name="cutout_type"]').val(data.cutout_type);
+            modal.find('input[name="base_price"]').val(data.base_price);
             modal.find('textarea[name="description"]').val(data.description);
 
             // handle rendering option buttons
@@ -491,14 +515,7 @@
         function resetModal(modal) {
             modal.find('input[name="name"]').val("");
             modal.find('input[name="code"]').val("");
-            modal.find('input[name="width"]').val("");
-            modal.find('input[name="height"]').val("");
-            modal.find('input[name="depth"]').val("");
-            modal.find('input[name="material"]').val("");
-            modal.find('input[name="color"]').val("");
-            modal.find('input[name="weight"]').val("");
             modal.find('input[name="base_price"]').val("");
-            modal.find('input[name="stock_quantity"]').val("");
             modal.find('textarea[name="description"]').val("");
             modal.find('.img-preview-container').html("");
 
@@ -517,8 +534,12 @@
                     errMsg = "You need to upload at least one image";
                 } else if (!data.name.length) {
                     errMsg = "Please provide your cutout with a name.";
-                } else if (!data.cutout_type.length) {
-                    errMsg = "Please provide your cutout with a type.";
+                } else if (!data.code.length) {
+                    errMsg = "Please provide your cutout with a code.";
+                } else if (!data.base_price.length) {
+                    errMsg = "Please provide your sconce with a price.";
+                } else if (!data.base_price.match(STATE.regEx.decimal)) {
+                    errMsg = `Price can only be a number. You entered: "${data.base_price}"`;
                 }
             }
 

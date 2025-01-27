@@ -12,7 +12,7 @@ class Cutout extends Model
     public $name;
     public $code;
     public $description;
-    public $cutout_type;
+    public $base_price;
     public $created_at;
     public $updated_at;
     public $deleted_at;
@@ -28,21 +28,21 @@ class Cutout extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, code = :code, description = :description, cutout_type = :cutout_type, created_by = :created_by";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, code = :code, description = :description, base_price = :base_price, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
         $this->name = htmlspecialchars($this->name);
         $this->code = htmlspecialchars($this->code);
         $this->description = htmlspecialchars($this->description);
-        $this->cutout_type = htmlspecialchars($this->cutout_type);
+        $this->base_price = htmlspecialchars($this->base_price);
         $this->created_by = htmlspecialchars($this->created_by);
 
         // Bind parameters
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":code", $this->code);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":cutout_type", $this->cutout_type);
+        $stmt->bindParam(":base_price", $this->base_price);
         $stmt->bindParam(":created_by", $this->created_by, PDO::PARAM_INT);
 
         // Execute the query
@@ -51,7 +51,7 @@ class Cutout extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, code = :code, description = :description, cutout_type = :cutout_type, updated_by = :updated_by WHERE cutout_id = :cutout_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, code = :code, description = :description, base_price = :base_price, updated_by = :updated_by WHERE cutout_id = :cutout_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -59,14 +59,14 @@ class Cutout extends Model
         $this->name = htmlspecialchars($this->name);
         $this->code = htmlspecialchars($this->code);
         $this->description = htmlspecialchars($this->description);
-        $this->cutout_type = htmlspecialchars($this->cutout_type);
+        $this->base_price = htmlspecialchars($this->base_price);
         $this->updated_by = htmlspecialchars($this->updated_by);
 
         // Bind parameters
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":code", $this->code);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":cutout_type", $this->cutout_type);
+        $stmt->bindParam(":base_price", $this->base_price);
         $stmt->bindParam(":updated_by", $this->updated_by, PDO::PARAM_INT);
         $stmt->bindParam(":cutout_id", $this->cutout_id, PDO::PARAM_INT);
 

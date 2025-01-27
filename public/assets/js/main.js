@@ -12,6 +12,31 @@ const STATE = {
     lengthConst: 2.54,
 }
 
+function formateReadableDate(dateString, useWords = true) {
+    // Convert the string to a Date object
+    const date = new Date(dateString.replace(" ", "T")); // Replace space with 'T' for proper ISO format
+
+    // Format the date into a readable string
+    const options = {
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        timeZoneName: "short",
+        hour12: true,
+    };
+
+    if (useWords) {
+        options.weekday = 'short';
+        options.month = 'short';
+        options.day = 'numeric';
+    }
+
+    return new Intl.DateTimeFormat(navigator.language, options).format(date);
+}
+
 const convertUnits = (type, value, convertUp = true) => {
     const unitConst = STATE[`${type}Const`];
     return convertUp ? value / unitConst : value * unitConst;
@@ -19,7 +44,7 @@ const convertUnits = (type, value, convertUp = true) => {
 
 function formatPrice(price) {
     // Convert to number and then to a string and use toLocaleString for formatting
-    return Number(price).toLocaleString('en-US', {
+    return Number(price).toLocaleString(navigator.language, {
         minimumFractionDigits: 2, // Ensures two decimal places
         maximumFractionDigits: 2 // Prevents more than two decimal places
     });

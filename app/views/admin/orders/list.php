@@ -229,7 +229,7 @@
                     </div>
                     <div class="info-section">
                         <h5>Cutouts</h5>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus asperiores perspiciatis perferendis blanditiis!</p>
+                        <p>In our ceramic sconces, a "cutout" refers to a design element where specific shapes or patterns are carved into the sconce's surface. These cutouts not only enhance the aesthetic appeal by introducing intricate designs but also allow light to pass through, creating captivating patterns and shadows in your space. You can choose from our existing range of cutout motifs or opt for no cutout for a sleek, minimalist look.</p>
                         <button class="continue-btn" data-cutout="">
                             <span>No Cutout Selected</span>
                             <img src="/assets/images/icons/right-arrow.svg" alt="">
@@ -253,7 +253,10 @@
                     </div>
                     <div class="info-section collapsible">
                         <h5>Overview</h5>
-                        <p data-description>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eum ab, consequuntur deserunt nam quasi consequatur corporis?</p>
+                        <div class="sconce-spec-pair">
+                            <span>Description:</span>
+                            <span data-description></span>
+                        </div>
                     </div>
                     <div class="info-section collapsible">
                         <h5>Specification</h5>
@@ -428,7 +431,11 @@
                     }
                 },
                 {
-                    data: 'created_at'
+                    data: 'created_at',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-type-date');
+                    }
                 }
             ],
             initComplete: async function() {
@@ -617,6 +624,27 @@
             });
         }
 
+        function getSortedSconces() {
+            return Object.values(STATE.sconces).sort((a, b) => {
+                // Extract the first character and numeric part from the 'name' field
+                const nameA = a.name;
+                const nameB = b.name;
+
+                // Compare the first letter of the name
+                const firstCharA = nameA.charAt(0).toLowerCase();
+                const firstCharB = nameB.charAt(0).toLowerCase();
+
+                if (firstCharA < firstCharB) return -1;
+                if (firstCharA > firstCharB) return 1;
+
+                // If first letters are the same, compare the numeric part
+                const numericPartA = parseInt(nameA.slice(1), 10) || 0;
+                const numericPartB = parseInt(nameB.slice(1), 10) || 0;
+
+                return numericPartA - numericPartB;
+            });
+        }
+
         async function loadSconces() {
             await $.ajax({
                 type: "GET",
@@ -650,7 +678,7 @@
 
             $(".gallery").html("");
 
-            STATE.sconces.forEach(sconce => {
+            getSortedSconces().forEach(sconce => {
                 sconce = formatResource(sconce);
                 STATE.sconcesLookup[sconce.sconce_id] = sconce;
                 const sconceEl = $(`
@@ -665,9 +693,9 @@
                         <img src="${sconce.image_url}" alt="Oops">
                         <div>
                             <h4>${sconce.name}</h4>
-                            <span>${sconce.dimensions}</span>
+                            <span>${sconce.dimensions} (D/W/H)</span>
                             <div>
-                                <span>${sconce.base_price}<sub>(usd)</sub></span>
+                                <span>$${sconce.base_price}<sub>(usd)</sub></span>
                                 <span>View More...</span>
                             </div>
                         </div>
@@ -954,8 +982,8 @@
             $("#sconce-modal [data-name]").text(sconce.name);
             $("#sconce-modal [data-base_price]>span").text(sconce.base_price);
             $("#sconce-modal [data-sku]").text("#" + sconce.sconce_id);
-            $("#sconce-modal [data-description]").text(sconce.description);
-            $("#sconce-modal [data-dimensions]").text(sconce.dimensions);
+            $("#sconce-modal [data-description]").text(sconce.description || "This item has no description.");
+            $("#sconce-modal [data-dimensions]").text(`${sconce.dimensions} (D/W/H)`);
             $("#sconce-modal [data-material]").text(sconce.material);
             $("#sconce-modal [data-color]").text(sconce.color);
             $("#sconce-modal [data-quantity]").val(quantity);

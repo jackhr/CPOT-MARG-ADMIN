@@ -191,15 +191,15 @@ class CutoutController extends Controller
         [
             "name" => $name,
             "code" => $code,
+            "base_price" => $base_price,
             "description" => $description,
-            "cutout_type" => $cutout_type,
             "primary_image_idx" => $primary_image_idx
         ] = $_POST;
 
         $this->cutoutModel->name = $name;
         $this->cutoutModel->code = $code;
+        $this->cutoutModel->base_price = $base_price;
         $this->cutoutModel->description = $description;
-        $this->cutoutModel->cutout_type = $cutout_type;
         $this->cutoutModel->created_by = $_SESSION['user']['user_id'];
 
         if ($this->cutoutModel->create()) {
@@ -319,15 +319,15 @@ class CutoutController extends Controller
         [
             "name" => $name,
             "code" => $code,
-            "description" => $description,
-            "cutout_type" => $cutout_type,
+            "base_price" => $base_price,
+            "description" => $description
         ] = $data;
 
         $this->cutoutModel->cutout_id = $cutout_id;
         $this->cutoutModel->name = $name;
         $this->cutoutModel->code = $code;
+        $this->cutoutModel->base_price = $base_price;
         $this->cutoutModel->description = $description;
-        $this->cutoutModel->cutout_type = $cutout_type;
         $this->cutoutModel->updated_by = $_SESSION['user']['user_id'];
 
         if ($this->cutoutModel->update()) {

@@ -2,6 +2,15 @@ table.dataTable>tbody>tr:hover {
     background-color: #dbdbdb;
 }
 
+table.dataTable>thead>tr>th,
 table.dataTable>tbody>tr>td.dt-type-date {
     white-space: nowrap;
+}
+
+table.dataTable>tbody>tr>td.dt-dimensions {
+    min-width: 200px;
+}
+
+table.dataTable>tbody>tr>td.dt-description {
+    min-width: 250px;
 }

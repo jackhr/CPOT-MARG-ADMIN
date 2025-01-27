@@ -23,8 +23,8 @@
                     <th>Weight</th>
                     <th>Base Price</th>
                     <th>Status</th>
-                    <th>Description</th>
                     <th>Availability</th>
+                    <th>Description</th>
                     <th>Created</th>
                     <th>Last updated</th>
                     <?php if ($user['role_id'] === 1) { ?>
@@ -354,7 +354,9 @@
                         res = Object.values(response.data).map(s => {
                             s.base_price = formatPrice(s.base_price);
                             s.description = s.description ? s.description : "-";
-                            s.deleted_at = s.deleted_at ? s.deleted_at : "-";
+                            s.created_at = s.created_at ? formateReadableDate(s.created_at, false) : "-";
+                            s.updated_at = s.updated_at ? formateReadableDate(s.updated_at, false) : "-";
+                            s.deleted_at = s.deleted_at ? formateReadableDate(s.deleted_at, false) : "-";
                             s.updated_by_email = s.updated_by_email ? s.updated_by_email : "-";
                             return s;
                         });
@@ -374,7 +376,11 @@
                     data: 'name'
                 },
                 {
-                    data: 'dimensions'
+                    data: 'dimensions',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-dimensions');
+                    }
                 },
                 {
                     data: 'material'
@@ -392,22 +398,37 @@
                     data: 'status'
                 },
                 {
-                    data: 'description'
-                },
-                {
                     data: 'availability'
                 },
                 {
-                    data: 'created_at'
+                    data: 'description',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-description');
+                    }
                 },
                 {
-                    data: 'updated_at'
+                    data: 'created_at',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-type-date');
+                    }
                 },
-                <?php if ($user['role_id'] === 1) {
-                    echo "{
-                        data: 'deleted_at'
-                    },";
-                } ?> {
+                {
+                    data: 'updated_at',
+                    createdCell: function(td, cellData, rowData, row, col) {
+                        // Add class based on current_status value
+                        $(td).addClass('dt-type-date');
+                    }
+                },
+                <?php if ($user['role_id'] === 1) { ?> {
+                        data: 'deleted_at',
+                        createdCell: function(td, cellData, rowData, row, col) {
+                            // Add class based on current_status value
+                            $(td).addClass('dt-type-date');
+                        }
+                    },
+                <?php } ?> {
                     data: 'created_by_email'
                 },
                 {
