@@ -16,7 +16,6 @@ class Sconce extends Model
     public $color;
     public $weight;
     public $base_price;
-    public $stock_quantity;
     public $status;
     public $installation_type;
     public $style;
@@ -75,7 +74,7 @@ class Sconce extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, updated_by = :updated_by WHERE sconce_id = :sconce_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, status = :status, description = :description, updated_by = :updated_by WHERE sconce_id = :sconce_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -86,7 +85,6 @@ class Sconce extends Model
         $this->color = htmlspecialchars($this->color);
         $this->weight = htmlspecialchars($this->weight);
         $this->base_price = htmlspecialchars($this->base_price);
-        $this->stock_quantity = htmlspecialchars($this->stock_quantity);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
         $this->updated_by = htmlspecialchars($this->updated_by);
@@ -98,7 +96,6 @@ class Sconce extends Model
         $stmt->bindParam(":color", $this->color);
         $stmt->bindParam(":weight", $this->weight);
         $stmt->bindParam(":base_price", $this->base_price);
-        $stmt->bindParam(":stock_quantity", $this->stock_quantity);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":sconce_id", $this->sconce_id, PDO::PARAM_INT);
@@ -110,7 +107,7 @@ class Sconce extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, stock_quantity = :stock_quantity, status = :status, description = :description, created_by = :created_by";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, status = :status, description = :description, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -120,7 +117,6 @@ class Sconce extends Model
         $this->color = htmlspecialchars($this->color);
         $this->weight = htmlspecialchars($this->weight);
         $this->base_price = htmlspecialchars($this->base_price);
-        $this->stock_quantity = htmlspecialchars($this->stock_quantity);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
         $this->created_by = htmlspecialchars($this->created_by);
@@ -132,7 +128,6 @@ class Sconce extends Model
         $stmt->bindParam(":color", $this->color);
         $stmt->bindParam(":weight", $this->weight);
         $stmt->bindParam(":base_price", $this->base_price);
-        $stmt->bindParam(":stock_quantity", $this->stock_quantity);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":created_by", $this->created_by, PDO::PARAM_INT);

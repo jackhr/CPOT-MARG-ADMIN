@@ -22,7 +22,6 @@
                     <th>Color</th>
                     <th>Weight</th>
                     <th>Base Price</th>
-                    <th>Stock Quantity</th>
                     <th>Status</th>
                     <th>Description</th>
                     <th>Availability</th>
@@ -142,10 +141,6 @@
                         <div class="input-container">
                             <label for="price">Price</label>
                             <input type="number" name="base_price" placeholder="75" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="stock_quantity">Stock Quantity</label>
-                            <input type="number" name="stock_quantity" placeholder="100" required>
                         </div>
                         <div class="input-container">
                             <label for="status">Status</label>
@@ -296,10 +291,6 @@
                             <input type="number" name="base_price" placeholder="75" required>
                         </div>
                         <div class="input-container">
-                            <label for="stock_quantity">Stock Quantity</label>
-                            <input type="number" name="stock_quantity" placeholder="100" required>
-                        </div>
-                        <div class="input-container">
                             <label for="status">Status</label>
                             <select name="status" id="status">
                                 <option value="active">Active</option>
@@ -396,9 +387,6 @@
                 },
                 {
                     data: 'base_price'
-                },
-                {
-                    data: 'stock_quantity'
                 },
                 {
                     data: 'status'
@@ -520,7 +508,6 @@
             modal.find('input[name="color"]').val(data.color);
             modal.find('input[name="weight"]').val(weight);
             modal.find('input[name="base_price"]').val(data.base_price);
-            modal.find('input[name="stock_quantity"]').val(data.stock_quantity);
             modal.find('textarea[name="description"]').val(data.description);
 
             // handle rendering option buttons
@@ -635,7 +622,6 @@
             modal.find('input[name="color"]').val("Off White");
             modal.find('input[name="weight"]').val("");
             modal.find('input[name="base_price"]').val("");
-            modal.find('input[name="stock_quantity"]').val("");
             modal.find('textarea[name="description"]').val("");
             modal.find('.img-preview-container').html("");
 
@@ -678,10 +664,6 @@
                     errMsg = "Please provide your sconce with a price.";
                 } else if (!data.base_price.match(STATE.regEx.decimal)) {
                     errMsg = `Price can only be a number. You entered: "${data.base_price}"`;
-                } else if (!data.stock_quantity.length) {
-                    errMsg = "Please provide your sconce with a stock quantity.";
-                } else if (!data.stock_quantity.match(STATE.regEx.decimal)) {
-                    errMsg = `Stock quantity can only be a number. You entered: "${data.stock_quantity}"`;
                 } else if (!data.name.length) {
                     errMsg = "Please provide your sconce with a name.";
                 }

@@ -200,7 +200,6 @@ class SconceController extends Controller
             "weight" => $weight,
             "weight-units" => $weight_units,
             "base_price" => $base_price,
-            "stock_quantity" => $stock_quantity,
             "status" => $sconce_status,
             "description" => $description,
             "primary_image_idx" => $primary_image_idx,
@@ -220,7 +219,6 @@ class SconceController extends Controller
         $this->sconceModel->color = $color;
         $this->sconceModel->weight = $weight;
         $this->sconceModel->base_price = $this->helper->truncateToThreeDecimals($base_price);
-        $this->sconceModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->sconceModel->status = $sconce_status;
         $this->sconceModel->description = $description;
         $this->sconceModel->created_by = $_SESSION['user']['user_id'];
@@ -350,7 +348,6 @@ class SconceController extends Controller
             "weight" => $weight,
             "weight-units" => $weight_units,
             "base_price" => $base_price,
-            "stock_quantity" => $stock_quantity,
             "status" => $sconce_status,
             "description" => $description,
         ] = $data;
@@ -370,7 +367,6 @@ class SconceController extends Controller
         $this->sconceModel->color = $color;
         $this->sconceModel->weight = $weight;
         $this->sconceModel->base_price = $this->helper->truncateToThreeDecimals($base_price);
-        $this->sconceModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->sconceModel->status = $sconce_status;
         $this->sconceModel->description = $description;
         $this->sconceModel->updated_by = $_SESSION['user']['user_id'];
