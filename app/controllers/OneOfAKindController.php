@@ -198,7 +198,6 @@ class OneOfAKindController extends Controller
             "weight" => $weight,
             "weight-units" => $weight_units,
             "base_price" => $base_price,
-            "stock_quantity" => $stock_quantity,
             "status" => $one_of_a_kind_status,
             "description" => $description,
             "primary_image_idx" => $primary_image_idx,
@@ -218,7 +217,6 @@ class OneOfAKindController extends Controller
         $this->oneOfAKindModel->color = $color;
         $this->oneOfAKindModel->weight = $weight;
         $this->oneOfAKindModel->price = $this->helper->truncateToThreeDecimals($base_price);
-        $this->oneOfAKindModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->oneOfAKindModel->status = $one_of_a_kind_status;
         $this->oneOfAKindModel->description = $description;
         $this->oneOfAKindModel->created_by = $_SESSION['user']['user_id'];
@@ -348,7 +346,6 @@ class OneOfAKindController extends Controller
             "weight" => $weight,
             "weight-units" => $weight_units,
             "base_price" => $base_price,
-            "stock_quantity" => $stock_quantity,
             "status" => $one_of_a_kind_status,
             "description" => $description,
         ] = $data;
@@ -368,7 +365,6 @@ class OneOfAKindController extends Controller
         $this->oneOfAKindModel->color = $color;
         $this->oneOfAKindModel->weight = $weight;
         $this->oneOfAKindModel->price = $this->helper->truncateToThreeDecimals($base_price);
-        $this->oneOfAKindModel->stock_quantity = $this->helper->truncateToThreeDecimals($stock_quantity);
         $this->oneOfAKindModel->status = $one_of_a_kind_status;
         $this->oneOfAKindModel->description = $description;
         $this->oneOfAKindModel->updated_by = $_SESSION['user']['user_id'];
