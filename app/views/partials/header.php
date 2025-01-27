@@ -29,6 +29,7 @@
     <script src="/assets/js/Flickity/js/fullscreen.js"></script>
     <script src="/assets/js/Flickity/js/flickity-imagesloaded.js"></script>
     <script src="/assets/js/DataTables/datatables.min.js"></script>
+    <script src="/assets/js/DataTables/natural-sort.js"></script>
     <script src="/assets/js/hongymagic-jQuery.serializeObject/dist/jquery.serializeObject.min.js"></script>
     <script src="/assets/js/sweetalert2/js/sweetalert2.all.min.js"></script>
     <script src="/assets/js/main.js"></script>

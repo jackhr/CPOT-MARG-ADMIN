@@ -349,6 +349,13 @@
     $(document).ready(function() {
         const dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
+            columnDefs: [{
+                type: 'natural',
+                target: 2
+            }],
+            order: [
+                [2, 'asc']
+            ],
             ajax: {
                 url: "/one-of-a-kind/getAll",
                 dataSrc: function(response) {

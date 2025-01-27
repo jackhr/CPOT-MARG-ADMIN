@@ -347,6 +347,13 @@
 
         STATE.dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
+            columnDefs: [{
+                type: 'natural',
+                target: 2
+            }],
+            order: [
+                [2, 'asc']
+            ],
             ajax: {
                 url: "/sconces/getAll",
                 dataSrc: function(response) {
