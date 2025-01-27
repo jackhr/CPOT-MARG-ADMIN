@@ -12,7 +12,7 @@ const STATE = {
     lengthConst: 2.54,
 }
 
-function formateReadableDate(dateString, useWords = true) {
+function formatReadableDate(dateString, useWords = true) {
     // Convert the string to a Date object
     const date = new Date(dateString.replace(" ", "T")); // Replace space with 'T' for proper ISO format
 

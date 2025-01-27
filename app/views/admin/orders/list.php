@@ -227,6 +227,11 @@
                         <span data-dimensions></span>
                         <p>Made to order<br>Ships in 4 - 6 weeks<br>SKU - <span data-sku></span></p>
                     </div>
+                    <div class="info-section img">
+                        <div class="img-container">
+                            <img src="/assets/images/sconces/single/IMG_9516.jpg" alt="">
+                        </div>
+                    </div>
                     <div class="info-section">
                         <h5>Cutouts</h5>
                         <p>In our ceramic sconces, a "cutout" refers to a design element where specific shapes or patterns are carved into the sconce's surface. These cutouts not only enhance the aesthetic appeal by introducing intricate designs but also allow light to pass through, creating captivating patterns and shadows in your space. You can choose from our existing range of cutout motifs or opt for no cutout for a sleek, minimalist look.</p>
@@ -300,7 +305,11 @@
             <div class="modal-body">
                 <div id="cutout-selection-container">
                     <h3>Select a Cutout</h3>
-                    <div id="cutout-list">
+                    <div class="cutout-preview-container">
+                        <div>This is text to enforce that the parent maintains a minimum size. Do not delete.</div>
+                        <img src="" alt="">
+                    </div>
+                    <div class="cutout-list">
                         <div class="cutout-list-item selected no-cutout">
                             <div class="cutout-list-item-img-container"></div>
                             <div class="cutout-list-item-info">
@@ -310,8 +319,9 @@
                     </div>
                     <button class="continue-btn">Confirm Selection</button>
                 </div>
-                <div id="img-preview-container">
-                    <img style="display: none;" src="" alt="">
+                <div class="cutout-preview-container">
+                    <div>This is text to enforce that the parent maintains a minimum size. Do not delete.</div>
+                    <img src="" alt="">
                 </div>
             </div>
         </div>
@@ -392,6 +402,7 @@
                     if (response && response.data) {
                         STATE.orders = structuredClone(Object.values(response.data));
                         res = Object.values(response.data).map(order => {
+                            order.created_at = order.created_at ? formatReadableDate(order.created_at, false) : "-";
                             order.internal_notes = order.internal_notes ? order.internal_notes : "-";
                             order.total_amount = "$" + formatPrice(order.total_amount);
                             return order;
@@ -544,7 +555,7 @@
                     modal.find('#order-details-id').text(orderId);
                     modal.find('.modal-header h1').text(`Order #${orderId}`);
                     modal.find('[data-order_type]').text(data.order_type);
-                    modal.find('[data-created_at]').text(data.created_at);
+                    modal.find('[data-created_at]').text(formatReadableDate(data.created_at, false));
                     modal.find('[data-total_amount]').text(`$${formatPrice(data.total_amount)}`);
                     modal.find('[data-current_status]')
                         .text(data.current_status)
@@ -946,18 +957,27 @@
                     </div>
                 `);
 
-                $("#cutout-list").append(cutoutEl);
+                $(".cutout-list").append(cutoutEl);
             });
+
+            // $(".cutout-list-item").on('click', function() {
+            //     const selectedCutoutImg = $(this).find(".cutout-list-item-img-container img").attr('src');
+            //     $(".cutout-list-item").removeClass('selected');
+            //     $(this).addClass('selected');
+            //     if ($(this).hasClass('no-cutout')) {
+            //         $(".img-preview-container img").hide();
+            //     } else {
+            //         $(".img-preview-container img").attr('src', selectedCutoutImg).show();
+            //     }
+            // });
 
             $(".cutout-list-item").on('click', function() {
                 const selectedCutoutImg = $(this).find(".cutout-list-item-img-container img").attr('src');
+                const viewingCutout = !$(this).hasClass('no-cutout');
                 $(".cutout-list-item").removeClass('selected');
                 $(this).addClass('selected');
-                if ($(this).hasClass('no-cutout')) {
-                    $("#img-preview-container img").hide();
-                } else {
-                    $("#img-preview-container img").attr('src', selectedCutoutImg).show();
-                }
+                $(".cutout-preview-container").toggleClass("viewing-cutout", viewingCutout);
+                if (viewingCutout) $(".cutout-preview-container img").attr('src', selectedCutoutImg);
             });
         }
 
@@ -1213,7 +1233,7 @@
             calculateNewTotal();
         });
 
-        $("#cutout-list + button").on('click', function() {
+        $(".cutout-list + button").on('click', function() {
             const selectedCutout = $(".cutout-list-item.selected");
             const cutoutId = selectedCutout.data('id');
             $("#cutout-modal .modal-close").trigger('click');

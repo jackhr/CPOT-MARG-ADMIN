@@ -885,7 +885,8 @@ form hr {
 }
 
 #order-items-modal .modal-content {
-    width: 800px;
+    max-width: 800px;
+    width    : 100%;
 }
 
 .carousel {
@@ -1523,7 +1524,7 @@ table.dataTable>tbody>tr.completed_order td.status {
 }
 
 #cutout-modal .modal-content {
-    width        : max-content;
+    width        : 100%;
     padding      : 0;
     border       : none;
     border-radius: 0;
@@ -1536,7 +1537,8 @@ table.dataTable>tbody>tr.completed_order td.status {
 }
 
 #cutout-selection-container {
-    width         : 330px;
+    /* width         : 330px; */
+    width         : 40%;
     display       : flex;
     flex-direction: column;
     padding       : 0;
@@ -1550,12 +1552,42 @@ table.dataTable>tbody>tr.completed_order td.status {
     margin     : 0;
 }
 
+#cutout-selection-container .cutout-preview-container {
+    display: none;
+}
+
+#cutout-selection-container .cutout-preview-container img {
+    object-fit: contain;
+}
+
+.cutout-preview-container {
+    /* width: 530px; */
+    width: 60%;
+}
+
+.cutout-preview-container.viewing-cutout div,
+.cutout-preview-container:not(.viewing-cutout) img {
+    display: none;
+}
+
+.cutout-preview-container div {
+    width : 100%;
+    height: 100%;
+    color : white;
+}
+
+.cutout-preview-container img {
+    width     : 100%;
+    height    : 100%;
+    object-fit: cover;
+}
+
 #cutout-selection-container h3,
-#cutout-list {
+.cutout-list {
     background: var(--grey-x-light);
 }
 
-#cutout-list {
+.cutout-list {
     display       : flex;
     flex-direction: column;
     gap           : 8px;
@@ -1616,8 +1648,9 @@ table.dataTable>tbody>tr.completed_order td.status {
 }
 
 #cutout-selection-container .continue-btn {
-    width : auto;
-    margin: 20px;
+    width  : auto;
+    margin : 20px;
+    padding: 16px;
 }
 
 #sconce-modal .modal-dialog,
@@ -1644,9 +1677,37 @@ table.dataTable>tbody>tr.completed_order td.status {
     top  : 24px;
 }
 
+#sconce-modal .info-section.sconce-add-ons:empty,
+#sconce-modal .info-section.img {
+    display: none;
+}
+
+#sconce-modal .info-section.img .img-container {
+    width : clamp(200px, 100%, 500px);
+    height: clamp(300px, 40vw, 750px);
+    margin: auto;
+}
+
+#sconce-modal .info-section.sconce-add-ons .input-container:first-of-type {
+    margin-top: 16px;
+}
+
+#sconce-modal .info-section.sconce-add-ons .input-container input {
+    width : 20px;
+    height: 24px;
+}
+
+#sconce-modal .info-section.sconce-add-ons .input-container label {
+    line-height: 24px;
+}
+
+#sconce-modal .info-section.sconce-add-ons .input-container label span {
+    font-weight: 600;
+}
+
 .img-container {
     width : clamp(200px, 100%, 750px);
-    height: clamp(200px, 35vh, 750px);
+    height: clamp(200px, 40vw, 750px);
 }
 
 .img-container img {
@@ -1862,9 +1923,158 @@ table.dataTable>tbody>tr.completed_order td.status {
     }
 }
 
+@media screen and (max-width: 991px) {
+    #cart-list {
+        max-width: unset;
+    }
+}
+
+@media screen and (max-width: 840px) {
+    .img-container img {
+        object-fit: contain;
+    }
+}
+
+@media screen and (max-width: 840px) and (min-width: 769px) {
+    .cutout-list-item-info {
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+
+    #nav {
+        box-shadow: none;
+    }
+
+    main {
+        padding: var(--nav-height) 0 0;
+    }
+
+    .table-wrapper {
+        border-radius: 0;
+        border       : none;
+        min-height   : 100%;
+        padding-top  : 24px;
+    }
+
+    .modal,
+    .modal-content,
+    .modal-dialog {
+        padding      : 0;
+        border       : none;
+        border-radius: 0;
+        height       : 100%;
+        width        : 100%;
+        overflow     : auto;
+    }
+
+    .modal-options {
+        top  : 12px;
+        right: 12px;
+    }
+
+    .modal-header {
+        text-align: center;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 12px;
+    }
+
+    #cutout-modal .modal-dialog,
+    #cutout-selection-container {
+        width: 100%;
+    }
+
+    #sconce-modal .modal-body>.img-container {
+        display: none;
+    }
+
+    #sconce-modal .info-section.img {
+        display: flex;
+    }
+
+    #cutout-selection-container {
+        height: 100vh;
+    }
+
+    #cutout-modal .modal-body {
+        flex-direction: column;
+        height        : fit-content;
+    }
+
+    #order-details-modal .modal-body {
+        padding: 12px;
+    }
+
+    #cutout-selection-container h3 {
+        padding: 20px;
+    }
+
+    #cutout-selection-container .cutout-preview-container {
+        display: initial;
+        width  : 100%;
+        height : clamp(250px, 40vw, 400px);
+    }
+
+    .cutout-list {
+        display      : grid;
+        grid-template: 1fr 1fr / 1fr 1fr;
+        height       : 100%;
+        width        : 100%;
+        padding      : 20px;
+    }
+
+    #cutout-selection-container+.cutout-preview-container {
+        display: none;
+    }
+
+}
+
 @media screen and (max-width: 760px) {
     #dashboard-main {
         grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media screen and (max-width: 640px) {
+
+    #order-options-container {
+        display      : grid;
+        grid-template: 1fr 1fr / 1fr 1fr;
+    }
+
+    #order-details-modal .mutiple-input-container {
+        flex-direction: column;
+        gap           : 12px;
+        margin-bottom : 12px;
+    }
+
+    #order-details-modal .mutiple-input-container .input-container,
+    .input-container:has([data-phone]) {
+        justify-content: space-between;
+        margin         : 0;
+    }
+
+    .cutout-list {
+        grid-template: 1fr / 1fr;
+    }
+
+    .line-item-container {
+        border-left : none;
+        border-right: none;
+        box-shadow  : none;
+    }
+
+    .line-item>div:last-child {
+        flex-direction: column;
+    }
+
+    .line-item .img-container {
+        margin: auto;
     }
 }
 

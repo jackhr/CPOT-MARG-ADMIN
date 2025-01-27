@@ -259,9 +259,9 @@
                             cutout.price = formatPrice(cutout.price);
                             cutout.code = cutout.code ? cutout.code : "-";
                             cutout.description = cutout.description ? cutout.description : "-";
-                            cutout.created_at = cutout.created_at ? formateReadableDate(cutout.created_at, false) : "-";
-                            cutout.updated_at = cutout.updated_at ? formateReadableDate(cutout.updated_at, false) : "-";
-                            cutout.deleted_at = cutout.deleted_at ? formateReadableDate(cutout.deleted_at, false) : "-";
+                            cutout.created_at = cutout.created_at ? formatReadableDate(cutout.created_at, false) : "-";
+                            cutout.updated_at = cutout.updated_at ? formatReadableDate(cutout.updated_at, false) : "-";
+                            cutout.deleted_at = cutout.deleted_at ? formatReadableDate(cutout.deleted_at, false) : "-";
                             cutout.updated_by_email = cutout.updated_by_email ? cutout.updated_by_email : "-";
                             return cutout;
                         });

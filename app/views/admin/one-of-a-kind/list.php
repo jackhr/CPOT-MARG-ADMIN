@@ -27,7 +27,6 @@
                     <th>Weight</th>
                     <th>Price</th>
                     <th>Status</th>
-                    <th>Availability</th>
                     <th>Description</th>
                     <th>Created</th>
                     <th>Last updated</th>
@@ -357,9 +356,9 @@
                         res = Object.values(response.data).map(oak => {
                             oak.price = formatPrice(oak.price);
                             oak.description = oak.description ? oak.description : "-";
-                            oak.created_at = oak.created_at ? formateReadableDate(oak.created_at, false) : "-";
-                            oak.updated_at = oak.updated_at ? formateReadableDate(oak.updated_at, false) : "-";
-                            oak.deleted_at = oak.deleted_at ? formateReadableDate(oak.deleted_at, false) : "-";
+                            oak.created_at = oak.created_at ? formatReadableDate(oak.created_at, false) : "-";
+                            oak.updated_at = oak.updated_at ? formatReadableDate(oak.updated_at, false) : "-";
+                            oak.deleted_at = oak.deleted_at ? formatReadableDate(oak.deleted_at, false) : "-";
                             oak.updated_by_email = oak.updated_by_email ? oak.updated_by_email : "-";
                             return oak;
                         });
@@ -402,9 +401,6 @@
                 },
                 {
                     data: 'status'
-                },
-                {
-                    data: 'availability'
                 },
                 {
                     data: 'description',

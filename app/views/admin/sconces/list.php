@@ -23,7 +23,6 @@
                     <th>Weight</th>
                     <th>Base Price</th>
                     <th>Status</th>
-                    <th>Availability</th>
                     <th>Description</th>
                     <th>Created</th>
                     <th>Last updated</th>
@@ -354,9 +353,9 @@
                         res = Object.values(response.data).map(s => {
                             s.base_price = formatPrice(s.base_price);
                             s.description = s.description ? s.description : "-";
-                            s.created_at = s.created_at ? formateReadableDate(s.created_at, false) : "-";
-                            s.updated_at = s.updated_at ? formateReadableDate(s.updated_at, false) : "-";
-                            s.deleted_at = s.deleted_at ? formateReadableDate(s.deleted_at, false) : "-";
+                            s.created_at = s.created_at ? formatReadableDate(s.created_at, false) : "-";
+                            s.updated_at = s.updated_at ? formatReadableDate(s.updated_at, false) : "-";
+                            s.deleted_at = s.deleted_at ? formatReadableDate(s.deleted_at, false) : "-";
                             s.updated_by_email = s.updated_by_email ? s.updated_by_email : "-";
                             return s;
                         });
@@ -396,9 +395,6 @@
                 },
                 {
                     data: 'status'
-                },
-                {
-                    data: 'availability'
                 },
                 {
                     data: 'description',
