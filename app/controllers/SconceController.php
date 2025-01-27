@@ -205,12 +205,12 @@ class SconceController extends Controller
             "primary_image_idx" => $primary_image_idx,
         ] = $_POST;
 
+        $depth = $this->helper->truncateToThreeDecimals($depth);
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
-        $depth = $this->helper->truncateToThreeDecimals($depth);
         $weight = $this->helper->truncateToThreeDecimals($weight);
 
-        $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
+        $dimensions = "$depth{$dim_units} x $width{$dim_units} x $height{$dim_units}";
         $weight = "$weight{$weight_units}";
 
         $this->sconceModel->name = $name;
@@ -352,12 +352,12 @@ class SconceController extends Controller
             "description" => $description,
         ] = $data;
 
+        $depth = $this->helper->truncateToThreeDecimals($depth);
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
-        $depth = $this->helper->truncateToThreeDecimals($depth);
         $weight = $this->helper->truncateToThreeDecimals($weight);
 
-        $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
+        $dimensions = "$depth{$dim_units} x $width{$dim_units} x $height{$dim_units}";
         $weight = "$weight{$weight_units}";
 
         $this->sconceModel->sconce_id = $sconce_id;

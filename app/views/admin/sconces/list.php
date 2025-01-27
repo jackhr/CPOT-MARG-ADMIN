@@ -95,16 +95,16 @@
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
+                            <label for="depth">Depth</label>
+                            <input type="text" name="depth" placeholder="6" required>
+                        </div>
+                        <div class="input-container">
                             <label for="width">Width</label>
                             <input type="text" name="width" placeholder="12" required>
                         </div>
                         <div class="input-container">
                             <label for="height">Height</label>
                             <input type="text" name="height" placeholder="24" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="depth">Depth</label>
-                            <input type="text" name="depth" placeholder="6" required>
                         </div>
                     </div>
                     <div class="input-container">
@@ -243,16 +243,16 @@
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
+                            <label for="depth">Depth</label>
+                            <input type="text" name="depth" placeholder="6" required>
+                        </div>
+                        <div class="input-container">
                             <label for="width">Width</label>
                             <input type="text" name="width" placeholder="12" required>
                         </div>
                         <div class="input-container">
                             <label for="height">Height</label>
                             <input type="text" name="height" placeholder="24" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="depth">Depth</label>
-                            <input type="text" name="depth" placeholder="6" required>
                         </div>
                     </div>
                     <div class="input-container">
@@ -501,9 +501,9 @@
 
             modal.find('#edit-sconce-id').text(id);
             modal.find('input[name="name"]').val(data.name);
-            modal.find('input[name="width"]').val(dimensions[0]);
-            modal.find('input[name="height"]').val(dimensions[1]);
-            modal.find('input[name="depth"]').val(dimensions[2]);
+            modal.find('input[name="depth"]').val(dimensions[0]);
+            modal.find('input[name="width"]').val(dimensions[1]);
+            modal.find('input[name="height"]').val(dimensions[2]);
             modal.find('input[name="material"]').val(data.material);
             modal.find('input[name="color"]').val(data.color);
             modal.find('input[name="weight"]').val(weight);
@@ -615,9 +615,9 @@
 
         function resetModal(modal) {
             modal.find('input[name="name"]').val("");
+            modal.find('input[name="depth"]').val("");
             modal.find('input[name="width"]').val("");
             modal.find('input[name="height"]').val("");
-            modal.find('input[name="depth"]').val("");
             modal.find('input[name="material"]').val("Ceramic");
             modal.find('input[name="color"]').val("Off White");
             modal.find('input[name="weight"]').val("");
@@ -640,6 +640,10 @@
                     errMsg = "You need to upload at least one image";
                 } else if (!data.name.length) {
                     errMsg = "Please provide your sconce with a name.";
+                } else if (!data.depth.length) {
+                    errMsg = "Please provide your sconce with a depth.";
+                } else if (!data.depth.match(STATE.regEx.decimal)) {
+                    errMsg = `Depth can only be a number. You entered: "${data.depth}"`;
                 } else if (!data.width.length) {
                     errMsg = "Please provide your sconce with a width.";
                 } else if (!data.width.match(STATE.regEx.decimal)) {
@@ -648,10 +652,6 @@
                     errMsg = "Please provide your sconce with a height.";
                 } else if (!data.height.match(STATE.regEx.decimal)) {
                     errMsg = `Height can only be a number. You entered: "${data.height}"`;
-                } else if (!data.depth.length) {
-                    errMsg = "Please provide your sconce with a depth.";
-                } else if (!data.depth.match(STATE.regEx.decimal)) {
-                    errMsg = `Depth can only be a number. You entered: "${data.depth}"`;
                 } else if (!data.material.length) {
                     errMsg = "Please provide your sconce with a material.";
                 } else if (!data.color.length) {
@@ -896,15 +896,15 @@
 
         $('[name="dimension-units"]').on('change', function() {
             const form = $(this).closest('form');
+            const depthEl = form.find('[name="depth"]');
             const widthEl = form.find('[name="width"]');
             const heightEl = form.find('[name="height"]');
-            const depthEl = form.find('[name="depth"]');
 
             const toIn = $(this).val() === "in";
 
+            depthEl.val(convertUnits('length', depthEl.val(), toIn));
             widthEl.val(convertUnits('length', widthEl.val(), toIn));
             heightEl.val(convertUnits('length', heightEl.val(), toIn));
-            depthEl.val(convertUnits('length', depthEl.val(), toIn));
         });
 
         $('[name="weight-units"]').on('change', function() {
