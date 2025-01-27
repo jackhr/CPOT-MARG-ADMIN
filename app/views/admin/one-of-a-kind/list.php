@@ -20,6 +20,7 @@
                     <th>Id #</th>
                     <th>Thumb</th>
                     <th>Name</th>
+                    <th>Artist</th>
                     <th>Dimensions</th>
                     <th>Material</th>
                     <th>Color</th>
@@ -383,6 +384,9 @@
                 },
                 {
                     data: 'name'
+                },
+                {
+                    data: 'artist'
                 },
                 {
                     data: 'dimensions'
