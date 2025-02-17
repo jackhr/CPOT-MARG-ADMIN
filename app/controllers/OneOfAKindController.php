@@ -194,9 +194,7 @@ class OneOfAKindController extends Controller
             "height" => $height,
             "depth" => $depth,
             "material" => $material,
-            "color" => $color,
-            "weight" => $weight,
-            "weight-units" => $weight_units,
+            "artist" => $artist,
             "base_price" => $base_price,
             "status" => $one_of_a_kind_status,
             "description" => $description,
@@ -206,16 +204,13 @@ class OneOfAKindController extends Controller
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
         $depth = $this->helper->truncateToThreeDecimals($depth);
-        $weight = $this->helper->truncateToThreeDecimals($weight);
 
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
-        $weight = "$weight{$weight_units}";
 
         $this->oneOfAKindModel->name = $name;
         $this->oneOfAKindModel->dimensions = $dimensions;
         $this->oneOfAKindModel->material = $material;
-        $this->oneOfAKindModel->color = $color;
-        $this->oneOfAKindModel->weight = $weight;
+        $this->oneOfAKindModel->artist = $artist;
         $this->oneOfAKindModel->price = $this->helper->truncateToThreeDecimals($base_price);
         $this->oneOfAKindModel->status = $one_of_a_kind_status;
         $this->oneOfAKindModel->description = $description;
@@ -342,9 +337,7 @@ class OneOfAKindController extends Controller
             "height" => $height,
             "depth" => $depth,
             "material" => $material,
-            "color" => $color,
-            "weight" => $weight,
-            "weight-units" => $weight_units,
+            "artist" => $artist,
             "base_price" => $base_price,
             "status" => $one_of_a_kind_status,
             "description" => $description,
@@ -353,17 +346,14 @@ class OneOfAKindController extends Controller
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
         $depth = $this->helper->truncateToThreeDecimals($depth);
-        $weight = $this->helper->truncateToThreeDecimals($weight);
 
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
-        $weight = "$weight{$weight_units}";
 
         $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
         $this->oneOfAKindModel->name = $name;
         $this->oneOfAKindModel->dimensions = $dimensions;
         $this->oneOfAKindModel->material = $material;
-        $this->oneOfAKindModel->color = $color;
-        $this->oneOfAKindModel->weight = $weight;
+        $this->oneOfAKindModel->artist = $artist;
         $this->oneOfAKindModel->price = $this->helper->truncateToThreeDecimals($base_price);
         $this->oneOfAKindModel->status = $one_of_a_kind_status;
         $this->oneOfAKindModel->description = $description;

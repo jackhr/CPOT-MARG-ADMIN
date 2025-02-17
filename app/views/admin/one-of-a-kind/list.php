@@ -23,8 +23,6 @@
                     <th>Artist</th>
                     <th>Dimensions</th>
                     <th>Material</th>
-                    <th>Color</th>
-                    <th>Weight</th>
                     <th>Price</th>
                     <th>Status</th>
                     <th>Description</th>
@@ -96,6 +94,29 @@
                         <label for="name">Name</label>
                         <input type="text" name="name" placeholder="New One of a Kind" required>
                     </div>
+                    <div class="input-container">
+                        <label for="material">Material</label>
+                        <input type="text" name="material" placeholder="Porcelain" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="price">Price</label>
+                        <input type="text" name="base_price" placeholder="75" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="artist">Artist</label>
+                        <select name="artist" id="artist">
+                            <option value="Imogen Margrie">Imogen Margrie</option>
+                            <option value="Michael Hunt">Michael Hunt</option>
+                        </select>
+                    </div>
+                    <div class="input-container">
+                        <label for="status">Status</label>
+                        <select name="status" id="status">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="width">Width</label>
@@ -116,43 +137,6 @@
                             <option value="cm">cm</option>
                             <option value="in">in</option>
                         </select>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="material">Material</label>
-                            <input type="text" name="material" placeholder="Porcelain" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="color">Color</label>
-                            <input type="text" name="color" placeholder="Pearl white" required>
-                        </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="weight">Weight</label>
-                            <input type="text" name="weight" placeholder="10" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="weight-units">Weight Units</label>
-                            <select name="weight-units" id="weight-units">
-                                <option selected value="lbs">lbs</option>
-                                <option value="kgs">kgs</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="price">Price</label>
-                            <input type="text" name="base_price" placeholder="75" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="status">Status</label>
-                            <select name="status" id="status">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="archived">Archived</option>
-                            </select>
-                        </div>
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
@@ -244,6 +228,29 @@
                         <label for="name">Name</label>
                         <input type="text" name="name" placeholder="New One of a Kind" required>
                     </div>
+                    <div class="input-container">
+                        <label for="material">Material</label>
+                        <input type="text" name="material" placeholder="Porcelain" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="price">Price</label>
+                        <input type="text" name="base_price" placeholder="75" required>
+                    </div>
+                    <div class="input-container">
+                        <label for="artist">Artist</label>
+                        <select name="artist" id="artist">
+                            <option value="Imogen Margrie">Imogen Margrie</option>
+                            <option value="Michael Hunt">Michael Hunt</option>
+                        </select>
+                    </div>
+                    <div class="input-container">
+                        <label for="status">Status</label>
+                        <select name="status" id="status">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="width">Width</label>
@@ -264,43 +271,6 @@
                             <option value="cm">cm</option>
                             <option value="in">in</option>
                         </select>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="material">Material</label>
-                            <input type="text" name="material" placeholder="Porcelain" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="color">Color</label>
-                            <input type="text" name="color" placeholder="Pearl white" required>
-                        </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="weight">Weight</label>
-                            <input type="text" name="weight" placeholder="10" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="weight-units">Weight Units</label>
-                            <select name="weight-units" id="weight-units">
-                                <option selected value="lbs">lbs</option>
-                                <option value="kgs">kgs</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="price">Price</label>
-                            <input type="text" name="base_price" placeholder="75" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="status">Status</label>
-                            <select name="status" id="status">
-                                <option value="active">Active</option>
-                                <option value="inactive">Inactive</option>
-                                <option value="archived">Archived</option>
-                            </select>
-                        </div>
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
@@ -389,12 +359,6 @@
                 },
                 {
                     data: 'material'
-                },
-                {
-                    data: 'color'
-                },
-                {
-                    data: 'weight'
                 },
                 {
                     data: 'price'
@@ -507,7 +471,6 @@
             const dimensions = data.dimensions
                 .split(" x ")
                 .map(x => x.replace(/\D+/gi, ""));
-            const weight = data.weight.replace(/\D+/gi, "");
 
             modal.find('#edit-one-of-a-kind-id').text(id);
             modal.find('input[name="name"]').val(data.name);
@@ -515,8 +478,6 @@
             modal.find('input[name="height"]').val(dimensions[1]);
             modal.find('input[name="depth"]').val(dimensions[2]);
             modal.find('input[name="material"]').val(data.material);
-            modal.find('input[name="color"]').val(data.color);
-            modal.find('input[name="weight"]').val(weight);
             modal.find('input[name="base_price"]').val(data.price);
             modal.find('textarea[name="description"]').val(data.description);
 
@@ -629,8 +590,6 @@
             modal.find('input[name="height"]').val("");
             modal.find('input[name="depth"]').val("");
             modal.find('input[name="material"]').val("");
-            modal.find('input[name="color"]').val("");
-            modal.find('input[name="weight"]').val("");
             modal.find('input[name="base_price"]').val("");
             modal.find('textarea[name="description"]').val("");
             modal.find('.img-preview-container').html("");
@@ -664,12 +623,6 @@
                     errMsg = `Depth can only be a number. You entered: "${data.depth}"`;
                 } else if (!data.material.length) {
                     errMsg = "Please provide your one of a kind with a material.";
-                } else if (!data.color.length) {
-                    errMsg = "Please provide your one of a kind with a color.";
-                } else if (!data.weight.length) {
-                    errMsg = "Please provide your one of a kind with a weight.";
-                } else if (!data.weight.match(STATE.regEx.decimal)) {
-                    errMsg = `Weight can only be a number. You entered: "${data.weight}"`;
                 } else if (!data.base_price.length) {
                     errMsg = "Please provide your one of a kind with a price.";
                 } else if (!data.base_price.match(STATE.regEx.decimal)) {
@@ -915,15 +868,6 @@
             widthEl.val(convertUnits('length', widthEl.val(), toIn));
             heightEl.val(convertUnits('length', heightEl.val(), toIn));
             depthEl.val(convertUnits('length', depthEl.val(), toIn));
-        });
-
-        $('[name="weight-units"]').on('change', function() {
-            const form = $(this).closest('form');
-            const weightEl = form.find('[name="weight"]');
-
-            const toKg = $(this).val() === "kgs";
-
-            weightEl.val(convertUnits('weight', weightEl.val(), toKg));
         });
 
         $("#edit-one-of-a-kind-modal .modal-close").on("click", function() {

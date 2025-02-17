@@ -13,8 +13,7 @@ class OneOfAKind extends Model
     public $slug;
     public $dimensions;
     public $material;
-    public $color;
-    public $weight;
+    public $artist;
     public $price;
     public $status;
     public $description;
@@ -71,7 +70,7 @@ class OneOfAKind extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, status = :status, description = :description, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, price = :price, status = :status, description = :description, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -79,8 +78,7 @@ class OneOfAKind extends Model
         $this->name = htmlspecialchars($this->name);
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
-        $this->color = htmlspecialchars($this->color);
-        $this->weight = htmlspecialchars($this->weight);
+        $this->artist = htmlspecialchars($this->artist);
         $this->price = htmlspecialchars($this->price);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
@@ -90,8 +88,7 @@ class OneOfAKind extends Model
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":dimensions", $this->dimensions);
         $stmt->bindParam(":material", $this->material);
-        $stmt->bindParam(":color", $this->color);
-        $stmt->bindParam(":weight", $this->weight);
+        $stmt->bindParam(":artist", $this->artist);
         $stmt->bindParam(":price", $this->price);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
@@ -104,15 +101,14 @@ class OneOfAKind extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, status = :status, description = :description, created_by = :created_by";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, price = :price, status = :status, description = :description, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
         $this->name = htmlspecialchars($this->name);
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
-        $this->color = htmlspecialchars($this->color);
-        $this->weight = htmlspecialchars($this->weight);
+        $this->artist = htmlspecialchars($this->artist);
         $this->price = htmlspecialchars($this->price);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
@@ -122,8 +118,7 @@ class OneOfAKind extends Model
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":dimensions", $this->dimensions);
         $stmt->bindParam(":material", $this->material);
-        $stmt->bindParam(":color", $this->color);
-        $stmt->bindParam(":weight", $this->weight);
+        $stmt->bindParam(":artist", $this->artist);
         $stmt->bindParam(":price", $this->price);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
