@@ -29,6 +29,9 @@ class Database
         }
     }
 
+    /**
+     * @return PDO;
+     */
     public function getConnection()
     {
         return $this->con;

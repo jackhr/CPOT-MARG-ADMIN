@@ -157,4 +157,40 @@ class Sconce extends Model
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Updates the cutout_ids for a given sconce_id.
+     * It adds new cutouts and removes ones that are no longer needed.
+     *
+     * @param int $sconce_id The ID of the sconce
+     * @param array $cutout_ids The list of cutout IDs to keep
+     */
+    function updateCutouts($cutout_ids)
+    {
+        // Get the existing cutout IDs for this sconce
+        $stmt = $this->con->prepare("SELECT cutout_id FROM rel_sconces_cutouts WHERE sconce_id = ?");
+        $stmt->execute([$this->sconce_id]);
+        $existing_cutouts = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        // Determine which cutout IDs need to be removed
+        $to_remove = array_diff($existing_cutouts, $cutout_ids);
+
+        // Determine which cutout IDs need to be added
+        $to_add = array_diff($cutout_ids, $existing_cutouts);
+
+        // Remove old cutouts
+        if (!empty($to_remove)) {
+            $placeholders = implode(',', array_fill(0, count($to_remove), '?'));
+            $stmt = $this->con->prepare("DELETE FROM rel_sconces_cutouts WHERE sconce_id = ? AND cutout_id IN ($placeholders)");
+            $stmt->execute(array_merge([$this->sconce_id], $to_remove));
+        }
+
+        // Add new cutouts
+        if (!empty($to_add)) {
+            $stmt = $this->con->prepare("INSERT INTO rel_sconces_cutouts (sconce_id, cutout_id) VALUES (?, ?)");
+            foreach ($to_add as $cutout_id) {
+                $stmt->execute([$this->sconce_id, $cutout_id]);
+            }
+        }
+    }
 }

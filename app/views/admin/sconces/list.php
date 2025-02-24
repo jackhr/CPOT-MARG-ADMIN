@@ -302,6 +302,16 @@
                         <label for="description">Description</label>
                         <textarea name="description" id="description" placeholder="My most valuable sconce!" required aria-required /></textarea>
                     </div>
+                    <hr>
+                    <div class="collapsible-container cutouts">
+                        <div class="collapsible-container-title">
+                            <h4>Cutouts</h4>
+                            <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        <div class="collapsible-container-content"></div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -431,10 +441,13 @@
                     data: 'updated_by_email'
                 },
             ],
-            initComplete: function() {
+            initComplete: async function() {
                 handleInitTableRowEvents()
                 this.api().on('draw', function() {
                     handleInitTableRowEvents();
+                });
+                fetchCutouts().then(() => {
+                    renderCutoutAssociations();
                 });
             }
         });
@@ -469,6 +482,57 @@
             }, 250);
         }
 
+        async function fetchCutouts() {
+            await $.ajax({
+                url: "/cutouts/getAll?include_sconce_relations=true",
+                method: "GET",
+                dataType: "JSON",
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    if (status !== 200) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: message,
+                        });
+                    } else {
+                        STATE.cutoutsLookup = data;
+                    }
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        }
+
+        function renderCutoutAssociations() {
+            $(".collapsible-container.cutouts .collapsible-container-content").html("");
+            Object.values(STATE.cutoutsLookup).forEach(cutout => {
+                $(".collapsible-container.cutouts .collapsible-container-content").append(`
+                    <div data-id="${cutout.cutout_id}" class="sconce-cutout-container">
+                        <input type="hidden" value="0" name="cutout_ids[${cutout.cutout_id}]" />
+                        <div>
+                            <img src="${cutout.image_url}" />
+                            <span>${cutout.code}</span>
+                        </div>
+                    </div>
+                `);
+            });
+
+            $(".sconce-cutout-container").on('click', function() {
+                const input = $(this).find("input");
+                const oldVal = Number(input.val());
+                const newVal = Number(!oldVal);
+                input.val(newVal);
+            });
+        }
+
         function handleInitTableRowEvents(reset = false) {
             STATE.dTable.rows().every(function(idx) {
                 const rowNode = this.node();
@@ -485,7 +549,7 @@
                     .addClass("sconce-thumb-td")
                     .html(`
                         <div>
-                        <img src="${imageUrl}" alt="${imageName}">
+                            <img src="${imageUrl}" alt="${imageName}">
                         </div>
                     `);
 
@@ -531,6 +595,14 @@
             const isDeleted = data.deleted_at !== null;
             $(".option-btn.restore").toggle(isDeleted);
             $(".option-btn:not(.restore):not(.toggle-options)").toggle(!isDeleted);
+
+            // handle sconce associations
+            $(".sconce-cutout-container").each((_i, container) => {
+                const cutout_id = $(container).data('id');
+                const sconceIsRelated = STATE.cutoutsLookup[cutout_id].sconce_ids.includes(id);
+                const newVal = Number(sconceIsRelated);
+                $(container).find('input').val(newVal);
+            });
 
             populateImagesModal(data, reset);
         }
@@ -700,6 +772,10 @@
             }
         }
 
+        $(".collapsible-container-title").on("click", function() {
+            $(this).closest('.collapsible-container').toggleClass('hidden');
+        });
+
         $(".option-btn.toggle-options").on("click", function() {
             $(this).toggleClass('active');
         });
@@ -843,6 +919,7 @@
                     });
 
                     reloadTable(true);
+                    fetchCutouts();
                 },
                 error: function() {
                     console.log("arguments:", arguments);

@@ -56,6 +56,7 @@ $router->group('/', function (Router $router) {
 
     $router->group('sconces', function (Router $router) {
         $router->get('', [SconceController::class, 'listSconces']);
+        $router->get('/cutouts', [SconceController::class, 'getCutouts']);
         $router->get('/getAll', [SconceController::class, 'getAll']);
         $router->post('', [SconceController::class, 'create']);
         $router->post('/{id}/images', [SconceController::class, 'updateImages']);

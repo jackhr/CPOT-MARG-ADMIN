@@ -379,6 +379,21 @@ class SconceController extends Controller
             $message = "Error updating sconce.";
         }
 
+        $cutout_ids_arr = [];
+
+        // Loop through the array and extract only the cutout_ids
+        foreach ($data as $key => $value) {
+            if (preg_match('/cutout_ids\[(\d+)\]/', $key, $matches)) {
+                $cutout_ids_arr[$matches[1]] = $value;
+            }
+        }
+
+        $filtered_cutout_ids = array_filter($cutout_ids_arr, function ($x) {
+            return $x;
+        });
+
+        $this->sconceModel->updateCutouts(array_keys($filtered_cutout_ids));
+
         $this->helper->respondToClient($updated_sconce, $status, $message);
     }
 

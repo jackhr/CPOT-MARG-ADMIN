@@ -74,14 +74,14 @@
             </div>
             <div class="modal-body">
                 <form id="order-details-form">
-                    <div class="order-info-container">
-                        <div class="order-info-container-title">
+                    <div class="collapsible-container">
+                        <div class="collapsible-container-title">
                             <h4>Order Info</h4>
                             <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m6 9 6 6 6-6" />
                             </svg>
                         </div>
-                        <div class="order-info-container-content">
+                        <div class="collapsible-container-content">
                             <div class="mutiple-input-container">
                                 <div class="input-container">
                                     <label for="total_amount">Total</label>
@@ -105,14 +105,14 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="order-info-container">
-                        <div class="order-info-container-title">
+                    <div class="collapsible-container">
+                        <div class="collapsible-container-title">
                             <h4>Client Info</h4>
                             <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m6 9 6 6 6-6" />
                             </svg>
                         </div>
-                        <div class="order-info-container-content">
+                        <div class="collapsible-container-content">
                             <div class="mutiple-input-container">
                                 <div class="input-container">
                                     <label for="name">Name</label>
@@ -154,14 +154,14 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="order-info-container line-items">
-                        <div class="order-info-container-title">
+                    <div class="collapsible-container line-items">
+                        <div class="collapsible-container-title">
                             <h4>Line Items</h4>
                             <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m6 9 6 6 6-6" />
                             </svg>
                         </div>
-                        <div class="order-info-container-content"></div>
+                        <div class="collapsible-container-content"></div>
                         <button id="view-items-btn" class="continue-btn">View Items In Detail</button>
                     </div>
                 </form>
@@ -529,9 +529,9 @@
 
             const totalHTML = `<div>Total</div><div>$${formatPrice(order.total_amount)}</div>`;
 
-            $(".order-info-container.line-items .order-info-container-content")
+            $(".collapsible-container.line-items .collapsible-container-content")
                 .html(lineItemsHTML + totalHTML);
-            $(".order-info-container.line-items .order-info-container-title h4")
+            $(".collapsible-container.line-items .collapsible-container-title h4")
                 .text(`Line Items (${order.order_item_count})`);
         }
 
@@ -1318,8 +1318,8 @@
             });
         });
 
-        $(".order-info-container-title").on("click", function() {
-            $(this).closest('.order-info-container').toggleClass('hidden');
+        $(".collapsible-container-title").on("click", function() {
+            $(this).closest('.collapsible-container').toggleClass('hidden');
         });
 
         $("#order-items-modal .modal-close").on("click", function() {

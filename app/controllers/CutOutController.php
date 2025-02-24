@@ -51,6 +51,19 @@ class CutoutController extends Controller
             $cutouts[$id]['images'][$image['image_id']] = $image;
         }
 
+        // Fetch related sconce IDs only if requested
+        if (isset($_GET['include_sconce_relations']) && $_GET['include_sconce_relations'] === "true") {
+            $sconceRelations = $this->cutoutModel->DBRaw("SELECT cutout_id, sconce_id FROM rel_sconces_cutouts");
+
+            // Initialize each cutout with an empty array of sconces
+            foreach ($cutouts as &$cutout) $cutout['sconce_ids'] = [];
+
+            // Map sconce IDs to their respective cutouts
+            foreach ($sconceRelations as $relation) {
+                $cutouts[$relation['cutout_id']]['sconce_ids'][] = $relation['sconce_id'];
+            }
+        }
+
         $this->helper->respondToClient($cutouts);
     }
 
