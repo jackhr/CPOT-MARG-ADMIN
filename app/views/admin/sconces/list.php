@@ -154,6 +154,22 @@
                         <label for="description">Description</label>
                         <textarea name="description" id="description" placeholder="My most valuable sconce!" required aria-required /></textarea>
                     </div>
+                    <hr>
+                    <div class="collapsible-container cutouts">
+                        <div class="collapsible-container-title">
+                            <h4>Cutouts</h4>
+                            <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        <span class="cutouts-associated"></span>
+                        <span>(click icon to toggle)</span>
+                        <div class="collapsible-options">
+                            <div class="continue-btn">Select All</div>
+                            <div class="continue-btn other">Deselect All</div>
+                        </div>
+                        <div class="collapsible-container-content"></div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -310,7 +326,7 @@
                                 <path d="m6 9 6 6 6-6"></path>
                             </svg>
                         </div>
-                        <span id="cutouts-associated"></span>
+                        <span class="cutouts-associated"></span>
                         <span>(click icon to toggle)</span>
                         <div class="collapsible-options">
                             <div class="continue-btn">Select All</div>
@@ -448,12 +464,14 @@
                 },
             ],
             initComplete: async function() {
-                handleInitTableRowEvents()
+                handleInitTableRowEvents();
                 this.api().on('draw', function() {
                     handleInitTableRowEvents();
                 });
                 fetchCutouts().then(() => {
                     renderCutoutAssociations();
+                    calculateSelectedCutouts("#create-sconce-modal");
+                    calculateSelectedCutouts("#edit-sconce-modal");
                 });
             }
         });
@@ -522,7 +540,7 @@
             Object.values(STATE.cutoutsLookup).forEach(cutout => {
                 $(".collapsible-container.cutouts .collapsible-container-content").append(`
                     <div data-id="${cutout.cutout_id}" class="sconce-cutout-container">
-                        <input type="hidden" value="0" name="cutout_ids[${cutout.cutout_id}]" />
+                        <input type="hidden" value="1" name="cutout_ids[${cutout.cutout_id}]" />
                         <div>
                             <img src="${cutout.image_url}" />
                             <span>${cutout.code}</span>
@@ -536,25 +554,10 @@
                 const oldVal = Number(input.val());
                 const newVal = Number(!oldVal);
                 input.val(newVal);
-                calculateSelectedCutouts();
+                const modal = $(this).closest(".modal");
+                calculateSelectedCutouts(modal);
             });
         }
-
-        $(".collapsible-options .continue-btn:not(.other)").on('click', function() {
-            $(".sconce-cutout-container").each((_, container) => {
-                const input = $(container).find("input");
-                const currentVal = Number(input.val());
-                if (!currentVal) $(container).trigger('click');
-            })
-        });
-
-        $(".collapsible-options .continue-btn.other").on('click', function() {
-            $(".sconce-cutout-container").each((_, container) => {
-                const input = $(container).find("input");
-                const currentVal = Number(input.val());
-                if (currentVal) $(container).trigger('click');
-            })
-        });
 
         function handleInitTableRowEvents(reset = false) {
             STATE.dTable.rows().every(function(idx) {
@@ -627,14 +630,14 @@
                 $(container).find('input').val(newVal);
             });
 
-            calculateSelectedCutouts();
+            calculateSelectedCutouts("#edit-sconce-modal");
             populateImagesModal(data, reset);
         }
 
-        function calculateSelectedCutouts(id = STATE.activeId) {
-            const selectedCutouts = $(".sconce-cutout-container input[type='hidden'][value='1']");
+        function calculateSelectedCutouts(modal, id = STATE.activeId) {
+            const selectedCutouts = $(modal).find(".sconce-cutout-container input[type='hidden'][value='1']");
             const notSelectedCount = Object.keys(STATE.cutoutsLookup).length - selectedCutouts.length;
-            $("#cutouts-associated").html(`Selected: <b>${selectedCutouts.length}</b>. Not selected: <b>${notSelectedCount}</b>`);
+            $(modal).find(".cutouts-associated").html(`Selected: <b>${selectedCutouts.length}</b>. Not selected: <b>${notSelectedCount}</b>`);
         }
 
         function populateImagesModal(data, reset = false) {
@@ -802,6 +805,24 @@
             }
         }
 
+        $(".collapsible-options .continue-btn:not(.other)").on('click', function() {
+            const modal = $(this).closest('.modal');
+            modal.find(".sconce-cutout-container").each((_, container) => {
+                const input = $(container).find("input");
+                const currentVal = Number(input.val());
+                if (!currentVal) $(container).trigger('click');
+            })
+        });
+
+        $(".collapsible-options .continue-btn.other").on('click', function() {
+            const modal = $(this).closest('.modal');
+            modal.find(".sconce-cutout-container").each((_, container) => {
+                const input = $(container).find("input");
+                const currentVal = Number(input.val());
+                if (currentVal) $(container).trigger('click');
+            })
+        });
+
         $(".collapsible-container-title").on("click", function() {
             $(this).closest('.collapsible-container').toggleClass('hidden');
         });
@@ -957,13 +978,15 @@
             });
         });
 
-        $('button[form="create-sconce-form"]').on("click", function(e) {
+        $('button[form="create-sconce-form"]').off('click').on("click", function(e) {
             e.preventDefault();
 
             const form = $("#create-sconce-form");
             const data = getJSONDataFromForm(form);
             const formValidationMsg = getFormValidationMsg(data);
 
+            console.log("data:", data);
+            
             if (formValidationMsg) {
                 return Swal.fire({
                     icon: "error",

@@ -260,6 +260,14 @@ class SconceController extends Controller
             $message = "Error creating sconce.";
         }
 
+        // Loop through the array and extract only the cutout_ids
+        $filtered_cutout_ids = array_filter($_POST["cutout_ids"], function ($x) {
+            return $x;
+        });
+
+        $this->sconceImageModel->sconce_id = $new_sconce['sconce_id'];
+        $this->sconceModel->updateCutouts(array_keys($filtered_cutout_ids));
+
         $this->helper->respondToClient($new_sconce, $status, $message);
     }
 
