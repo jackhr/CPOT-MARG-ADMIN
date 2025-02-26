@@ -310,6 +310,12 @@
                                 <path d="m6 9 6 6 6-6"></path>
                             </svg>
                         </div>
+                        <span id="cutouts-associated"></span>
+                        <span>(click icon to toggle)</span>
+                        <div class="collapsible-options">
+                            <div class="continue-btn">Select All</div>
+                            <div class="continue-btn other">Deselect All</div>
+                        </div>
                         <div class="collapsible-container-content"></div>
                     </div>
                 </form>
@@ -530,8 +536,25 @@
                 const oldVal = Number(input.val());
                 const newVal = Number(!oldVal);
                 input.val(newVal);
+                calculateSelectedCutouts();
             });
         }
+
+        $(".collapsible-options .continue-btn:not(.other)").on('click', function() {
+            $(".sconce-cutout-container").each((_, container) => {
+                const input = $(container).find("input");
+                const currentVal = Number(input.val());
+                if (!currentVal) $(container).trigger('click');
+            })
+        });
+
+        $(".collapsible-options .continue-btn.other").on('click', function() {
+            $(".sconce-cutout-container").each((_, container) => {
+                const input = $(container).find("input");
+                const currentVal = Number(input.val());
+                if (currentVal) $(container).trigger('click');
+            })
+        });
 
         function handleInitTableRowEvents(reset = false) {
             STATE.dTable.rows().every(function(idx) {
@@ -604,7 +627,14 @@
                 $(container).find('input').val(newVal);
             });
 
+            calculateSelectedCutouts();
             populateImagesModal(data, reset);
+        }
+
+        function calculateSelectedCutouts(id = STATE.activeId) {
+            const selectedCutouts = $(".sconce-cutout-container input[type='hidden'][value='1']");
+            const notSelectedCount = Object.keys(STATE.cutoutsLookup).length - selectedCutouts.length;
+            $("#cutouts-associated").html(`Selected: <b>${selectedCutouts.length}</b>. Not selected: <b>${notSelectedCount}</b>`);
         }
 
         function populateImagesModal(data, reset = false) {
