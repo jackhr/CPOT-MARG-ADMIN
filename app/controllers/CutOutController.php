@@ -251,6 +251,14 @@ class CutoutController extends Controller
             $message = "Error creating cutout.";
         }
 
+        // Loop through the array and extract only the sconce_ids
+        $filtered_sconce_ids = array_filter($_POST["sconce_ids"], function ($x) {
+            return $x;
+        });
+
+        $this->cutoutImageModal->cutout_id = $new_cutout['sconce_id'];
+        $this->cutoutModel->updateSconces(array_keys($filtered_sconce_ids));
+
         $this->helper->respondToClient($new_cutout, $status, $message);
     }
 
@@ -350,6 +358,21 @@ class CutoutController extends Controller
             $status = 409;
             $message = "Error updating cutout.";
         }
+
+        $sconce_ids_arr = [];
+
+        // Loop through the array and extract only the sconce_ids
+        foreach ($data as $key => $value) {
+            if (preg_match('/sconce_ids\[(\d+)\]/', $key, $matches)) {
+                $sconce_ids_arr[$matches[1]] = $value;
+            }
+        }
+
+        $filtered_sconce_ids = array_filter($sconce_ids_arr, function ($x) {
+            return $x;
+        });
+
+        $this->cutoutModel->updateSconces(array_keys($filtered_sconce_ids));
 
         $this->helper->respondToClient($updated_cutout, $status, $message);
     }

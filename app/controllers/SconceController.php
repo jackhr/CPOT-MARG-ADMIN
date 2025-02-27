@@ -53,6 +53,19 @@ class SconceController extends Controller
             }
         }
 
+        // Fetch related cutout IDs only if requested
+        if (isset($_GET['include_cutout_relations']) && $_GET['include_cutout_relations'] === "true") {
+            $cutoutRelations = $this->sconceModel->DBRaw("SELECT cutout_id, sconce_id FROM rel_sconces_cutouts");
+
+            // Initialize each sconce with an empty array of cutouts
+            foreach ($sconces as &$sconce) $sconce['cutout_ids'] = [];
+
+            // Map cutout IDs to their respective sconces
+            foreach ($cutoutRelations as $relation) {
+                $sconces[$relation['sconce_id']]['cutout_ids'][] = $relation['cutout_id'];
+            }
+        }
+
         $this->helper->respondToClient($sconces);
     }
 

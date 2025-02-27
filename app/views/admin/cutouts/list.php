@@ -106,6 +106,22 @@
                         <label for="description">Description</label>
                         <textarea name="description" id="description" placeholder="My most valuable cutout!" required aria-required /></textarea>
                     </div>
+                    <hr>
+                    <div class="collapsible-container sconces">
+                        <div class="collapsible-container-title">
+                            <h4>Sconces</h4>
+                            <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        <span class="sconces-associated"></span>
+                        <span>(click icon to toggle)</span>
+                        <div class="collapsible-options">
+                            <div class="continue-btn">Select All</div>
+                            <div class="continue-btn other">Deselect All</div>
+                        </div>
+                        <div class="collapsible-container-content"></div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -206,6 +222,22 @@
                         <label for="description">Description</label>
                         <textarea name="description" id="description" placeholder="My most valuable cutout!" required aria-required /></textarea>
                     </div>
+                    <hr>
+                    <div class="collapsible-container sconces">
+                        <div class="collapsible-container-title">
+                            <h4>Sconces</h4>
+                            <svg class="toggle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+                        </div>
+                        <span class="sconces-associated"></span>
+                        <span>(click icon to toggle)</span>
+                        <div class="collapsible-options">
+                            <div class="continue-btn">Select All</div>
+                            <div class="continue-btn other">Deselect All</div>
+                        </div>
+                        <div class="collapsible-container-content"></div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -251,7 +283,6 @@
             ajax: {
                 url: "/cutouts/getAll",
                 dataSrc: function(response) {
-                    console.log("herererer");
                     let res = [];
                     if (response && response.data) {
                         STATE.cutouts = structuredClone(Object.values(response.data));
@@ -328,6 +359,11 @@
                 this.api().on('draw', function() {
                     handleInitTableRowEvents();
                 });
+                fetchSconces().then(() => {
+                    renderSconceAssociations();
+                    calculateSelectedSconces("#create-cutout-modal");
+                    calculateSelectedSconces("#edit-cutout-modal");
+                });
             }
         });
 
@@ -360,6 +396,59 @@
                     clearInterval(populateFormInterval);
                 }
             }, 250);
+        }
+
+        async function fetchSconces() {
+            await $.ajax({
+                url: "/sconces/getAll?include_cutout_relations=true",
+                method: "GET",
+                dataType: "JSON",
+                success: res => {
+                    const {
+                        data,
+                        status,
+                        message
+                    } = res;
+                    const success = status === 200;
+
+                    if (status !== 200) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: message,
+                        });
+                    } else {
+                        STATE.sconcesLookup = data;
+                    }
+                },
+                error: function() {
+                    console.log("arguments:", arguments);
+                }
+            });
+        }
+
+        function renderSconceAssociations() {
+            $(".collapsible-container.sconces .collapsible-container-content").html("");
+            Object.values(STATE.sconcesLookup).forEach(sconce => {
+                $(".collapsible-container.sconces .collapsible-container-content").append(`
+                    <div data-id="${sconce.sconce_id}" class="sconce-cutout-container">
+                        <input type="hidden" value="1" name="sconce_ids[${sconce.sconce_id}]" />
+                        <div>
+                            <img src="${sconce.image_url}" />
+                            <span>${sconce.name}</span>
+                        </div>
+                    </div>
+                `);
+            });
+
+            $(".sconce-cutout-container").on('click', function() {
+                const input = $(this).find("input");
+                const oldVal = Number(input.val());
+                const newVal = Number(!oldVal);
+                input.val(newVal);
+                const modal = $(this).closest(".modal");
+                calculateSelectedSconces(modal);
+            });
         }
 
         function handleInitTableRowEvents(reset = false) {
@@ -414,7 +503,22 @@
             $(".option-btn.restore").toggle(isDeleted);
             $(".option-btn:not(.restore):not(.toggle-options)").toggle(!isDeleted);
 
+            // handle sconce associations
+            $(".sconce-cutout-container").each((_i, container) => {
+                const sconce_id = $(container).data('id');
+                const cutoutIsRelated = STATE.sconcesLookup[sconce_id].cutout_ids.includes(id);
+                const newVal = Number(cutoutIsRelated);
+                $(container).find('input').val(newVal);
+            });
+
+            calculateSelectedSconces("#edit-cutout-modal");
             populateImagesModal(data, reset);
+        }
+
+        function calculateSelectedSconces(modal, id = STATE.activeId) {
+            const selectedSconces = $(modal).find(".sconce-cutout-container input[type='hidden'][value='1']");
+            const notSelectedCount = Object.keys(STATE.sconcesLookup).length - selectedSconces.length;
+            $(modal).find(".sconces-associated").html(`Selected: <b>${selectedSconces.length}</b>. Not selected: <b>${notSelectedCount}</b>`);
         }
 
         function populateImagesModal(data, reset = false) {
@@ -556,6 +660,28 @@
                 formData.append('primary_image_type', type);
             }
         }
+
+        $(".collapsible-options .continue-btn:not(.other)").on('click', function() {
+            const modal = $(this).closest('.modal');
+            modal.find(".sconce-cutout-container").each((_, container) => {
+                const input = $(container).find("input");
+                const currentVal = Number(input.val());
+                if (!currentVal) $(container).trigger('click');
+            });
+        });
+
+        $(".collapsible-options .continue-btn.other").on('click', function() {
+            const modal = $(this).closest('.modal');
+            modal.find(".sconce-cutout-container").each((_, container) => {
+                const input = $(container).find("input");
+                const currentVal = Number(input.val());
+                if (currentVal) $(container).trigger('click');
+            });
+        });
+
+        $(".collapsible-container-title").on("click", function() {
+            $(this).closest('.collapsible-container').toggleClass('hidden');
+        });
 
         $(".option-btn.toggle-options").on("click", function() {
             $(this).toggleClass('active');
@@ -700,6 +826,7 @@
                     });
 
                     reloadTable(true);
+                    fetchSconces();
                 },
                 error: function() {
                     console.log("arguments:", arguments);
