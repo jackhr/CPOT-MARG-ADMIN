@@ -3,6 +3,7 @@ require_once __DIR__ . '/../app/core/bootstrap.php';
 
 use App\Controllers\AddOnController;
 use App\Controllers\CutoutController;
+use App\Controllers\GalleryItemController;
 use App\Controllers\OrderController;
 use App\Controllers\RoleController;
 use App\Controllers\SconceController;
@@ -53,6 +54,16 @@ $router->group('/', function (Router $router) {
         $router->put('/{id}', [RoleController::class, 'update']);
         $router->delete('/{id}', [RoleController::class, 'delete']);
     }, [AdminMiddleware::class]);
+
+    $router->group('gallery_items', function (Router $router) {
+        $router->get('', [GalleryItemController::class, 'listGalleryItems']);
+        $router->get('/getAll', [GalleryItemController::class, 'getAll']);
+        $router->post('', [GalleryItemController::class, 'create']);
+        $router->post('/{id}/images', [GalleryItemController::class, 'updateImages']);
+        $router->put('/{id}', [GalleryItemController::class, 'update']);
+        $router->put('/{id}/restore', [GalleryItemController::class, 'restore']);
+        $router->delete('/{id}', [GalleryItemController::class, 'delete']);
+    });
 
     $router->group('sconces', function (Router $router) {
         $router->get('', [SconceController::class, 'listSconces']);

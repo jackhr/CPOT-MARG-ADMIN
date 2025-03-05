@@ -56,6 +56,16 @@
                 <span>Sconces</span>
             </a>
         </li>
+        <a href="/gallery_items">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7" />
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                <path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4" />
+                <path d="M2 7h20" />
+                <path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7" />
+            </svg>
+            <span>Shop</span>
+        </a>
         <li>
             <a href="/orders">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -68,24 +78,6 @@
             </a>
         </li>
         <?php if ($user['role_id'] < 3) { ?>
-            <li>
-                <a href="/roles">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="18" cy="15" r="3" />
-                        <circle cx="9" cy="7" r="4" />
-                        <path d="M10 15H6a4 4 0 0 0-4 4v2" />
-                        <path d="m21.7 16.4-.9-.3" />
-                        <path d="m15.2 13.9-.9-.3" />
-                        <path d="m16.6 18.7.3-.9" />
-                        <path d="m19.1 12.2.3-.9" />
-                        <path d="m19.6 18.7-.4-1" />
-                        <path d="m16.8 12.3-.4-1" />
-                        <path d="m14.3 16.6 1-.4" />
-                        <path d="m20.7 13.8 1-.4" />
-                    </svg>
-                    <span>Roles</span>
-                </a>
-            </li>
             <li>
                 <a href="/users">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
