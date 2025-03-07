@@ -40,7 +40,7 @@
     </div>
 </main>
 
-<div id="create-gallery-item-modal" class="modal">
+<div id="create-shop-item-modal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -50,7 +50,7 @@
                 <h1>Adding Item</h1>
             </div>
             <div class="modal-body">
-                <form id="create-gallery-item-form">
+                <form id="create-shop-item-form">
                     <div class="input-container">
                         <div class="option-btns-container">
                             <div class="option-btn images">
@@ -165,13 +165,13 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button form="create-gallery-item-form" type="submit" class="continue-btn">Submit</button>
+                <button form="create-shop-item-form" type="submit" class="continue-btn">Submit</button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="edit-gallery-item-modal" class="modal">
+<div id="edit-shop-item-modal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -181,10 +181,10 @@
                 <h1>Editing Item</h1>
             </div>
             <div class="modal-body">
-                <form id="edit-gallery-item-form">
+                <form id="edit-shop-item-form">
                     <div class="input-container">
                         <label>Id #</label>
-                        <span id="edit-gallery-item-id"></span>
+                        <span id="edit-shop-item-id"></span>
                         <div class="option-btns-container">
                             <div class="option-btn images">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -319,7 +319,7 @@
             </div>
             <div class="modal-footer">
                 <button class="continue-btn cancel">Cancel</button>
-                <button form="edit-gallery-item-form" type="submit" class="continue-btn">Update</button>
+                <button form="edit-shop-item-form" type="submit" class="continue-btn">Update</button>
             </div>
         </div>
     </div>
@@ -358,11 +358,11 @@
                 [2, 'asc']
             ],
             ajax: {
-                url: "/gallery_items/getAll",
+                url: "/shop_items/getAll",
                 dataSrc: function(response) {
                     let res = [];
                     if (response && response.data) {
-                        STATE.galleryItems = structuredClone(Object.values(response.data));
+                        STATE.shopItems = structuredClone(Object.values(response.data));
                         res = Object.values(response.data).map(s => {
                             s.price = formatPrice(s.price);
                             s.showing_on_site = s.showing_on_site ? "Yes" : "No";
@@ -380,7 +380,7 @@
                 }
             },
             columns: [{
-                    data: 'item_id'
+                    data: 'shop_item_id'
                 },
                 {
                     data: 'image_url'
@@ -496,12 +496,12 @@
                     return;
                 }
 
-                const id = this.data().item_id;
+                const id = this.data().shop_item_id;
                 const [imageName, imageUrl] = getImageNameAndUrl(id);
                 $(rowNode)
                     .find('td')
                     .eq(1)
-                    .addClass("gallery-item-thumb-td")
+                    .addClass("shop-item-thumb-td")
                     .html(`
                         <div>
                             <img src="${imageUrl}" alt="${imageName}">
@@ -511,7 +511,7 @@
                 rowNode.onclick = () => {
                     $(".option-btn.toggle-options").removeClass('active');
                     populateEditForm(id);
-                    $("#edit-gallery-item-modal").addClass('showing');
+                    $("#edit-shop-item-modal").addClass('showing');
                 };
 
                 if (this.data().deleted_at !== "-") $(rowNode).addClass('deleted_item');
@@ -520,7 +520,7 @@
         }
 
         function getImageNameAndUrl(id) {
-            const data = STATE.galleryItems.find(x => x.item_id === id);
+            const data = STATE.shopItems.find(x => x.shop_item_id === id);
             const imageData = data.images?.[data.primary_image_id];
             const imageName = `${data.name}_${id}_${imageData?.image_id}`;
             const imageUrl = imageData ? imageData?.image_url : data.image_url;
@@ -528,15 +528,15 @@
         }
 
         function populateEditForm(id, reset = false) {
-            const data = STATE.galleryItems.find(x => x.item_id === id);
-            const modal = $("#edit-gallery-item-modal");
+            const data = STATE.shopItems.find(x => x.shop_item_id === id);
+            const modal = $("#edit-shop-item-modal");
             const dimensions = data.dimensions
                 .split(" x ")
                 .map(x => x.replace(/[^\d.]/gi, ""));
             const weight = data.weight.replace(/\D+/gi, "");
             const dimensionUnits = data.dimensions.includes("in") ? "in" : data.dimensions.includes("cm") ? "cm" : "Unknown unit";
 
-            modal.find('#edit-gallery-item-id').text(id);
+            modal.find('#edit-shop-item-id').text(id);
             modal.find('input[name="name"]').val(data.name);
             modal.find('input[name="depth"]').val(dimensions[0]);
             modal.find('input[name="width"]').val(dimensions[1]);
@@ -559,7 +559,7 @@
         }
 
         function populateImagesModal(data, reset = false) {
-            const id = data?.item_id || null;
+            const id = data?.shop_item_id || null;
             const imagesContainer = $(".images-grid");
             let cellsHTML = "";
 
@@ -575,7 +575,7 @@
                 for (const image_id in data.images) {
                     idx++;
                     const image = data.images[image_id];
-                    const imageName = `${data.name}_${data.item_id}_${image.image_id}`;
+                    const imageName = `${data.name}_${data.shop_item_id}_${image.image_id}`;
                     const isPrimary = image.image_id == data.primary_image_id;
                     const cellHTML = `
                         <div class="images-grid-item" data-idx="${image.image_id}" data-existing="true" data-image-id="${image.image_id}">
@@ -590,7 +590,7 @@
                     `;
 
                     if (isPrimary) {
-                        $("#edit-gallery-item-modal .img-preview-container").html(`<img src="${image.image_url}" alt="${imageName}" title="${imageName}">`);
+                        $("#edit-shop-item-modal .img-preview-container").html(`<img src="${image.image_url}" alt="${imageName}" title="${imageName}">`);
                         cellsHTML = cellHTML + cellsHTML;
                     } else {
                         cellsHTML += cellHTML;
@@ -621,7 +621,7 @@
         }
 
         function handleSetPreviewImage() {
-            const modal = $("#create-gallery-item-modal");
+            const modal = $("#create-shop-item-modal");
             if (!modal.hasClass('showing')) return;
             const idx = $(".images-grid-item:not(.non-draggable)").first().data('idx');
             const file = STATE.upload.newImages[idx];
@@ -739,10 +739,10 @@
         });
 
         $(".create-btn").on("click", () => {
-            $("#create-gallery-item-modal").addClass("showing");
+            $("#create-shop-item-modal").addClass("showing");
             if (STATE.activeId !== null) {
                 resetImagesModal();
-                $("#create-gallery-item-modal").find(".img-preview-container").html("");
+                $("#create-shop-item-modal").find(".img-preview-container").html("");
             }
         });
 
@@ -750,23 +750,23 @@
             e.preventDefault();
             $(this).closest('.modal').find('.modal-close').trigger('click');
             let data = {};
-            if ($("#edit-gallery-item-modal").hasClass("showing")) {
-                const itemId = $("#edit-gallery-item-id").text();
-                data = STATE.galleryItems.find(x => x.item_id === Number(itemId));
-            } else if ($("#create-gallery-item-modal").hasClass("showing")) {
-                $("#create-gallery-item-modal .img-preview-container").html("");
+            if ($("#edit-shop-item-modal").hasClass("showing")) {
+                const itemId = $("#edit-shop-item-id").text();
+                data = STATE.shopItems.find(x => x.shop_item_id === Number(itemId));
+            } else if ($("#create-shop-item-modal").hasClass("showing")) {
+                $("#create-shop-item-modal .img-preview-container").html("");
             }
             setTimeout(() => populateImagesModal(data, true), 400);
         });
 
         $(".images-modal button.confirm").on('click', function(e) {
             e.preventDefault();
-            if ($("#create-gallery-item-modal").hasClass("showing")) {
+            if ($("#create-shop-item-modal").hasClass("showing")) {
                 return $(this).closest('.modal').find(".modal-close").trigger("click");
             };
 
-            const itemId = $("#edit-gallery-item-id").text();
-            const name = $("#edit-gallery-item-form [name='name']").val();
+            const itemId = $("#edit-shop-item-id").text();
+            const name = $("#edit-shop-item-form [name='name']").val();
 
             const formData = new FormData();
 
@@ -801,7 +801,7 @@
             });
 
             $.ajax({
-                url: `/gallery_items/${itemId}/images`,
+                url: `/shop_items/${itemId}/images`,
                 method: "POST",
                 dataType: "JSON",
                 data: formData,
@@ -832,12 +832,12 @@
             });
         });
 
-        $('button[form="edit-gallery-item-form"]').on("click", function(e) {
+        $('button[form="edit-shop-item-form"]').on("click", function(e) {
             e.preventDefault();
 
-            const form = $("#edit-gallery-item-form");
+            const form = $("#edit-shop-item-form");
             const data = getJSONDataFromForm(form);
-            const itemId = $("#edit-gallery-item-id").text();
+            const itemId = $("#edit-shop-item-id").text();
             const formValidationMsg = getFormValidationMsg(data, "edit");
 
             if (formValidationMsg) {
@@ -857,7 +857,7 @@
             });
 
             $.ajax({
-                url: `/gallery_items/${itemId}`,
+                url: `/shop_items/${itemId}`,
                 method: "PUT",
                 dataType: "JSON",
                 contentType: "application/json",
@@ -884,10 +884,10 @@
             });
         });
 
-        $('button[form="create-gallery-item-form"]').off('click').on("click", function(e) {
+        $('button[form="create-shop-item-form"]').off('click').on("click", function(e) {
             e.preventDefault();
 
-            const form = $("#create-gallery-item-form");
+            const form = $("#create-shop-item-form");
             const data = getJSONDataFromForm(form);
             const formValidationMsg = getFormValidationMsg(data);
 
@@ -919,7 +919,7 @@
             }
 
             $.ajax({
-                url: "/gallery_items",
+                url: "/shop_items",
                 method: "POST",
                 dataType: "JSON",
                 data: formData,
@@ -969,14 +969,14 @@
             weightEl.val(convertUnits('weight', weightEl.val(), toKg));
         });
 
-        $("#edit-gallery-item-modal .modal-close").on("click", function() {
+        $("#edit-shop-item-modal .modal-close").on("click", function() {
             $(this)
                 .closest('.modal')
                 .find('.option-btn.toggle-options')
                 .removeClass('active');
         });
 
-        $("#edit-gallery-item-modal button.cancel").on("click", function() {
+        $("#edit-shop-item-modal button.cancel").on("click", function() {
             $(this)
                 .closest('.modal')
                 .find('.modal-close')
@@ -994,8 +994,8 @@
 
             if (!res.isConfirmed) return;
 
-            if ($("#create-gallery-item-modal").hasClass("showing")) {
-                resetModal($("#create-gallery-item-modal"));
+            if ($("#create-shop-item-modal").hasClass("showing")) {
+                resetModal($("#create-shop-item-modal"));
             } else {
                 populateEditForm(STATE.activeId, true);
             }
@@ -1003,8 +1003,8 @@
         });
 
         $(".option-btn.delete").on("click", async function() {
-            const itemId = $("#edit-gallery-item-id").text();
-            const name = $("#edit-gallery-item-form [name='name']").val();
+            const itemId = $("#edit-shop-item-id").text();
+            const name = $("#edit-shop-item-form [name='name']").val();
 
             const res = await Swal.fire({
                 icon: "warning",
@@ -1032,7 +1032,7 @@
             });
 
             $.ajax({
-                url: `/gallery_items/${itemId}`,
+                url: `/shop_items/${itemId}`,
                 method: "DELETE",
                 dataType: "JSON",
                 success: res => {
@@ -1062,8 +1062,8 @@
         });
 
         $(".option-btn.restore").on("click", async function() {
-            const id = $("#edit-gallery-item-id").text();
-            const name = $("#edit-gallery-item-form [name='name']").val();
+            const id = $("#edit-shop-item-id").text();
+            const name = $("#edit-shop-item-form [name='name']").val();
 
             const res = await Swal.fire({
                 icon: "warning",
@@ -1086,7 +1086,7 @@
             });
 
             $.ajax({
-                url: `/gallery_items/${id}/restore`,
+                url: `/shop_items/${id}/restore`,
                 method: "PUT",
                 dataType: "JSON",
                 success: res => {
@@ -1230,7 +1230,7 @@
                 }
             });
             $(this).val('');
-            if ($("#create-gallery-item-modal").hasClass("showing")) {
+            if ($("#create-shop-item-modal").hasClass("showing")) {
                 handleSetPreviewImage();
             }
         });

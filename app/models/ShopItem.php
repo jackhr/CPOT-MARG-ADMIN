@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Helpers\GeneralHelper;
 use PDO;
 
-class GalleryItem extends Model
+class ShopItem extends Model
 {
-    public $item_id;
+    public $shop_item_id;
     public $primary_image_id;
     public $name;
     public $dimensions;
@@ -32,23 +32,23 @@ class GalleryItem extends Model
     public function __construct()
     {
         parent::__construct();
-        $this->table_name = "gallery_items";
-        $this->primary_key = "item_id";
+        $this->table_name = "shop_items";
+        $this->primary_key = "shop_shop_item_id";
         $this->helper = new GeneralHelper();
     }
 
     public function updatePrimaryImg()
     {
-        $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id WHERE item_id = :item_id";
+        $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id WHERE shop_item_id = :shop_item_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
-        $this->item_id = htmlspecialchars($this->item_id);
+        $this->shop_item_id = htmlspecialchars($this->shop_item_id);
         $this->primary_image_id = htmlspecialchars($this->primary_image_id);
 
         // Bind parameters
         $stmt->bindParam(":primary_image_id", $this->primary_image_id, PDO::PARAM_INT);
-        $stmt->bindParam(":item_id", $this->item_id, PDO::PARAM_INT);
+        $stmt->bindParam(":shop_item_id", $this->shop_item_id, PDO::PARAM_INT);
 
         // Execute the query
         return $stmt->execute();
@@ -56,14 +56,14 @@ class GalleryItem extends Model
 
     public function restore()
     {
-        $query = "UPDATE {$this->table_name} SET deleted_at = NULL, `status` = 'active' WHERE item_id = :item_id";
+        $query = "UPDATE {$this->table_name} SET deleted_at = NULL, `status` = 'active' WHERE shop_item_id = :shop_item_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
-        $this->item_id = htmlspecialchars($this->item_id);
+        $this->shop_item_id = htmlspecialchars($this->shop_item_id);
 
         // Bind parameters
-        $stmt->bindParam(":item_id", $this->item_id, PDO::PARAM_INT);
+        $stmt->bindParam(":shop_item_id", $this->shop_item_id, PDO::PARAM_INT);
 
         // Execute the query
         return $stmt->execute();
@@ -71,11 +71,11 @@ class GalleryItem extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, status = :status, description = :description, showing_on_site = :showing_on_site, updated_by = :updated_by WHERE item_id = :item_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, price = :price, status = :status, description = :description, showing_on_site = :showing_on_site, updated_by = :updated_by WHERE shop_item_id = :shop_item_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
-        $this->item_id = htmlspecialchars($this->item_id);
+        $this->shop_item_id = htmlspecialchars($this->shop_item_id);
         $this->name = htmlspecialchars($this->name);
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
@@ -88,7 +88,7 @@ class GalleryItem extends Model
         $this->updated_by = htmlspecialchars($this->updated_by);
         
         // Bind parameters
-        $stmt->bindParam(":item_id", $this->item_id, PDO::PARAM_INT);
+        $stmt->bindParam(":shop_item_id", $this->shop_item_id, PDO::PARAM_INT);
         $stmt->bindParam(":name", $this->name);
         $stmt->bindParam(":dimensions", $this->dimensions);
         $stmt->bindParam(":material", $this->material);
@@ -139,19 +139,19 @@ class GalleryItem extends Model
 
     public function delete()
     {
-        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP, `status` = 'archived' WHERE item_id = :item_id";
+        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP, `status` = 'archived' WHERE shop_item_id = :shop_item_id";
         $stmt = $this->con->prepare($query);
 
-        $this->item_id = htmlspecialchars($this->item_id);
+        $this->shop_item_id = htmlspecialchars($this->shop_item_id);
 
-        $stmt->bindParam(":item_id", $this->item_id, PDO::PARAM_INT);
+        $stmt->bindParam(":shop_item_id", $this->shop_item_id, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
 
     // Method to find an item by name
     /**
-     * @return GalleryItem
+     * @return ShopItem
      */
     public function findByName($name)
     {

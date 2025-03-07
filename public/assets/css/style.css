@@ -441,7 +441,7 @@ table .sconce-thumb-td div {
 table .sconce-thumb-td div img,
 table .one-of-a-kind-thumb-td div img,
 table .cutout-thumb-td div img,
-table .gallery-item-thumb-td div img {
+table .shop-item-thumb-td div img {
     object-fit     : contain;
     object-position: center;
     height         : 100%;

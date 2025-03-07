@@ -4,7 +4,7 @@ namespace App\Core;
 
 use App\Controllers\AddOnController;
 use App\Controllers\CutoutController;
-use App\Controllers\GalleryItemController;
+use App\Controllers\ShopItemController;
 use App\Controllers\UserController;
 use App\Controllers\HttpErrorController;
 use App\Controllers\OrderController;
@@ -19,8 +19,8 @@ class ControllerFactory
     public static function create($controllerName)
     {
         switch ($controllerName) {
-            case GalleryItemController::class:
-                return new GalleryItemController(new GeneralHelper());
+            case ShopItemController::class:
+                return new ShopItemController(new GeneralHelper());
             case AddOnController::class:
                 return new AddOnController();
             case OrderController::class:
