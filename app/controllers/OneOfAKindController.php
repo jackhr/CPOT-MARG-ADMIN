@@ -216,7 +216,8 @@ class OneOfAKindController extends Controller
         $this->oneOfAKindModel->description = $description;
         $this->oneOfAKindModel->created_by = $_SESSION['user']['user_id'];
 
-        if ($this->oneOfAKindModel->create()) {
+        try {
+            $this->oneOfAKindModel->create();
             $message = "One of a kind created successfully.";
             $new_one_of_a_kind = $this->oneOfAKindModel->findByName($name);
 
@@ -248,9 +249,9 @@ class OneOfAKindController extends Controller
                     $message = "One of a kind was created but the file upload failed.";
                 }
             }
-        } else {
+        } catch(Exception $e) {
             $status = 409;
-            $message = "Error creating one of a kind.";
+            $message = "Error creating one of a kind. {$e->getMessage()}";
         }
 
         $this->helper->respondToClient($new_one_of_a_kind, $status, $message);
@@ -359,12 +360,13 @@ class OneOfAKindController extends Controller
         $this->oneOfAKindModel->description = $description;
         $this->oneOfAKindModel->updated_by = $_SESSION['user']['user_id'];
 
-        if ($this->oneOfAKindModel->update()) {
+        try {
+            $this->oneOfAKindModel->update();
             $message = "One of a kind updated successfully.";
             $updated_one_of_a_kind = $this->oneOfAKindModel->findByName($name);
-        } else {
+        } catch(Exception $e) {
             $status = 409;
-            $message = "Error updating one of a kind.";
+            $message = "Error updating one of a kind. {$e->getMessage()}";
         }
 
         $this->helper->respondToClient($updated_one_of_a_kind, $status, $message);
@@ -378,12 +380,13 @@ class OneOfAKindController extends Controller
 
         $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
 
-        if ($this->oneOfAKindModel->restore()) {
+        try {
+            $this->oneOfAKindModel->restore();
             $message = "One of a kind restored successfully.";
             $one_of_a_kind_to_restore = $this->oneOfAKindModel->findById($one_of_a_kind_id);
-        } else {
+        } catch (Exception $e) {
             $status = 500;
-            $message = "Error deleting one of a kind.";
+            $message = "Error restoring this one of a kind. {$e->getMessage()}";
         }
 
         $this->helper->respondToClient($one_of_a_kind_to_restore, $status, $message);
@@ -397,12 +400,13 @@ class OneOfAKindController extends Controller
 
         $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
 
-        if ($this->oneOfAKindModel->delete()) {
+        try {
+            $this->oneOfAKindModel->delete();
             $message = "One of a kind deleted successfully.";
             $one_of_a_kind_to_delete = $this->oneOfAKindModel->findById($one_of_a_kind_id);
-        } else {
+        } catch (Exception $e) {
             $status = 500;
-            $message = "Error deleting one of a kind.";
+            $message = "Error deleting one of a kind. {$e->getMessage()}";
         }
 
         $this->helper->respondToClient($one_of_a_kind_to_delete, $status, $message);
