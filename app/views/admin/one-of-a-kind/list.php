@@ -308,7 +308,7 @@
 
 <script>
     $(document).ready(function() {
-        const dTable = new DataTable("table", {
+        STATE.dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
             columnDefs: [{
                 type: 'natural',
@@ -335,6 +335,7 @@
                     } else {
                         console.error("Invalid response format", response);
                     }
+                    STATE.fetchingData = false;
                     return res;
                 }
             },
@@ -410,6 +411,7 @@
         });
 
         (function init() {
+            STATE.fetchingData = false;
             STATE.upload = {
                 maxImageCount: 9,
                 currentIdx: 0,
@@ -423,11 +425,24 @@
             STATE.activeId = null;
             resetImagesModal();
 
-            setTimeout(() => dTable.draw(), 1000);
+            setTimeout(() => STATE.dTable.draw(), 1000);
         })();
 
+        function reloadTable(populateForm = false) {
+            STATE.dTable.ajax.reload(null, false); // false ensures the current paging stays the same
+            if (!populateForm) return;
+
+            STATE.fetchingData = true;
+            const populateFormInterval = setInterval(() => {
+                if (STATE.fetchingData === false) {
+                    populateEditForm(STATE.activeId, true);
+                    clearInterval(populateFormInterval);
+                }
+            }, 250);
+        }
+
         function handleInitTableRowEvents(reset = false) {
-            dTable.rows().every(function(idx) {
+            STATE.dTable.rows().every(function(idx) {
                 const rowNode = this.node();
                 if (!rowNode) {
                     console.warn(`Row node not found for index ${idx}`);
@@ -515,7 +530,7 @@
                                     <path d="M18 6 6 18"/>
                                     <path d="m6 6 12 12"/>
                                 </svg>
-                            </div>
+                            </div> 
                             <img src="${image.image_url}" alt="${imageName}" title="${imageName}">
                         </div>
                     `;
@@ -734,9 +749,9 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    success && reloadTable();
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -786,9 +801,9 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    success && reloadTable(true);
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -847,9 +862,12 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    if (success) {
+                        reloadTable();
+                        resetModal($("#create-one-of-a-kind-modal"));
+                    }
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -948,9 +966,9 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    success && reloadTable(true);
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -1002,9 +1020,9 @@
                         icon: success ? "success" : "error",
                         title: success ? "Success" : "Error",
                         text: message,
-                    }).then(() => {
-                        success && location.reload();
                     });
+
+                    success && reloadTable(true);
                 },
                 error: function() {
                     console.log("arguments:", arguments);
