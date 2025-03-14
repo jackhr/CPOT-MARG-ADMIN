@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Config\Database;
+use Error;
 use Exception;
 use PDO;
 
@@ -43,6 +44,17 @@ class Model
         }
 
         return $indexed_results;
+    }
+
+    public function destroy($id) {
+        try {
+            $query = "DELETE FROM {$this->table_name} WHERE {$this->primary_key} = :{$this->primary_key}";
+            $stmt = $this->con->prepare($query);
+            $stmt->bindParam(":{$this->primary_key}", $id);
+            return $stmt->execute();
+        } catch(Exception $e) {
+            throw new Error($e->getMessage());
+        }
     }
 
     public function findById($id)
