@@ -18,12 +18,8 @@
                     <th>Id #</th>
                     <th>Username</th>
                     <th>Email</th>
-                    <th>Role</th>
                     <th>Created At</th>
                     <th>Updated At</th>
-                    <?php if ($user['role_id'] === 1) { ?>
-                        <th>Deleted At</th>
-                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -32,25 +28,13 @@
                     $updated_at = new DateTime($u['updated_at']);
                     $created_at = $created_at->format('M j, Y \@ g:i A T');
                     $updated_at = $updated_at->format('M j, Y \@ g:i A T');
-
-                    if ($user['role_id'] === 1) {
-                        $deleted_at = "-";
-                        if (isset($u['deleted_at'])) {
-                            $deleted_at = new DateTime($u['deleted_at']);
-                            $deleted_at = $deleted_at->format('M j, Y \@ g:i A T');
-                        }
-                    }
                 ?>
                     <tr data-id="<?php echo $u['user_id']; ?>">
                         <td><?php echo $u['user_id']; ?></td>
                         <td><?php echo $u['username']; ?></td>
                         <td><?php echo $u['email']; ?></td>
-                        <td data-id="<?php echo $u['role_id']; ?>"><?php echo $u['role_name']; ?></td>
                         <td class="dt-type-date"><?php echo $created_at; ?></td>
                         <td class="dt-type-date"><?php echo $updated_at; ?></td>
-                        <?php if ($user['role_id'] === 1) { ?>
-                            <td class="dt-type-date"><?php echo $deleted_at; ?></td>
-                        <?php } ?>
                     </tr>
                 <?php } ?>
             </tbody>
@@ -76,15 +60,6 @@
                     <div class="input-container">
                         <label for="email">Email</label>
                         <input type="email" name="email" placeholder="new_user@gmail.com" required>
-                    </div>
-                    <div class="input-container">
-                        <label for="role">Role</label>
-                        <select name="role" required>
-                            <option selected disabled value="">Select A Role</option>
-                            <?php foreach ($roles as $r) {
-                                echo "<option value=\"{$r['role_id']}\">{$r['role_name']}</option>";
-                            } ?>
-                        </select>
                     </div>
                     <div class="input-container password-container">
                         <label for="new-password">New Password</label>
@@ -150,15 +125,6 @@
                     <div class="input-container">
                         <label for="email">Email</label>
                         <input type="email" name="email" placeholder="current_user@gmail.com" required>
-                    </div>
-                    <div class="input-container">
-                        <label for="role">Role</label>
-                        <select name="role" required>
-                            <option disabled value="">Select A Role</option>
-                            <?php foreach ($roles as $r) {
-                                echo "<option value=\"{$r['role_id']}\">{$r['role_name']}</option>";
-                            } ?>
-                        </select>
                     </div>
                 </form>
             </div>
@@ -309,12 +275,10 @@
             const userId = $(this).find('td').eq(0).text();
             const username = $(this).find('td').eq(1).text();
             const email = $(this).find('td').eq(2).text();
-            const roleId = $(this).find('td').eq(3).data('id');
 
             modal.find('#edit-user-id').text(userId);
             modal.find('input[name="username"]').val(username);
             modal.find('input[name="email"]').val(email);
-            modal.find('select[name="role"]').prop('selectedIndex', roleId);
 
             modal.addClass("showing");
         });

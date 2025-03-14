@@ -31,19 +31,12 @@ class OneOfAKindController extends Controller
 
     public function getAll()
     {
-        $logged_in_user = $_SESSION['user'];
         $override_query = "SELECT one_of_a_kind.*, one_of_a_kind_images.image_url, users_c.email AS created_by_email, users_u.email AS updated_by_email 
             FROM one_of_a_kind
             LEFT JOIN one_of_a_kind_images ON one_of_a_kind.primary_image_id = one_of_a_kind_images.image_id
             LEFT JOIN users users_c ON one_of_a_kind.created_by = users_c.user_id
             LEFT JOIN users users_u ON one_of_a_kind.updated_by = users_u.user_id";
         $one_of_a_kinds = $this->oneOfAKindModel->readAll($override_query, "one_of_a_kind_id");
-        if ($logged_in_user['role_id'] > 1) {
-            $one_of_a_kinds = array_filter($one_of_a_kinds, function ($one_of_a_kind) {
-                return !isset($one_of_a_kind['deleted_at']);
-            });
-        }
-
         $oak_images = $this->oneOfAKindModel->DBRaw("SELECT * FROM one_of_a_kind_images");
 
         foreach ($oak_images as $oak_image) {

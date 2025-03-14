@@ -5,7 +5,7 @@ use App\Controllers\AddOnController;
 use App\Controllers\CutoutController;
 use App\Controllers\ShopItemController;
 use App\Controllers\OrderController;
-use App\Controllers\RoleController;
+// use App\Controllers\RoleController;
 use App\Controllers\SconceController;
 use App\Controllers\OneOfAKindController;
 use App\Controllers\UserController;
@@ -48,12 +48,12 @@ $router->group('/', function (Router $router) {
         $router->delete('/{id}', [UserController::class, 'delete']);
     }, [AdminMiddleware::class]);
 
-    $router->group('roles', function (Router $router) {
-        $router->get('', [RoleController::class, 'listRoles']);
-        $router->post('', [RoleController::class, 'create']);
-        $router->put('/{id}', [RoleController::class, 'update']);
-        $router->delete('/{id}', [RoleController::class, 'delete']);
-    }, [AdminMiddleware::class]);
+    // $router->group('roles', function (Router $router) {
+    //     $router->get('', [RoleController::class, 'listRoles']);
+    //     $router->post('', [RoleController::class, 'create']);
+    //     $router->put('/{id}', [RoleController::class, 'update']);
+    //     $router->delete('/{id}', [RoleController::class, 'delete']);
+    // }, [AdminMiddleware::class]);
 
     $router->group('shop_items', function (Router $router) {
         $router->get('', [ShopItemController::class, 'listShopItems']);

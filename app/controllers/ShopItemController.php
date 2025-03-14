@@ -31,14 +31,13 @@ class ShopItemController extends Controller
 
     public function getAll()
     {
-        $logged_in_user = $_SESSION['user'];
         $override_query = "SELECT shop_items.*, shop_item_images.image_url, users_c.email AS created_by_email, users_u.email AS updated_by_email 
             FROM shop_items
             LEFT JOIN shop_item_images ON shop_items.primary_image_id = shop_item_images.image_id
             LEFT JOIN users users_c ON shop_items.created_by = users_c.user_id
             LEFT JOIN users users_u ON shop_items.updated_by = users_u.user_id";
         $shop_items = $this->shopItemModel->readAll($override_query, "shop_item_id");
-        if ($logged_in_user['role_id'] > 1 || isset($_GET['only_active'])) {
+        if (isset($_GET['only_active'])) {
             $shop_items = array_filter($shop_items, function ($shop_item) {
                 return !isset($shop_item['deleted_at']);
             });

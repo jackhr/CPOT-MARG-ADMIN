@@ -26,9 +26,6 @@
                     <th>Description</th>
                     <th>Created</th>
                     <th>Last updated</th>
-                    <?php if ($user['role_id'] === 1) { ?>
-                        <th>Deleted At</th>
-                    <?php } ?>
                     <th>Created By</th>
                     <th>Updated By</th>
                 </tr>
@@ -449,14 +446,7 @@
                         $(td).addClass('dt-type-date');
                     }
                 },
-                <?php if ($user['role_id'] === 1) { ?> {
-                        data: 'deleted_at',
-                        createdCell: function(td, cellData, rowData, row, col) {
-                            // Add class based on current_status value
-                            $(td).addClass('dt-type-date');
-                        }
-                    },
-                <?php } ?> {
+                {
                     data: 'created_by_email'
                 },
                 {

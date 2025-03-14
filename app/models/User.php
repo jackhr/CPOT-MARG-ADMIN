@@ -43,20 +43,20 @@ class User extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET username = :username, email = :email, role_id = :role_id WHERE user_id = :user_id";
+        $query = "UPDATE {$this->table_name} SET username = :username, email = :email WHERE user_id = :user_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
         $this->username = htmlspecialchars(strip_tags($this->username));
         $this->email = htmlspecialchars(strip_tags($this->email));
         $this->user_id = htmlspecialchars($this->user_id);
-        $this->role_id = htmlspecialchars($this->role_id);
+        // $this->role_id = htmlspecialchars($this->role_id);
 
         // Bind parameters
         $stmt->bindParam(":username", $this->username);
         $stmt->bindParam(":email", $this->email);
         $stmt->bindParam(":user_id", $this->user_id, PDO::PARAM_INT);
-        $stmt->bindParam(":role_id", $this->role_id, PDO::PARAM_INT);
+        // $stmt->bindParam(":role_id", $this->role_id, PDO::PARAM_INT);
 
         // Execute the query
         return $stmt->execute();
@@ -81,8 +81,7 @@ class User extends Model
     public function readAll($with_password = false, $_ = null)
     {
         $suffix = $with_password ? "" : "_without_password";
-        $where = $_SESSION['user']['role_id'] > 1 ? "WHERE deleted_at IS NULL" : "";
-        $query = "SELECT * FROM {$this->table_name}$suffix u JOIN roles r ON r.role_id = u.role_id $where";
+        $query = "SELECT * FROM {$this->table_name}$suffix u JOIN roles r ON r.role_id = u.role_id";
         $stmt = $this->con->prepare($query);
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
