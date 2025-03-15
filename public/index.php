@@ -3,6 +3,7 @@ require_once __DIR__ . '/../app/core/bootstrap.php';
 
 use App\Controllers\AddOnController;
 use App\Controllers\CutoutController;
+use App\Controllers\HttpErrorController;
 use App\Controllers\ShopItemController;
 use App\Controllers\OrderController;
 use App\Controllers\PortfolioItemController;
@@ -26,7 +27,7 @@ $router->group('/', function (Router $router) {
             require_once __DIR__ . '/../app/views/admin/login.php';
         }
     });
-
+    $router->get('under-construction', [HttpErrorController::class, 'renderUnderConstructionPage']);
     $router->post('login', function () {
         $email = htmlspecialchars(strip_tags($_POST['email']));
         $password = htmlspecialchars(strip_tags($_POST['password']));
@@ -34,11 +35,11 @@ $router->group('/', function (Router $router) {
         $userController = ControllerFactory::create(UserController::class);
         $userController->login($email, $password);
     });
+    $router->get('logout', [UserController::class, 'logout']);
 });
 
 $router->group('/', function (Router $router) {
     $router->get('dashboard', [UserController::class, 'index']);
-    $router->get('logout', [UserController::class, 'logout']);
 
     $router->group('users', function (Router $router) {
         $router->get('', [UserController::class, 'listUsers']);
