@@ -31,9 +31,9 @@ class PortfolioItemController extends Controller
 
     public function getAll()
     {
-        $override_query = "SELECT portfolio_item.*, portfolio_item_images.image_url, users_c.email AS created_by_email, users_u.email AS updated_by_email 
+        $override_query = "SELECT portfolio_items.*, portfolio_item_images.image_url, users_c.email AS created_by_email, users_u.email AS updated_by_email 
             FROM portfolio_items
-            LEFT JOIN portfolio_item_images ON portfolio_item.primary_image_id = portfolio_item_images.image_id
+            LEFT JOIN portfolio_item_images ON portfolio_items.primary_image_id = portfolio_item_images.image_id
             LEFT JOIN users users_c ON portfolio_items.created_by = users_c.user_id
             LEFT JOIN users users_u ON portfolio_items.updated_by = users_u.user_id";
         $portfolio_items = $this->portfolioItemModel->readAll($override_query, "portfolio_item_id");

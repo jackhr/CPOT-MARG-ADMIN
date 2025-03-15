@@ -31,7 +31,7 @@ class PortfolioItem extends Model
     public function __construct()
     {
         parent::__construct();
-        $this->table_name = "portfolio_item";
+        $this->table_name = "portfolio_items";
         $this->primary_key = "portfolio_item_id";
         $this->helper = new GeneralHelper();
     }
