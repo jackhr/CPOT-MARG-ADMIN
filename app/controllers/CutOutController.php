@@ -86,12 +86,11 @@ class CutoutController extends Controller
                 foreach ($_POST['deletedImages'] as $image_id) {
                     $image = $this->cutoutImageModal->findById($image_id);
                     $delete_image_path = $public_directory . $image['image_url'];
-                    if (!unlink($delete_image_path)) {
+                    if (unlink($delete_image_path)) {
+                        $this->cutoutImageModal->destroy($image_id);
+                    } else {
                         $status = 500;
                         throw new Exception("Failed to delete the old image.");
-                    } else {
-                        $this->cutoutImageModal->image_id = $image_id;
-                        $this->cutoutImageModal->delete();
                     }
                 }
             } catch (Exception $e) {
@@ -391,18 +390,29 @@ class CutoutController extends Controller
 
     public function delete($cutout_id)
     {
+        $cutout_images_to_delete = $this->cutoutImageModal->findByCutoutId($cutout_id);
         $cutout_to_delete = $this->cutoutModel->findById($cutout_id);
         $status = 200;
         $message = "";
+        $public_directory = __DIR__ . '/../../public';
 
-        $this->cutoutModel->cutout_id = $cutout_id;
+        // first, delete the images, and the rows
+        foreach ($cutout_images_to_delete as $image) {
+            $delete_image_path = $public_directory . $image['image_url'];
+            if (unlink($delete_image_path)) {
+                $this->cutoutImageModal->destroy($image['image_id']);
+            } else {
+                $status = 500;
+                throw new Exception("Failed to delete the old image.");
+            }
+        }
 
-        if ($this->cutoutModel->delete()) {
+        try {
+            $this->cutoutModel->destroy($cutout_id);
             $message = "Cutout deleted successfully.";
-            $cutout_to_delete = $this->cutoutModel->findById($cutout_id);
-        } else {
+        } catch (Exception $e) {
             $status = 500;
-            $message = "Error deleting cutout.";
+            $message = "Error deleting cutout. {$e->getMessage()}";
         }
 
         $this->helper->respondToClient($cutout_to_delete, $status, $message);

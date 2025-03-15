@@ -737,6 +737,7 @@
             modal.find('textarea[name="description"]').val("");
             modal.find('.img-preview-container').html("");
             modal.find('select[name="status"]').prop('selectedIndex', 0);
+            $(".collapsible-options .continue-btn:not(.other)").trigger('click');
 
             resetImagesModal();
         }
@@ -977,7 +978,7 @@
             const formValidationMsg = getFormValidationMsg(data);
 
             console.log("data:", data);
-            
+
             if (formValidationMsg) {
                 return Swal.fire({
                     icon: "error",

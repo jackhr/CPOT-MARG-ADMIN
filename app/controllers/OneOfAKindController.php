@@ -390,7 +390,6 @@ class OneOfAKindController extends Controller
         $one_of_a_kind_to_delete = $this->oneOfAKindModel->findById($one_of_a_kind_id);
         $status = 200;
         $message = "";
-        $message = "";
         $public_directory = __DIR__ . '/../../public';
 
         // first, delete the images, and the rows

@@ -105,21 +105,6 @@ class Cutout extends Model
         return $stmt->execute();
     }
 
-    public function delete()
-    {
-        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP WHERE cutout_id = :cutout_id";
-        $stmt = $this->con->prepare($query);
-
-        // Sanitize input
-        $this->cutout_id = htmlspecialchars($this->cutout_id);
-
-        // Bind parameters
-        $stmt->bindParam(":cutout_id", $this->cutout_id, PDO::PARAM_INT);
-
-        // Execute the query
-        return $stmt->execute();
-    }
-
     // Method to find a user by username
     public function findByName($name)
     {

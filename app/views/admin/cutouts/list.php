@@ -612,6 +612,7 @@
             modal.find('input[name="base_price"]').val("");
             modal.find('textarea[name="description"]').val("");
             modal.find('.img-preview-container').html("");
+            $(".collapsible-options .continue-btn:not(.other)").trigger('click');
 
             resetImagesModal();
         }
@@ -877,7 +878,10 @@
                         text: message,
                     });
 
-                    reloadTable();
+                    if (success) {
+                        reloadTable();
+                        resetModal($("#create-cutout-modal"));
+                    }
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -966,6 +970,7 @@
                     });
 
                     reloadTable();
+                    success && $("#edit-cutout-modal .modal-close").trigger('click');
                 },
                 error: function() {
                     console.log("arguments:", arguments);
