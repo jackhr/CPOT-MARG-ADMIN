@@ -1835,7 +1835,7 @@ table.dataTable>tbody>tr.completed_order td.status {
 }
 
 .info-container .info-section p,
-.info-container span[data-dimensions]:not(.sconce-spec-pair span[data-dimensions], #oak-modal .info-section span) {
+.info-container span[data-dimensions]:not(.sconce-spec-pair span[data-dimensions]) {
     font-size  : 14px;
     margin     : 0 0 12px;
     display    : block;

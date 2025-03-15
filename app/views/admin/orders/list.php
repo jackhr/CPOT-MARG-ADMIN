@@ -510,8 +510,8 @@
         function parseType(item) {
             if (item.sconce_id) {
                 return "sconce";
-            } else if (item.one_of_a_kind_id) {
-                return "one of a kind";
+            } else if (item.portfolio_item_id) {
+                return "portfolio item";
             } else if (item.cutout_id) {
                 return "cutout";
             }

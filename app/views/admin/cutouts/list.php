@@ -692,7 +692,7 @@
             let data = {};
             if ($("#edit-cutout-modal").hasClass("showing")) {
                 const cutoutId = $("#edit-cutout-id").text();
-                data = STATE.cutouts.find(x => x.one_of_a_kind_id === Number(cutoutId));
+                data = STATE.cutouts.find(x => x.cutout_id === Number(cutoutId));
             } else if ($("#create-cutout-modal").hasClass("showing")) {
                 $("#create-cutout-modal .img-preview-container").html("");
             }
@@ -989,7 +989,7 @@
             const res = await Swal.fire({
                 icon: "warning",
                 title: `Restoring "${name}"`,
-                text: "Are you sure that you would like to restore this one of a kind?",
+                text: "Are you sure that you would like to restore this cutout?",
                 showCancelButton: true,
                 confirmButtonText: 'Restore',
                 reverseButtons: true, // Swaps the positions of the buttons
@@ -1000,7 +1000,7 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Restoring one of a kind, <strong>"${name}"</strong>.`,
+                html: `Restoring cutout, <strong>"${name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }

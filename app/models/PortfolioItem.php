@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Helpers\GeneralHelper;
 use PDO;
 
-class OneOfAKind extends Model
+class PortfolioItem extends Model
 {
-    public $one_of_a_kind_id;
+    public $portfolio_item_id;
     public $primary_image_id;
     public $name;
     public $slug;
@@ -31,23 +31,23 @@ class OneOfAKind extends Model
     public function __construct()
     {
         parent::__construct();
-        $this->table_name = "one_of_a_kind";
-        $this->primary_key = "one_of_a_kind_id";
+        $this->table_name = "portfolio_item";
+        $this->primary_key = "portfolio_item_id";
         $this->helper = new GeneralHelper();
     }
 
     public function updatePrimaryImg()
     {
-        $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $query = "UPDATE {$this->table_name} SET primary_image_id = :primary_image_id WHERE portfolio_item_id = :portfolio_item_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
-        $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
+        $this->portfolio_item_id = htmlspecialchars($this->portfolio_item_id);
         $this->primary_image_id = htmlspecialchars($this->primary_image_id);
 
         // Bind parameters
         $stmt->bindParam(":primary_image_id", $this->primary_image_id, PDO::PARAM_INT);
-        $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
+        $stmt->bindParam(":portfolio_item_id", $this->portfolio_item_id, PDO::PARAM_INT);
 
         // Execute the query
         return $stmt->execute();
@@ -55,14 +55,14 @@ class OneOfAKind extends Model
 
     public function restore()
     {
-        $query = "UPDATE {$this->table_name} SET deleted_at = NULL, `status` = 'active' WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $query = "UPDATE {$this->table_name} SET deleted_at = NULL, `status` = 'active' WHERE portfolio_item_id = :portfolio_item_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
-        $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
+        $this->portfolio_item_id = htmlspecialchars($this->portfolio_item_id);
 
         // Bind parameters
-        $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
+        $stmt->bindParam(":portfolio_item_id", $this->portfolio_item_id, PDO::PARAM_INT);
 
         // Execute the query
         return $stmt->execute();
@@ -70,11 +70,11 @@ class OneOfAKind extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, price = :price, status = :status, description = :description, updated_by = :updated_by WHERE one_of_a_kind_id = :one_of_a_kind_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, price = :price, status = :status, description = :description, updated_by = :updated_by WHERE portfolio_item_id = :portfolio_item_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
-        $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
+        $this->portfolio_item_id = htmlspecialchars($this->portfolio_item_id);
         $this->name = htmlspecialchars($this->name);
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
@@ -92,7 +92,7 @@ class OneOfAKind extends Model
         $stmt->bindParam(":price", $this->price);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
-        $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
+        $stmt->bindParam(":portfolio_item_id", $this->portfolio_item_id, PDO::PARAM_INT);
         $stmt->bindParam(":updated_by", $this->updated_by, PDO::PARAM_INT);
 
         // Execute the query

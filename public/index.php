@@ -5,9 +5,8 @@ use App\Controllers\AddOnController;
 use App\Controllers\CutoutController;
 use App\Controllers\ShopItemController;
 use App\Controllers\OrderController;
-// use App\Controllers\RoleController;
+use App\Controllers\PortfolioItemController;
 use App\Controllers\SconceController;
-use App\Controllers\OneOfAKindController;
 use App\Controllers\UserController;
 use App\Core\ControllerFactory;
 use App\Middleware\AuthMiddleware;
@@ -48,13 +47,6 @@ $router->group('/', function (Router $router) {
         $router->delete('/{id}', [UserController::class, 'delete']);
     }, [AdminMiddleware::class]);
 
-    // $router->group('roles', function (Router $router) {
-    //     $router->get('', [RoleController::class, 'listRoles']);
-    //     $router->post('', [RoleController::class, 'create']);
-    //     $router->put('/{id}', [RoleController::class, 'update']);
-    //     $router->delete('/{id}', [RoleController::class, 'delete']);
-    // }, [AdminMiddleware::class]);
-
     $router->group('shop_items', function (Router $router) {
         $router->get('', [ShopItemController::class, 'listShopItems']);
         $router->get('/getAll', [ShopItemController::class, 'getAll']);
@@ -76,14 +68,14 @@ $router->group('/', function (Router $router) {
         $router->delete('/{id}', [SconceController::class, 'delete']);
     });
 
-    $router->group('one-of-a-kind', function (Router $router) {
-        $router->get('', [OneOfAKindController::class, 'listOneOfAKinds']);
-        $router->get('/getAll', [OneOfAKindController::class, 'getAll']);
-        $router->post('', [OneOfAKindController::class, 'create']);
-        $router->post('/{id}/images', [OneOfAKindController::class, 'updateImages']);
-        $router->put('/{id}', [OneOfAKindController::class, 'update']);
-        $router->put('/{id}/restore', [OneOfAKindController::class, 'restore']);
-        $router->delete('/{id}', [OneOfAKindController::class, 'delete']);
+    $router->group('portfolios', function (Router $router) {
+        $router->get('', [PortfolioItemController::class, 'listPortfolioItems']);
+        $router->get('/getAll', [PortfolioItemController::class, 'getAll']);
+        $router->post('', [PortfolioItemController::class, 'create']);
+        $router->post('/{id}/images', [PortfolioItemController::class, 'updateImages']);
+        $router->put('/{id}', [PortfolioItemController::class, 'update']);
+        $router->put('/{id}/restore', [PortfolioItemController::class, 'restore']);
+        $router->delete('/{id}', [PortfolioItemController::class, 'delete']);
     });
 
     $router->group('cutouts', function (Router $router) {

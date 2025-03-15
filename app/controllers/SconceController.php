@@ -46,9 +46,9 @@ class SconceController extends Controller
         $sconce_images = $this->sconceImageModel->DBRaw("SELECT * FROM sconce_images");
 
         foreach ($sconce_images as $sconce_image) {
-            $oak_id = $sconce_image['sconce_id'];
-            if (isset($sconces[$oak_id])) {
-                $sconces[$oak_id]['images'][$sconce_image['image_id']] = $sconce_image;
+            $sconce_id = $sconce_image['sconce_id'];
+            if (isset($sconces[$sconce_id])) {
+                $sconces[$sconce_id]['images'][$sconce_image['image_id']] = $sconce_image;
             }
         }
 

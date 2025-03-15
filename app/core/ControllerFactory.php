@@ -8,9 +8,9 @@ use App\Controllers\ShopItemController;
 use App\Controllers\UserController;
 use App\Controllers\HttpErrorController;
 use App\Controllers\OrderController;
+use App\Controllers\PortfolioItemController;
 use App\Controllers\RoleController;
 use App\Controllers\SconceController;
-use App\Controllers\OneOfAKindController;
 use App\Helpers\GeneralHelper;
 use Exception;
 
@@ -27,8 +27,8 @@ class ControllerFactory
                 return new OrderController();
             case CutoutController::class:
                 return new CutoutController();
-            case OneOfAKindController::class:
-                return new OneOfAKindController(new GeneralHelper());
+            case PortfolioItemController::class:
+                return new PortfolioItemController(new GeneralHelper());
             case SconceController::class:
                 return new SconceController(new GeneralHelper());
             case RoleController::class:

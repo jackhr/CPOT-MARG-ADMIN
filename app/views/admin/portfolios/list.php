@@ -36,17 +36,17 @@
     </div>
 </main>
 
-<div id="create-one-of-a-kind-modal" class="modal">
+<div id="create-portfolio-item-modal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-options">
                     <span class="modal-close">×</span>
                 </div>
-                <h1>Adding One of a Kind</h1>
+                <h1>Adding Portfolio Item</h1>
             </div>
             <div class="modal-body">
-                <form id="create-one-of-a-kind-form">
+                <form id="create-portfolio-item-form">
                     <div class="input-container">
                         <div class="option-btns-container">
                             <div class="option-btn images">
@@ -89,7 +89,7 @@
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
-                        <input type="text" name="name" placeholder="New One of a Kind" required>
+                        <input type="text" name="name" placeholder="New Portfolio Item" required>
                     </div>
                     <div class="input-container">
                         <label for="material">Material</label>
@@ -137,31 +137,31 @@
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
-                        <textarea name="description" id="description" placeholder="My most valuable one-of-a-kind!" required aria-required /></textarea>
+                        <textarea name="description" id="description" placeholder="My most valuable portfolio item!" required aria-required /></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button form="create-one-of-a-kind-form" type="submit" class="continue-btn">Submit</button>
+                <button form="create-portfolio-item-form" type="submit" class="continue-btn">Submit</button>
             </div>
         </div>
     </div>
 </div>
 
-<div id="edit-one-of-a-kind-modal" class="modal">
+<div id="edit-portfolio-item-modal" class="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-options">
                     <span class="modal-close">×</span>
                 </div>
-                <h1>Editing One of a Kind</h1>
+                <h1>Editing Portfolio Item</h1>
             </div>
             <div class="modal-body">
-                <form id="edit-one-of-a-kind-form">
+                <form id="edit-portfolio-item-form">
                     <div class="input-container">
                         <label>Id #</label>
-                        <span id="edit-one-of-a-kind-id"></span>
+                        <span id="edit-portfolio-item-id"></span>
                         <div class="option-btns-container">
                             <div class="option-btn images">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -223,7 +223,7 @@
                     </div>
                     <div class="input-container">
                         <label for="name">Name</label>
-                        <input type="text" name="name" placeholder="New One of a Kind" required>
+                        <input type="text" name="name" placeholder="New Portfolio Item" required>
                     </div>
                     <div class="input-container">
                         <label for="material">Material</label>
@@ -271,13 +271,13 @@
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
-                        <textarea name="description" id="description" placeholder="My most valuable one-of-a-kind!" required aria-required /></textarea>
+                        <textarea name="description" id="description" placeholder="My most valuable portfolio item!" required aria-required /></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button class="continue-btn cancel">Cancel</button>
-                <button form="edit-one-of-a-kind-form" type="submit" class="continue-btn">Update</button>
+                <button form="edit-portfolio-item-form" type="submit" class="continue-btn">Update</button>
             </div>
         </div>
     </div>
@@ -315,19 +315,19 @@
                 [2, 'asc']
             ],
             ajax: {
-                url: "/one-of-a-kind/getAll",
+                url: "/portfolios/getAll",
                 dataSrc: function(response) {
                     let res = [];
                     if (response && response.data) {
-                        STATE.oneOfAKinds = structuredClone(Object.values(response.data));
-                        res = Object.values(response.data).map(oak => {
-                            oak.price = formatPrice(oak.price);
-                            oak.description = oak.description ? oak.description : "-";
-                            oak.created_at = oak.created_at ? formatReadableDate(oak.created_at, false) : "-";
-                            oak.updated_at = oak.updated_at ? formatReadableDate(oak.updated_at, false) : "-";
-                            oak.deleted_at = oak.deleted_at ? formatReadableDate(oak.deleted_at, false) : "-";
-                            oak.updated_by_email = oak.updated_by_email ? oak.updated_by_email : "-";
-                            return oak;
+                        STATE.portfolioItems = structuredClone(Object.values(response.data));
+                        res = Object.values(response.data).map(item => {
+                            item.price = formatPrice(item.price);
+                            item.description = item.description ? item.description : "-";
+                            item.created_at = item.created_at ? formatReadableDate(item.created_at, false) : "-";
+                            item.updated_at = item.updated_at ? formatReadableDate(item.updated_at, false) : "-";
+                            item.deleted_at = item.deleted_at ? formatReadableDate(item.deleted_at, false) : "-";
+                            item.updated_by_email = item.updated_by_email ? item.updated_by_email : "-";
+                            return item;
                         });
                     } else {
                         console.error("Invalid response format", response);
@@ -337,7 +337,7 @@
                 }
             },
             columns: [{
-                    data: 'one_of_a_kind_id'
+                    data: 'portfolio_item_id'
                 },
                 {
                     data: 'image_url'
@@ -439,22 +439,22 @@
                     return;
                 }
 
-                const id = this.data().one_of_a_kind_id;
+                const id = this.data().portfolio_item_id;
                 const [imageName, imageUrl] = getImageNameAndUrl(id);
                 $(rowNode)
                     .find('td')
                     .eq(1)
-                    .addClass("one-of-a-kind-thumb-td")
+                    .addClass("portfolio-item-thumb-td")
                     .html(`
                         <div>
-                        <img src="${imageUrl}" alt="${imageName}">
+                            <img src="${imageUrl}" alt="${imageName}">
                         </div>
                     `);
 
                 rowNode.onclick = () => {
                     $(".option-btn.toggle-options").removeClass('active');
                     populateEditForm(id);
-                    $("#edit-one-of-a-kind-modal").addClass('showing');
+                    $("#edit-portfolio-item-modal").addClass('showing');
                 };
 
                 if (this.data().deleted_at !== "-") $(rowNode).addClass('deleted_item');
@@ -463,7 +463,7 @@
         }
 
         function getImageNameAndUrl(id) {
-            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
+            const data = STATE.portfolioItems.find(x => x.portfolio_item_id === id);
             const imageData = data.images?.[data.primary_image_id];
             const imageName = `${data.name}_${id}_${imageData?.image_id}`;
             const imageUrl = imageData ? imageData?.image_url : data.image_url;
@@ -471,13 +471,13 @@
         }
 
         function populateEditForm(id, reset = false) {
-            const data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === id);
-            const modal = $("#edit-one-of-a-kind-modal");
+            const data = STATE.portfolioItems.find(x => x.portfolio_item_id === id);
+            const modal = $("#edit-portfolio-item-modal");
             const dimensions = data.dimensions
                 .split(" x ")
                 .map(x => x.replace(/\D+/gi, ""));
 
-            modal.find('#edit-one-of-a-kind-id').text(id);
+            modal.find('#edit-portfolio-item-id').text(id);
             modal.find('input[name="name"]').val(data.name);
             modal.find('input[name="width"]').val(dimensions[0]);
             modal.find('input[name="height"]').val(dimensions[1]);
@@ -495,7 +495,7 @@
         }
 
         function populateImagesModal(data, reset = false) {
-            const id = data?.one_of_a_kind_id || null;
+            const id = data?.portfolio_item_id || null;
             const imagesContainer = $(".images-grid");
             let cellsHTML = "";
 
@@ -511,7 +511,7 @@
                 for (const image_id in data.images) {
                     idx++;
                     const image = data.images[image_id];
-                    const imageName = `${data.name}_${data.one_of_a_kind_id}_${image.image_id}`;
+                    const imageName = `${data.name}_${data.portfolio_item_id}_${image.image_id}`;
                     const isPrimary = image.image_id == data.primary_image_id;
                     const cellHTML = `
                         <div class="images-grid-item" data-idx="${image.image_id}" data-existing="true" data-image-id="${image.image_id}">
@@ -526,7 +526,7 @@
                     `;
 
                     if (isPrimary) {
-                        $("#edit-one-of-a-kind-modal .img-preview-container").html(`<img src="${image.image_url}" alt="${imageName}" title="${imageName}">`);
+                        $("#edit-portfolio-item-modal .img-preview-container").html(`<img src="${image.image_url}" alt="${imageName}" title="${imageName}">`);
                         cellsHTML = cellHTML + cellsHTML;
                     } else {
                         cellsHTML += cellHTML;
@@ -557,7 +557,7 @@
         }
 
         function handleSetPreviewImage() {
-            const modal = $("#create-one-of-a-kind-modal");
+            const modal = $("#create-portfolio-item-modal");
             if (!modal.hasClass('showing')) return;
             const idx = $(".images-grid-item:not(.non-draggable)").first().data('idx');
             const file = STATE.upload.newImages[idx];
@@ -613,27 +613,27 @@
                 if (!STATE.upload.imageCount) {
                     errMsg = "You need to upload at least one image";
                 } else if (!data.name.length) {
-                    errMsg = "Please provide your one of a kind with a name.";
+                    errMsg = "Please provide your portfolio item with a name.";
                 } else if (!data.width.length) {
-                    errMsg = "Please provide your one of a kind with a width.";
+                    errMsg = "Please provide your portfolio item with a width.";
                 } else if (!data.width.match(STATE.regEx.decimal)) {
                     errMsg = `Width can only be a number. You entered: "${data.width}"`;
                 } else if (!data.height.length) {
-                    errMsg = "Please provide your one of a kind with a height.";
+                    errMsg = "Please provide your portfolio item with a height.";
                 } else if (!data.height.match(STATE.regEx.decimal)) {
                     errMsg = `Height can only be a number. You entered: "${data.height}"`;
                 } else if (!data.depth.length) {
-                    errMsg = "Please provide your one of a kind with a depth.";
+                    errMsg = "Please provide your portfolio item with a depth.";
                 } else if (!data.depth.match(STATE.regEx.decimal)) {
                     errMsg = `Depth can only be a number. You entered: "${data.depth}"`;
                 } else if (!data.material.length) {
-                    errMsg = "Please provide your one of a kind with a material.";
+                    errMsg = "Please provide your portfolio item with a material.";
                 } else if (!data.base_price.length) {
-                    errMsg = "Please provide your one of a kind with a price.";
+                    errMsg = "Please provide your portfolio item with a price.";
                 } else if (!data.base_price.match(STATE.regEx.decimal)) {
                     errMsg = `Price can only be a number. You entered: "${data.base_price}"`;
                 } else if (!data.name.length) {
-                    errMsg = "Please provide your one of a kind with a name.";
+                    errMsg = "Please provide your portfolio item with a name.";
                 }
             }
 
@@ -656,10 +656,10 @@
         });
 
         $(".create-btn").on("click", () => {
-            $("#create-one-of-a-kind-modal").addClass("showing");
+            $("#create-portfolio-item-modal").addClass("showing");
             if (STATE.activeId !== null) {
                 resetImagesModal();
-                $("#create-one-of-a-kind-modal").find(".img-preview-container").html("");
+                $("#create-portfolio-item-modal").find(".img-preview-container").html("");
             }
         });
 
@@ -667,23 +667,23 @@
             e.preventDefault();
             $(this).closest('.modal').find('.modal-close').trigger('click');
             let data = {};
-            if ($("#edit-one-of-a-kind-modal").hasClass("showing")) {
-                const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
-                data = STATE.oneOfAKinds.find(x => x.one_of_a_kind_id === Number(oneOfAKindId));
-            } else if ($("#create-one-of-a-kind-modal").hasClass("showing")) {
-                $("#create-one-of-a-kind-modal .img-preview-container").html("");
+            if ($("#edit-portfolio-item-modal").hasClass("showing")) {
+                const portfolioItemId = $("#edit-portfolio-item-id").text();
+                data = STATE.portfolioItems.find(x => x.portfolio_item_id === Number(portfolioItemId));
+            } else if ($("#create-portfolio-item-modal").hasClass("showing")) {
+                $("#create-portfolio-item-modal .img-preview-container").html("");
             }
             setTimeout(() => populateImagesModal(data, true), 400);
         });
 
         $(".images-modal button.confirm").on('click', function(e) {
             e.preventDefault();
-            if ($("#create-one-of-a-kind-modal").hasClass("showing")) {
+            if ($("#create-portfolio-item-modal").hasClass("showing")) {
                 return $(this).closest('.modal').find(".modal-close").trigger("click");
             };
 
-            const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
-            const name = $("#edit-one-of-a-kind-form [name='name']").val();
+            const portfolioItemId = $("#edit-portfolio-item-id").text();
+            const name = $("#edit-portfolio-item-form [name='name']").val();
 
             const formData = new FormData();
 
@@ -718,7 +718,7 @@
             });
 
             $.ajax({
-                url: `/one-of-a-kind/${oneOfAKindId}/images`,
+                url: `/portfolios/${portfolioItemId}/images`,
                 method: "POST",
                 dataType: "JSON",
                 data: formData,
@@ -749,12 +749,12 @@
             });
         });
 
-        $('button[form="edit-one-of-a-kind-form"]').on("click", function(e) {
+        $('button[form="edit-portfolio-item-form"]').on("click", function(e) {
             e.preventDefault();
 
-            const form = $("#edit-one-of-a-kind-form");
+            const form = $("#edit-portfolio-item-form");
             const data = getJSONDataFromForm(form);
-            const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
+            const portfolioItemId = $("#edit-portfolio-item-id").text();
             const formValidationMsg = getFormValidationMsg(data, "edit");
 
             if (formValidationMsg) {
@@ -767,14 +767,14 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Updating one of a kind, <strong>"${data.name}"</strong>.`,
+                html: `Updating portfolio item, <strong>"${data.name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }
             });
 
             $.ajax({
-                url: `/one-of-a-kind/${oneOfAKindId}`,
+                url: `/portfolios/${portfolioItemId}`,
                 method: "PUT",
                 dataType: "JSON",
                 contentType: "application/json",
@@ -801,10 +801,10 @@
             });
         });
 
-        $('button[form="create-one-of-a-kind-form"]').on("click", function(e) {
+        $('button[form="create-portfolio-item-form"]').on("click", function(e) {
             e.preventDefault();
 
-            const form = $("#create-one-of-a-kind-form");
+            const form = $("#create-portfolio-item-form");
             const data = getJSONDataFromForm(form);
             const formValidationMsg = getFormValidationMsg(data);
 
@@ -818,7 +818,7 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Creating one of a kind, <strong>"${data.name}"</strong>.`,
+                html: `Creating portfolio item, <strong>"${data.name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }
@@ -834,7 +834,7 @@
             }
 
             $.ajax({
-                url: "/one-of-a-kind",
+                url: "/portfolios",
                 method: "POST",
                 dataType: "JSON",
                 data: formData,
@@ -856,7 +856,7 @@
 
                     if (success) {
                         reloadTable();
-                        resetModal($("#create-one-of-a-kind-modal"));
+                        resetModal($("#create-portfolio-item-modal"));
                     }
                 },
                 error: function() {
@@ -878,14 +878,14 @@
             depthEl.val(convertUnits('length', depthEl.val(), toIn));
         });
 
-        $("#edit-one-of-a-kind-modal .modal-close").on("click", function() {
+        $("#edit-portfolio-item-modal .modal-close").on("click", function() {
             $(this)
                 .closest('.modal')
                 .find('.option-btn.toggle-options')
                 .removeClass('active');
         });
 
-        $("#edit-one-of-a-kind-modal button.cancel").on("click", function() {
+        $("#edit-portfolio-item-modal button.cancel").on("click", function() {
             $(this)
                 .closest('.modal')
                 .find('.modal-close')
@@ -903,8 +903,8 @@
 
             if (!res.isConfirmed) return;
 
-            if ($("#create-one-of-a-kind-modal").hasClass("showing")) {
-                resetModal($("#create-one-of-a-kind-modal"));
+            if ($("#create-portfolio-item-modal").hasClass("showing")) {
+                resetModal($("#create-portfolio-item-modal"));
             } else {
                 populateEditForm(STATE.activeId, true);
             }
@@ -912,13 +912,13 @@
         });
 
         $(".option-btn.delete").on("click", async function() {
-            const oneOfAKindId = $("#edit-one-of-a-kind-id").text();
-            const name = $("#edit-one-of-a-kind-form [name='name']").val();
+            const portfolioItemId = $("#edit-portfolio-item-id").text();
+            const name = $("#edit-portfolio-item-form [name='name']").val();
 
             const res = await Swal.fire({
                 icon: "warning",
                 title: `Deleting "${name}"`,
-                text: "Are you sure that you would like to delete this one of a kind?",
+                text: "Are you sure that you would like to delete this portfolio item?",
                 showDenyButton: true,
                 confirmButtonText: 'Delete',
                 denyButtonText: 'No',
@@ -934,14 +934,14 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Deleting one of a kind, <strong>"${name}"</strong>.`,
+                html: `Deleting portfolio item, <strong>"${name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }
             });
 
             $.ajax({
-                url: `/one-of-a-kind/${oneOfAKindId}`,
+                url: `/portfolios/${portfolioItemId}`,
                 method: "DELETE",
                 dataType: "JSON",
                 success: res => {
@@ -959,7 +959,7 @@
                     });
 
                     reloadTable();
-                    success && $('#edit-one-of-a-kind-modal .modal-close').trigger('click');
+                    success && $('#edit-portfolio-item-modal .modal-close').trigger('click');
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -972,13 +972,13 @@
         });
 
         $(".option-btn.restore").on("click", async function() {
-            const id = $("#edit-one-of-a-kind-id").text();
-            const name = $("#edit-one-of-a-kind-form [name='name']").val();
+            const id = $("#edit-portfolio-item-id").text();
+            const name = $("#edit-portfolio-item-form [name='name']").val();
 
             const res = await Swal.fire({
                 icon: "warning",
                 title: `Restoring "${name}"`,
-                text: "Are you sure that you would like to restore this one of a kind?",
+                text: "Are you sure that you would like to restore this portfolio item?",
                 showCancelButton: true,
                 confirmButtonText: 'Restore',
                 reverseButtons: true, // Swaps the positions of the buttons
@@ -989,14 +989,14 @@
 
             Swal.fire({
                 title: "Loading...",
-                html: `Restoring one of a kind, <strong>"${name}"</strong>.`,
+                html: `Restoring portfolio item, <strong>"${name}"</strong>.`,
                 didOpen: () => {
                     Swal.showLoading();
                 }
             });
 
             $.ajax({
-                url: `/one-of-a-kind/${id}/restore`,
+                url: `/portfolios/${id}/restore`,
                 method: "PUT",
                 dataType: "JSON",
                 success: res => {
@@ -1140,7 +1140,7 @@
                 }
             });
             $(this).val('');
-            if ($("#create-one-of-a-kind-modal").hasClass("showing")) {
+            if ($("#create-portfolio-item-modal").hasClass("showing")) {
                 handleSetPreviewImage();
             }
         });
