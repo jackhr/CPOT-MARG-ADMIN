@@ -136,18 +136,6 @@ class Sconce extends Model
         return $stmt->execute();
     }
 
-    public function delete()
-    {
-        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP, `status` = 'archived' WHERE sconce_id = :sconce_id";
-        $stmt = $this->con->prepare($query);
-
-        $this->sconce_id = htmlspecialchars($this->sconce_id);
-
-        $stmt->bindParam(":sconce_id", $this->sconce_id, PDO::PARAM_INT);
-
-        return $stmt->execute();
-    }
-
     // Method to find a user by username
     public function findByName($name)
     {

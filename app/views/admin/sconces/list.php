@@ -736,6 +736,7 @@
             modal.find('input[name="base_price"]').val("");
             modal.find('textarea[name="description"]').val("");
             modal.find('.img-preview-container').html("");
+            modal.find('select[name="status"]').prop('selectedIndex', 0);
 
             resetImagesModal();
         }
@@ -1024,6 +1025,7 @@
                     });
 
                     reloadTable();
+                    resetModal($("#create-sconce-modal"));
                 },
                 error: function() {
                     console.log("arguments:", arguments);
@@ -1134,6 +1136,7 @@
                     });
 
                     reloadTable();
+                    $('#edit-sconce-modal .modal-close').trigger('click');
                 },
                 error: function() {
                     console.log("arguments:", arguments);

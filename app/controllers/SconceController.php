@@ -94,12 +94,11 @@ class SconceController extends Controller
                 foreach ($_POST['deletedImages'] as $image_id) {
                     $image = $this->sconceImageModel->findById($image_id);
                     $delete_image_path = $public_directory . $image['image_url'];
-                    if (!unlink($delete_image_path)) {
+                    if (unlink($delete_image_path)) {
+                        $this->sconceImageModel->destroy($image_id);
+                    } else {
                         $status = 500;
                         throw new Exception("Failed to delete the old image.");
-                    } else {
-                        $this->sconceImageModel->image_id = $image_id;
-                        $this->sconceImageModel->delete();
                     }
                 }
             } catch (Exception $e) {
@@ -439,14 +438,24 @@ class SconceController extends Controller
     public function delete($sconce_id)
     {
         $sconce_to_delete = $this->sconceModel->findById($sconce_id);
+        $sconce_images = $this->sconceImageModel->findBySconceId($sconce_id);
         $status = 200;
         $message = "";
+        $public_directory = __DIR__ . '/../../public';
 
-        $this->sconceModel->sconce_id = $sconce_id;
+        // first, delete the images, and the rows
+        foreach ($sconce_images as $image) {
+            $delete_image_path = $public_directory . $image['image_url'];
+            if (unlink($delete_image_path)) {
+                $this->sconceImageModel->destroy($image['image_id']);
+            } else {
+                $status = 500;
+                throw new Exception("Failed to delete the old image.");
+            }
+        }
 
-        if ($this->sconceModel->delete()) {
+        if ($this->sconceModel->destroy($sconce_id)) {
             $message = "Sconce deleted successfully.";
-            $sconce_to_delete = $this->sconceModel->findById($sconce_id);
         } else {
             $status = 500;
             $message = "Error deleting sconce.";
