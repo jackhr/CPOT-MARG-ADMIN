@@ -63,18 +63,6 @@ class OneOfAKindImage extends Model
         return $this->con->lastInsertId();
     }
 
-    public function delete()
-    {
-        $query = "DELETE FROM {$this->table_name} WHERE image_id = :image_id";
-        $stmt = $this->con->prepare($query);
-
-        $this->image_id = htmlspecialchars($this->image_id);
-
-        $stmt->bindParam(":image_id", $this->image_id, PDO::PARAM_INT);
-
-        return $stmt->execute();
-    }
-
     public function findByImageId($image_id)
     {
         $query = "SELECT * FROM {$this->table_name} WHERE image_id = :image_id";

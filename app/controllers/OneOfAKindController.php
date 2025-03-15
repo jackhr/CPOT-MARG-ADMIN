@@ -73,12 +73,11 @@ class OneOfAKindController extends Controller
                 foreach ($_POST['deletedImages'] as $image_id) {
                     $image = $this->oneOfAKindImageModel->findById($image_id);
                     $delete_image_path = $public_directory . $image['image_url'];
-                    if (!unlink($delete_image_path)) {
+                    if (unlink($delete_image_path)) {
+                        $this->oneOfAKindImageModel->destroy($image_id);
+                    } else {
                         $status = 500;
                         throw new Exception("Failed to delete the old image.");
-                    } else {
-                        $this->oneOfAKindImageModel->image_id = $image_id;
-                        $this->oneOfAKindImageModel->delete();
                     }
                 }
             } catch (Exception $e) {
@@ -242,7 +241,7 @@ class OneOfAKindController extends Controller
                     $message = "One of a kind was created but the file upload failed.";
                 }
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $status = 409;
             $message = "Error creating one of a kind. {$e->getMessage()}";
         }
@@ -357,7 +356,7 @@ class OneOfAKindController extends Controller
             $this->oneOfAKindModel->update();
             $message = "One of a kind updated successfully.";
             $updated_one_of_a_kind = $this->oneOfAKindModel->findByName($name);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $status = 409;
             $message = "Error updating one of a kind. {$e->getMessage()}";
         }
@@ -387,16 +386,27 @@ class OneOfAKindController extends Controller
 
     public function delete($one_of_a_kind_id)
     {
+        $one_of_a_kind_images_to_delete = $this->oneOfAKindImageModel->findByOneOfAKindId($one_of_a_kind_id);
         $one_of_a_kind_to_delete = $this->oneOfAKindModel->findById($one_of_a_kind_id);
         $status = 200;
         $message = "";
+        $message = "";
+        $public_directory = __DIR__ . '/../../public';
 
-        $this->oneOfAKindModel->one_of_a_kind_id = $one_of_a_kind_id;
+        // first, delete the images, and the rows
+        foreach ($one_of_a_kind_images_to_delete as $image) {
+            $delete_image_path = $public_directory . $image['image_url'];
+            if (unlink($delete_image_path)) {
+                $this->oneOfAKindImageModel->destroy($image['image_id']);
+            } else {
+                $status = 500;
+                throw new Exception("Failed to delete the old image.");
+            }
+        }
 
         try {
-            $this->oneOfAKindModel->delete();
+            $this->oneOfAKindModel->destroy($one_of_a_kind_id);
             $message = "One of a kind deleted successfully.";
-            $one_of_a_kind_to_delete = $this->oneOfAKindModel->findById($one_of_a_kind_id);
         } catch (Exception $e) {
             $status = 500;
             $message = "Error deleting one of a kind. {$e->getMessage()}";

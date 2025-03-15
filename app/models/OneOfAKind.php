@@ -128,19 +128,6 @@ class OneOfAKind extends Model
         return $stmt->execute();
     }
 
-    public function delete()
-    {
-        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP, `status` = 'archived' WHERE one_of_a_kind_id = :one_of_a_kind_id";
-
-        $stmt = $this->con->prepare($query);
-
-        $this->one_of_a_kind_id = htmlspecialchars($this->one_of_a_kind_id);
-
-        $stmt->bindParam(":one_of_a_kind_id", $this->one_of_a_kind_id, PDO::PARAM_INT);
-
-        return $stmt->execute();
-    }
-
     // Method to find a user by username
     public function findByName($name)
     {

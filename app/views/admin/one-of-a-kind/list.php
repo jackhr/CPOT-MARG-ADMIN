@@ -958,7 +958,8 @@
                         text: message,
                     });
 
-                    success && reloadTable(true);
+                    reloadTable();
+                    success && $('#edit-one-of-a-kind-modal .modal-close').trigger('click');
                 },
                 error: function() {
                     console.log("arguments:", arguments);
