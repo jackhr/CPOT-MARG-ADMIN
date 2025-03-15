@@ -81,12 +81,11 @@ class ShopItemController extends Controller
                 foreach ($_POST['deletedImages'] as $image_id) {
                     $image = $this->shopItemImageModel->findById($image_id);
                     $delete_image_path = $public_directory . $image['image_url'];
-                    if (!unlink($delete_image_path)) {
+                    if (unlink($delete_image_path)) {
+                        $this->shopItemImageModel->destroy($image_id);
+                    } else {
                         $status = 500;
                         throw new Exception("Failed to delete the old image.");
-                    } else {
-                        $this->shopItemImageModel->image_id = $image_id;
-                        $this->shopItemImageModel->delete();
                     }
                 }
             } catch (Exception $e) {
@@ -407,14 +406,24 @@ class ShopItemController extends Controller
     public function delete($shop_item_id)
     {
         $shop_item_to_delete = $this->shopItemModel->findById($shop_item_id);
+        $shop_item_images = $this->shopItemImageModel->findByShopItemId($shop_item_id);
         $status = 200;
         $message = "";
+        $public_directory = __DIR__ . '/../../public';
 
-        $this->shopItemModel->shop_item_id = $shop_item_id;
+        // first, delete the images, and the rows
+        foreach ($shop_item_images as $image) {
+            $delete_image_path = $public_directory . $image['image_url'];
+            if (unlink($delete_image_path)) {
+                $this->shopItemImageModel->destroy($image['image_id']);
+            } else {
+                $status = 500;
+                throw new Exception("Failed to delete the old image.");
+            }
+        }
 
-        if ($this->shopItemModel->delete()) {
+        if ($this->shopItemModel->destroy($shop_item_id)) {
             $message = "Shop Item deleted successfully.";
-            $shop_item_to_delete = $this->shopItemModel->findById($shop_item_id);
         } else {
             $status = 500;
             $message = "Error deleting shop item.";

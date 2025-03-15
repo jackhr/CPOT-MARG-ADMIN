@@ -648,13 +648,14 @@
             modal.find('input[name="depth"]').val("");
             modal.find('input[name="width"]').val("");
             modal.find('input[name="height"]').val("");
-            modal.find('input[name="material"]').val("Ceramic");
-            modal.find('input[name="color"]').val("Off White");
+            modal.find('input[name="material"]').val("");
+            modal.find('input[name="color"]').val("");
             modal.find('input[name="weight"]').val("");
             modal.find('input[name="price"]').val("");
             modal.find('input[name="showing_on_site"]').prop("checked", false);
             modal.find('textarea[name="description"]').val("");
             modal.find('.img-preview-container').html("");
+            modal.find('select[name="status"]').prop('selectedIndex', 0);
 
             resetImagesModal();
         }
@@ -1040,6 +1041,7 @@
                     });
 
                     reloadTable();
+                    $('#edit-shop-item-modal .modal-close').trigger('click');
                 },
                 error: function() {
                     console.log("arguments:", arguments);

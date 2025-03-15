@@ -33,7 +33,7 @@ class ShopItem extends Model
     {
         parent::__construct();
         $this->table_name = "shop_items";
-        $this->primary_key = "shop_shop_item_id";
+        $this->primary_key = "shop_item_id";
         $this->helper = new GeneralHelper();
     }
 
@@ -134,18 +134,6 @@ class ShopItem extends Model
         $stmt->bindParam(":created_by", $this->created_by, PDO::PARAM_INT);
 
         // Execute the query
-        return $stmt->execute();
-    }
-
-    public function delete()
-    {
-        $query = "UPDATE {$this->table_name} SET deleted_at = CURRENT_TIMESTAMP, `status` = 'archived' WHERE shop_item_id = :shop_item_id";
-        $stmt = $this->con->prepare($query);
-
-        $this->shop_item_id = htmlspecialchars($this->shop_item_id);
-
-        $stmt->bindParam(":shop_item_id", $this->shop_item_id, PDO::PARAM_INT);
-
         return $stmt->execute();
     }
 
