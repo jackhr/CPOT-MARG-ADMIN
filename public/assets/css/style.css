@@ -439,7 +439,7 @@ table .sconce-thumb-td div {
 }
 
 table .sconce-thumb-td div img,
-table .one-of-a-kind-thumb-td div img,
+table .portfolio-item-thumb-td div img,
 table .cutout-thumb-td div img,
 table .shop-item-thumb-td div img {
     object-fit     : contain;
@@ -648,7 +648,7 @@ main {
     font-weight: 600;
 }
 
-.input-container label:not(#create-sconce-form .input-container label):not(#edit-sconce-form .input-container label):not(#create-one-of-a-kind-form .input-container label):not(#edit-one-of-a-kind-form .input-container label):not(#create-cutout-form .input-container label):not(#edit-cutout-form .input-container label) {
+.input-container label:not(#create-sconce-form .input-container label):not(#edit-sconce-form .input-container label):not(#create-portfolio-item-form .input-container label):not(#edit-portfolio-item-form .input-container label):not(#create-cutout-form .input-container label):not(#edit-cutout-form .input-container label) {
     max-width: 140px;
     width    : 100%;
 }
