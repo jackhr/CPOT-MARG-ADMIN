@@ -1025,8 +1025,10 @@
                         text: message,
                     });
 
-                    reloadTable();
-                    resetModal($("#create-sconce-modal"));
+                    if (success) {
+                        reloadTable();
+                        resetModal($("#create-sconce-modal"));
+                    }
                 },
                 error: function() {
                     console.log("arguments:", arguments);

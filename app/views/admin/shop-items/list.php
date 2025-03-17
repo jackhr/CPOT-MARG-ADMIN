@@ -930,7 +930,10 @@
                         text: message,
                     });
 
-                    reloadTable();
+                    if (success) {
+                        reloadTable();
+                        resetModal($("#create-shop-item-modal"));
+                    }
                 },
                 error: function() {
                     console.log("arguments:", arguments);
