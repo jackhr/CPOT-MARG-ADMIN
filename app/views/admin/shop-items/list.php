@@ -19,10 +19,10 @@
                     <th>Id #</th>
                     <th>Thumb</th>
                     <th>Name</th>
+                    <th>Artist</th>
                     <th>Dimensions</th>
                     <th>Material</th>
                     <th>Color</th>
-                    <th>Weight</th>
                     <th>Price</th>
                     <th>Status</th>
                     <th>Description</th>
@@ -125,19 +125,6 @@
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
-                            <label for="weight">Weight</label>
-                            <input type="text" name="weight" placeholder="10" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="weight-units">Units</label>
-                            <select name="weight-units" id="weight-units">
-                                <option selected value="lbs">lbs</option>
-                                <option value="kgs">kgs</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
                             <label for="price">Price</label>
                             <input type="number" name="price" placeholder="75" required>
                         </div>
@@ -150,6 +137,13 @@
                                 <option value="archived">Archived</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="input-container">
+                        <label for="artist">Artist</label>
+                        <select name="artist" id="artist">
+                            <option value="Imogen Margrie">Imogen Margrie</option>
+                            <option value="Michael Hunt">Michael Hunt</option>
+                        </select>
                     </div>
                     <div class="input-container">
                         <input id="showing_on_site" name="showing_on_site" type="checkbox">
@@ -278,19 +272,6 @@
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
-                            <label for="weight">Weight</label>
-                            <input type="text" name="weight" placeholder="10" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="weight-units">Units</label>
-                            <select name="weight-units" id="weight-units">
-                                <option selected value="lbs">lbs</option>
-                                <option value="kgs">kgs</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
                             <label for="price">Price</label>
                             <input type="number" name="price" placeholder="75" required>
                         </div>
@@ -303,6 +284,13 @@
                                 <option value="archived">Archived</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="input-container">
+                        <label for="artist">Artist</label>
+                        <select name="artist" id="artist">
+                            <option value="Imogen Margrie">Imogen Margrie</option>
+                            <option value="Michael Hunt">Michael Hunt</option>
+                        </select>
                     </div>
                     <div class="input-container">
                         <input id="showing_on_site" name="showing_on_site" type="checkbox">
@@ -386,6 +374,9 @@
                     data: 'name'
                 },
                 {
+                    data: 'artist'
+                },
+                {
                     data: 'dimensions',
                     createdCell: function(td, cellData, rowData, row, col) {
                         // Add class based on current_status value
@@ -397,9 +388,6 @@
                 },
                 {
                     data: 'color'
-                },
-                {
-                    data: 'weight'
                 },
                 {
                     data: 'price'
@@ -523,7 +511,6 @@
             const dimensions = data.dimensions
                 .split(" x ")
                 .map(x => x.replace(/[^\d.]/gi, ""));
-            const weight = data.weight.replace(/\D+/gi, "");
             const dimensionUnits = data.dimensions.includes("in") ? "in" : data.dimensions.includes("cm") ? "cm" : "Unknown unit";
 
             modal.find('#edit-shop-item-id').text(id);
@@ -534,7 +521,6 @@
             modal.find('select[name="dimension-units"]').val(dimensionUnits);
             modal.find('input[name="material"]').val(data.material);
             modal.find('input[name="color"]').val(data.color);
-            modal.find('input[name="weight"]').val(weight);
             modal.find('input[name="price"]').val(data.price);
             modal.find('select[name="status"]').val(data.status);
             modal.find('input[name="showing_on_site"]').prop("checked", data.showing_on_site);
@@ -650,7 +636,6 @@
             modal.find('input[name="height"]').val("");
             modal.find('input[name="material"]').val("");
             modal.find('input[name="color"]').val("");
-            modal.find('input[name="weight"]').val("");
             modal.find('input[name="price"]').val("");
             modal.find('input[name="showing_on_site"]').prop("checked", false);
             modal.find('textarea[name="description"]').val("");
@@ -663,7 +648,7 @@
         function getJSONDataFromForm(form) {
             const data = {
                 ...form.serializeObject(),
-                "showing-on-site": form
+                "showing_on_site": form
                     .find('[name="showing_on_site"]')
                     .is(":checked") + 0 + ""
             };
@@ -694,10 +679,6 @@
                     errMsg = "Please provide your item with a material.";
                 } else if (!data.color.length) {
                     errMsg = "Please provide your item with a color.";
-                } else if (!data.weight.length) {
-                    errMsg = "Please provide your item with a weight.";
-                } else if (!data.weight.match(STATE.regEx.decimal)) {
-                    errMsg = `Weight can only be a number. You entered: "${data.weight}"`;
                 } else if (!data.price.length) {
                     errMsg = "Please provide your item with a price.";
                 } else if (!data.price.match(STATE.regEx.decimal)) {
@@ -952,15 +933,6 @@
             depthEl.val(convertUnits('length', depthEl.val(), toIn));
             widthEl.val(convertUnits('length', widthEl.val(), toIn));
             heightEl.val(convertUnits('length', heightEl.val(), toIn));
-        });
-
-        $('[name="weight-units"]').on('change', function() {
-            const form = $(this).closest('form');
-            const weightEl = form.find('[name="weight"]');
-
-            const toKg = $(this).val() === "kgs";
-
-            weightEl.val(convertUnits('weight', weightEl.val(), toKg));
         });
 
         $("#edit-shop-item-modal .modal-close").on("click", function() {

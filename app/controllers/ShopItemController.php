@@ -189,14 +189,13 @@ class ShopItemController extends Controller
         }
 
         [
+            "artist" => $artist,
             "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
             "depth" => $depth,
             "material" => $material,
             "color" => $color,
-            "weight" => $weight,
-            "weight-units" => $weight_units,
             "price" => $price,
             "status" => $shop_item_status,
             "description" => $description,
@@ -207,16 +206,14 @@ class ShopItemController extends Controller
         $depth = $this->helper->truncateToThreeDecimals($depth);
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
-        $weight = $this->helper->truncateToThreeDecimals($weight);
 
         $dimensions = "$depth{$dim_units} x $width{$dim_units} x $height{$dim_units}";
-        $weight = "$weight{$weight_units}";
 
         $this->shopItemModel->name = $name;
+        $this->shopItemModel->artist = $artist;
         $this->shopItemModel->dimensions = $dimensions;
         $this->shopItemModel->material = $material;
         $this->shopItemModel->color = $color;
-        $this->shopItemModel->weight = $weight;
         $this->shopItemModel->price = $this->helper->truncateToThreeDecimals($price);
         $this->shopItemModel->status = $shop_item_status;
         $this->shopItemModel->description = $description;
@@ -339,14 +336,13 @@ class ShopItemController extends Controller
         }
 
         [
+            "artist" => $artist,
             "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
             "depth" => $depth,
             "material" => $material,
             "color" => $color,
-            "weight" => $weight,
-            "weight-units" => $weight_units,
             "price" => $price,
             "status" => $shop_item_status,
             "description" => $description,
@@ -356,17 +352,15 @@ class ShopItemController extends Controller
         $depth = $this->helper->truncateToThreeDecimals($depth);
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
-        $weight = $this->helper->truncateToThreeDecimals($weight);
 
         $dimensions = "$depth{$dim_units} x $width{$dim_units} x $height{$dim_units}";
-        $weight = "$weight{$weight_units}";
 
         $this->shopItemModel->shop_item_id = $shop_item_id;
         $this->shopItemModel->name = $name;
+        $this->shopItemModel->artist = $artist;
         $this->shopItemModel->dimensions = $dimensions;
         $this->shopItemModel->material = $material;
         $this->shopItemModel->color = $color;
-        $this->shopItemModel->weight = $weight;
         $this->shopItemModel->price = $this->helper->truncateToThreeDecimals($price);
         $this->shopItemModel->status = $shop_item_status;
         $this->shopItemModel->description = $description;
