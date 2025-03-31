@@ -142,7 +142,7 @@
                     </div>
                     <div class="input-container">
                         <input id="showing_on_site" name="showing_on_site" type="checkbox">
-                        <label for="showing_on_site">Show On Site?</label>
+                        <label for="showing_on_site">Show On Site</label>
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
@@ -289,7 +289,7 @@
                     </div>
                     <div class="input-container">
                         <input id="showing_on_site" name="showing_on_site" type="checkbox">
-                        <label for="showing_on_site">Show On Site?</label>
+                        <label for="showing_on_site">Show On Site</label>
                     </div>
                     <div class="input-container">
                         <label for="description">Description</label>
