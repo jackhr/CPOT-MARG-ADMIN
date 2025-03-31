@@ -129,7 +129,6 @@
                                 <option value="available">Available</option>
                                 <option value="sold">Sold</option>
                                 <option value="reserved">Reserved</option>
-                                <option value="archived">Archived</option>
                             </select>
                         </div>
                     </div>
@@ -276,7 +275,6 @@
                                 <option value="available">Available</option>
                                 <option value="sold">Sold</option>
                                 <option value="reserved">Reserved</option>
-                                <option value="archived">Archived</option>
                             </select>
                         </div>
                     </div>

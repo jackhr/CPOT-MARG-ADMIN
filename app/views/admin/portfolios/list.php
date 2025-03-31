@@ -101,7 +101,6 @@
                         <select name="status" id="status">
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
-                            <option value="archived">Archived</option>
                         </select>
                     </div>
                     <div class="mutiple-input-container">
@@ -231,7 +230,6 @@
                         <select name="status" id="status">
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
-                            <option value="archived">Archived</option>
                         </select>
                     </div>
                     <div class="mutiple-input-container">
