@@ -187,7 +187,6 @@ class PortfolioItemController extends Controller
             "depth" => $depth,
             "material" => $material,
             "artist" => $artist,
-            "status" => $portfolio_item_status,
             "description" => $description,
             "primary_image_idx" => $primary_image_idx,
         ] = $_POST;
@@ -202,7 +201,6 @@ class PortfolioItemController extends Controller
         $this->portfolioItemModel->dimensions = $dimensions;
         $this->portfolioItemModel->material = $material;
         $this->portfolioItemModel->artist = $artist;
-        $this->portfolioItemModel->status = $portfolio_item_status;
         $this->portfolioItemModel->description = $description;
         $this->portfolioItemModel->created_by = $_SESSION['user']['user_id'];
 
@@ -329,7 +327,6 @@ class PortfolioItemController extends Controller
             "depth" => $depth,
             "material" => $material,
             "artist" => $artist,
-            "status" => $portfolio_item_status,
             "description" => $description,
         ] = $data;
 
@@ -344,7 +341,6 @@ class PortfolioItemController extends Controller
         $this->portfolioItemModel->dimensions = $dimensions;
         $this->portfolioItemModel->material = $material;
         $this->portfolioItemModel->artist = $artist;
-        $this->portfolioItemModel->status = $portfolio_item_status;
         $this->portfolioItemModel->description = $description;
         $this->portfolioItemModel->updated_by = $_SESSION['user']['user_id'];
 

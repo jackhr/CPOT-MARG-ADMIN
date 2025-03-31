@@ -22,7 +22,6 @@
                     <th>Artist</th>
                     <th>Dimensions</th>
                     <th>Material</th>
-                    <th>Status</th>
                     <th>Description</th>
                 </tr>
             </thead>
@@ -94,13 +93,6 @@
                         <select name="artist" id="artist">
                             <option value="Imogen Margrie">Imogen Margrie</option>
                             <option value="Michael Hunt">Michael Hunt</option>
-                        </select>
-                    </div>
-                    <div class="input-container">
-                        <label for="status">Status</label>
-                        <select name="status" id="status">
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
                         </select>
                     </div>
                     <div class="mutiple-input-container">
@@ -225,13 +217,6 @@
                             <option value="Michael Hunt">Michael Hunt</option>
                         </select>
                     </div>
-                    <div class="input-container">
-                        <label for="status">Status</label>
-                        <select name="status" id="status">
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="width">Width</label>
@@ -337,9 +322,6 @@
                 },
                 {
                     data: 'material'
-                },
-                {
-                    data: 'status'
                 },
                 {
                     data: 'description',
