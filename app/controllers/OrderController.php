@@ -88,7 +88,7 @@ class OrderController extends Controller
         $logged_in_user = $_SESSION['user'];
         $this->view("admin/orders/list.php", [
             "user" => $logged_in_user,
-            "title" => "Orders"
+            "title" => "Sconce Orders"
         ]);
     }
 

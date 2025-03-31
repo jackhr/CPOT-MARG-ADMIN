@@ -25,7 +25,7 @@ class CutoutController extends Controller
         $logged_in_user = $_SESSION['user'];
         $this->view("admin/cutouts/list.php", [
             "user" => $logged_in_user,
-            "title" => "Cutouts"
+            "title" => "Sconce Cutouts"
         ]);
     }
 
