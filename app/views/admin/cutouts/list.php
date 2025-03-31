@@ -18,16 +18,11 @@
         <table>
             <thead>
                 <tr>
-                    <th>Id #</th>
                     <th>Image</th>
                     <th>Name</th>
                     <th>Code</th>
                     <th>Base Price</th>
                     <th>Description</th>
-                    <th>Created</th>
-                    <th>Last updated</th>
-                    <th>Created By</th>
-                    <th>Updated By</th>
                 </tr>
             </thead>
         </table>
@@ -270,12 +265,13 @@
 
         STATE.dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
+            autoWidth: true,
             columnDefs: [{
                 type: 'natural',
-                target: 2
+                target: 1
             }],
             order: [
-                [2, 'asc']
+                [1, 'asc']
             ],
             ajax: {
                 url: "/cutouts/getAll",
@@ -302,10 +298,8 @@
                 }
             },
             columns: [{
-                    data: 'cutout_id'
-                },
-                {
-                    data: 'image_url'
+                    data: 'image_url',
+                    className: 'cutout-thumb-td'
                 },
                 {
                     data: 'name'
@@ -318,30 +312,7 @@
                 },
                 {
                     data: 'description',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-description');
-                    }
-                },
-                {
-                    data: 'created_at',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-type-date');
-                    }
-                },
-                {
-                    data: 'updated_at',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-type-date');
-                    }
-                },
-                {
-                    data: 'created_by_email'
-                },
-                {
-                    data: 'updated_by_email'
+                    className: 'dt-description'
                 },
             ],
             initComplete: function() {
@@ -453,8 +424,7 @@
                 const [imageName, imageUrl] = getImageNameAndUrl(id);
                 $(rowNode)
                     .find('td')
-                    .eq(1)
-                    .addClass("cutout-thumb-td")
+                    .eq(0)
                     .html(`
                         <div>
                             <img src="${imageUrl}" alt="${imageName}">

@@ -74,7 +74,7 @@ class Sconce extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, status = :status, description = :description, updated_by = :updated_by WHERE sconce_id = :sconce_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, base_price = :base_price, status = :status, description = :description, updated_by = :updated_by WHERE sconce_id = :sconce_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -83,7 +83,6 @@ class Sconce extends Model
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
         $this->color = htmlspecialchars($this->color);
-        $this->weight = htmlspecialchars($this->weight);
         $this->base_price = htmlspecialchars($this->base_price);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
@@ -94,7 +93,6 @@ class Sconce extends Model
         $stmt->bindParam(":dimensions", $this->dimensions);
         $stmt->bindParam(":material", $this->material);
         $stmt->bindParam(":color", $this->color);
-        $stmt->bindParam(":weight", $this->weight);
         $stmt->bindParam(":base_price", $this->base_price);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
@@ -107,7 +105,7 @@ class Sconce extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, weight = :weight, base_price = :base_price, status = :status, description = :description, created_by = :created_by";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, color = :color, base_price = :base_price, status = :status, description = :description, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -115,7 +113,6 @@ class Sconce extends Model
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
         $this->color = htmlspecialchars($this->color);
-        $this->weight = htmlspecialchars($this->weight);
         $this->base_price = htmlspecialchars($this->base_price);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
@@ -126,7 +123,6 @@ class Sconce extends Model
         $stmt->bindParam(":dimensions", $this->dimensions);
         $stmt->bindParam(":material", $this->material);
         $stmt->bindParam(":color", $this->color);
-        $stmt->bindParam(":weight", $this->weight);
         $stmt->bindParam(":base_price", $this->base_price);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);

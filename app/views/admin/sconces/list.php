@@ -14,20 +14,14 @@
         <table id="sconces-table">
             <thead>
                 <tr>
-                    <th>Id #</th>
                     <th>Thumb</th>
                     <th>Name</th>
                     <th>Dimensions</th>
                     <th>Material</th>
                     <th>Color</th>
-                    <th>Weight</th>
                     <th>Base Price</th>
                     <th>Status</th>
                     <th>Description</th>
-                    <th>Created</th>
-                    <th>Last updated</th>
-                    <th>Created By</th>
-                    <th>Updated By</th>
                 </tr>
             </thead>
         </table>
@@ -118,19 +112,6 @@
                         <div class="input-container">
                             <label for="color">Color</label>
                             <input type="text" name="color" placeholder="Pearl white" value="Off White" required>
-                        </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
-                            <label for="weight">Weight</label>
-                            <input type="text" name="weight" placeholder="10" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="weight-units">Units</label>
-                            <select name="weight-units" id="weight-units">
-                                <option selected value="lbs">lbs</option>
-                                <option value="kgs">kgs</option>
-                            </select>
                         </div>
                     </div>
                     <div class="mutiple-input-container">
@@ -286,19 +267,6 @@
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
-                            <label for="weight">Weight</label>
-                            <input type="text" name="weight" placeholder="10" required>
-                        </div>
-                        <div class="input-container">
-                            <label for="weight-units">Units</label>
-                            <select name="weight-units" id="weight-units">
-                                <option selected value="lbs">lbs</option>
-                                <option value="kgs">kgs</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mutiple-input-container">
-                        <div class="input-container">
                             <label for="price">Price</label>
                             <input type="number" name="base_price" placeholder="75" required>
                         </div>
@@ -366,12 +334,13 @@
 
         STATE.dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
+            autoWidth: true,
             columnDefs: [{
                 type: 'natural',
-                target: 2
+                target: 1
             }],
             order: [
-                [2, 'asc']
+                [1, 'asc']
             ],
             ajax: {
                 url: "/sconces/getAll",
@@ -395,29 +364,21 @@
                 }
             },
             columns: [{
-                    data: 'sconce_id'
-                },
-                {
-                    data: 'image_url'
+                    data: 'image_url',
+                    className: 'sconce-thumb-td'
                 },
                 {
                     data: 'name'
                 },
                 {
                     data: 'dimensions',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-dimensions');
-                    }
+                    className: 'dt-dimensions'
                 },
                 {
                     data: 'material'
                 },
                 {
                     data: 'color'
-                },
-                {
-                    data: 'weight'
                 },
                 {
                     data: 'base_price'
@@ -427,30 +388,7 @@
                 },
                 {
                     data: 'description',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-description');
-                    }
-                },
-                {
-                    data: 'created_at',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-type-date');
-                    }
-                },
-                {
-                    data: 'updated_at',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-type-date');
-                    }
-                },
-                {
-                    data: 'created_by_email'
-                },
-                {
-                    data: 'updated_by_email'
+                    className: 'dt-description'
                 },
             ],
             initComplete: async function() {
@@ -561,8 +499,7 @@
                 const [imageName, imageUrl] = getImageNameAndUrl(id);
                 $(rowNode)
                     .find('td')
-                    .eq(1)
-                    .addClass("sconce-thumb-td")
+                    .eq(0)
                     .html(`
                         <div>
                             <img src="${imageUrl}" alt="${imageName}">
@@ -594,7 +531,6 @@
             const dimensions = data.dimensions
                 .split(" x ")
                 .map(x => x.replace(/\D+/gi, ""));
-            const weight = data.weight.replace(/\D+/gi, "");
 
             modal.find('#edit-sconce-id').text(id);
             modal.find('input[name="name"]').val(data.name);
@@ -603,7 +539,6 @@
             modal.find('input[name="height"]').val(dimensions[2]);
             modal.find('input[name="material"]').val(data.material);
             modal.find('input[name="color"]').val(data.color);
-            modal.find('input[name="weight"]').val(weight);
             modal.find('input[name="base_price"]').val(data.base_price);
             modal.find('textarea[name="description"]').val(data.description);
 
@@ -732,7 +667,6 @@
             modal.find('input[name="height"]').val("");
             modal.find('input[name="material"]').val("Ceramic");
             modal.find('input[name="color"]').val("Off White");
-            modal.find('input[name="weight"]').val("");
             modal.find('input[name="base_price"]').val("");
             modal.find('textarea[name="description"]').val("");
             modal.find('.img-preview-container').html("");
@@ -770,10 +704,6 @@
                     errMsg = "Please provide your sconce with a material.";
                 } else if (!data.color.length) {
                     errMsg = "Please provide your sconce with a color.";
-                } else if (!data.weight.length) {
-                    errMsg = "Please provide your sconce with a weight.";
-                } else if (!data.weight.match(STATE.regEx.decimal)) {
-                    errMsg = `Weight can only be a number. You entered: "${data.weight}"`;
                 } else if (!data.base_price.length) {
                     errMsg = "Please provide your sconce with a price.";
                 } else if (!data.base_price.match(STATE.regEx.decimal)) {
@@ -1047,15 +977,6 @@
             depthEl.val(convertUnits('length', depthEl.val(), toIn));
             widthEl.val(convertUnits('length', widthEl.val(), toIn));
             heightEl.val(convertUnits('length', heightEl.val(), toIn));
-        });
-
-        $('[name="weight-units"]').on('change', function() {
-            const form = $(this).closest('form');
-            const weightEl = form.find('[name="weight"]');
-
-            const toKg = $(this).val() === "kgs";
-
-            weightEl.val(convertUnits('weight', weightEl.val(), toKg));
         });
 
         $("#edit-sconce-modal .modal-close").on("click", function() {

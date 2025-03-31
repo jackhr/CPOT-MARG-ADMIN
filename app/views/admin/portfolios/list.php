@@ -17,19 +17,13 @@
         <table>
             <thead>
                 <tr>
-                    <th>Id #</th>
                     <th>Thumb</th>
                     <th>Name</th>
                     <th>Artist</th>
                     <th>Dimensions</th>
                     <th>Material</th>
-                    <th>Price</th>
                     <th>Status</th>
                     <th>Description</th>
-                    <th>Created</th>
-                    <th>Last updated</th>
-                    <th>Created By</th>
-                    <th>Updated By</th>
                 </tr>
             </thead>
         </table>
@@ -94,10 +88,6 @@
                     <div class="input-container">
                         <label for="material">Material</label>
                         <input type="text" name="material" placeholder="Porcelain" required>
-                    </div>
-                    <div class="input-container">
-                        <label for="price">Price</label>
-                        <input type="text" name="base_price" placeholder="75" required>
                     </div>
                     <div class="input-container">
                         <label for="artist">Artist</label>
@@ -230,10 +220,6 @@
                         <input type="text" name="material" placeholder="Porcelain" required>
                     </div>
                     <div class="input-container">
-                        <label for="price">Price</label>
-                        <input type="text" name="base_price" placeholder="75" required>
-                    </div>
-                    <div class="input-container">
                         <label for="artist">Artist</label>
                         <select name="artist" id="artist">
                             <option value="Imogen Margrie">Imogen Margrie</option>
@@ -307,12 +293,13 @@
     $(document).ready(function() {
         STATE.dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
+            autoWidth: true,
             columnDefs: [{
                 type: 'natural',
-                target: 2
+                target: 1
             }],
             order: [
-                [2, 'asc']
+                [1, 'asc']
             ],
             ajax: {
                 url: "/portfolios/getAll",
@@ -337,10 +324,8 @@
                 }
             },
             columns: [{
-                    data: 'portfolio_item_id'
-                },
-                {
-                    data: 'image_url'
+                    data: 'image_url',
+                    className: 'portfolio-item-thumb-td'
                 },
                 {
                     data: 'name'
@@ -350,46 +335,17 @@
                 },
                 {
                     data: 'dimensions',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-dimensions');
-                    }
+                    className: 'dt-dimensions',
                 },
                 {
                     data: 'material'
-                },
-                {
-                    data: 'price'
                 },
                 {
                     data: 'status'
                 },
                 {
                     data: 'description',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-description');
-                    }
-                },
-                {
-                    data: 'created_at',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-type-date');
-                    }
-                },
-                {
-                    data: 'updated_at',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-type-date');
-                    }
-                },
-                {
-                    data: 'created_by_email'
-                },
-                {
-                    data: 'updated_by_email'
+                    className: 'dt-description',
                 },
             ],
             initComplete: function() {
@@ -443,8 +399,7 @@
                 const [imageName, imageUrl] = getImageNameAndUrl(id);
                 $(rowNode)
                     .find('td')
-                    .eq(1)
-                    .addClass("portfolio-item-thumb-td")
+                    .eq(0)
                     .html(`
                         <div>
                             <img src="${imageUrl}" alt="${imageName}">
@@ -483,7 +438,6 @@
             modal.find('input[name="height"]').val(dimensions[1]);
             modal.find('input[name="depth"]').val(dimensions[2]);
             modal.find('input[name="material"]').val(data.material);
-            modal.find('input[name="base_price"]').val(data.price);
             modal.find('textarea[name="description"]').val(data.description);
 
             // handle rendering option buttons
@@ -595,7 +549,6 @@
             modal.find('input[name="height"]').val("");
             modal.find('input[name="depth"]').val("");
             modal.find('input[name="material"]').val("");
-            modal.find('input[name="base_price"]').val("");
             modal.find('textarea[name="description"]').val("");
             modal.find('.img-preview-container').html("");
 
@@ -628,10 +581,6 @@
                     errMsg = `Depth can only be a number. You entered: "${data.depth}"`;
                 } else if (!data.material.length) {
                     errMsg = "Please provide your portfolio item with a material.";
-                } else if (!data.base_price.length) {
-                    errMsg = "Please provide your portfolio item with a price.";
-                } else if (!data.base_price.match(STATE.regEx.decimal)) {
-                    errMsg = `Price can only be a number. You entered: "${data.base_price}"`;
                 } else if (!data.name.length) {
                     errMsg = "Please provide your portfolio item with a name.";
                 }

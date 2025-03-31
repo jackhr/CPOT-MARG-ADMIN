@@ -70,7 +70,7 @@ class PortfolioItem extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, price = :price, status = :status, description = :description, updated_by = :updated_by WHERE portfolio_item_id = :portfolio_item_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, status = :status, description = :description, updated_by = :updated_by WHERE portfolio_item_id = :portfolio_item_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -79,7 +79,6 @@ class PortfolioItem extends Model
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
         $this->artist = htmlspecialchars($this->artist);
-        $this->price = htmlspecialchars($this->price);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
         $this->updated_by = htmlspecialchars($this->updated_by);
@@ -89,7 +88,6 @@ class PortfolioItem extends Model
         $stmt->bindParam(":dimensions", $this->dimensions);
         $stmt->bindParam(":material", $this->material);
         $stmt->bindParam(":artist", $this->artist);
-        $stmt->bindParam(":price", $this->price);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":portfolio_item_id", $this->portfolio_item_id, PDO::PARAM_INT);
@@ -101,7 +99,7 @@ class PortfolioItem extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, price = :price, status = :status, description = :description, created_by = :created_by";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, status = :status, description = :description, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -109,7 +107,6 @@ class PortfolioItem extends Model
         $this->dimensions = htmlspecialchars($this->dimensions);
         $this->material = htmlspecialchars($this->material);
         $this->artist = htmlspecialchars($this->artist);
-        $this->price = htmlspecialchars($this->price);
         $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
         $this->created_by = htmlspecialchars($this->created_by);
@@ -119,7 +116,6 @@ class PortfolioItem extends Model
         $stmt->bindParam(":dimensions", $this->dimensions);
         $stmt->bindParam(":material", $this->material);
         $stmt->bindParam(":artist", $this->artist);
-        $stmt->bindParam(":price", $this->price);
         $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":created_by", $this->created_by, PDO::PARAM_INT);

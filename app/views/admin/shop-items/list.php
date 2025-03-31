@@ -16,7 +16,6 @@
         <table id="shop-table">
             <thead>
                 <tr>
-                    <th>Id #</th>
                     <th>Thumb</th>
                     <th>Name</th>
                     <th>Artist</th>
@@ -27,10 +26,6 @@
                     <th>Status</th>
                     <th>Description</th>
                     <th>Showing On Site</th>
-                    <th>Created</th>
-                    <th>Last updated</th>
-                    <th>Created By</th>
-                    <th>Updated By</th>
                 </tr>
             </thead>
         </table>
@@ -335,12 +330,13 @@
 
         STATE.dTable = new DataTable("table", {
             ...STATE.dtDefaultOpts,
+            autoWidth: true,
             columnDefs: [{
                 type: 'natural',
-                target: 2
+                target: 1
             }],
             order: [
-                [2, 'asc']
+                [1, 'asc']
             ],
             ajax: {
                 url: "/shop_items/getAll",
@@ -365,10 +361,8 @@
                 }
             },
             columns: [{
-                    data: 'shop_item_id'
-                },
-                {
-                    data: 'image_url'
+                    data: 'image_url',
+                    className: 'shop-item-thumb-td'
                 },
                 {
                     data: 'name'
@@ -378,10 +372,7 @@
                 },
                 {
                     data: 'dimensions',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-dimensions');
-                    }
+                    className: 'dt-dimensions'
                 },
                 {
                     data: 'material'
@@ -397,33 +388,10 @@
                 },
                 {
                     data: 'description',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-description');
-                    }
+                    className: 'dt-description'
                 },
                 {
                     data: 'showing_on_site',
-                },
-                {
-                    data: 'created_at',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-type-date');
-                    }
-                },
-                {
-                    data: 'updated_at',
-                    createdCell: function(td, cellData, rowData, row, col) {
-                        // Add class based on current_status value
-                        $(td).addClass('dt-type-date');
-                    }
-                },
-                {
-                    data: 'created_by_email'
-                },
-                {
-                    data: 'updated_by_email'
                 },
             ],
             initComplete: async function() {
@@ -478,8 +446,7 @@
                 const [imageName, imageUrl] = getImageNameAndUrl(id);
                 $(rowNode)
                     .find('td')
-                    .eq(1)
-                    .addClass("shop-item-thumb-td")
+                    .eq(0)
                     .html(`
                         <div>
                             <img src="${imageUrl}" alt="${imageName}">

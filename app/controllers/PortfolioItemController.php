@@ -187,7 +187,6 @@ class PortfolioItemController extends Controller
             "depth" => $depth,
             "material" => $material,
             "artist" => $artist,
-            "base_price" => $base_price,
             "status" => $portfolio_item_status,
             "description" => $description,
             "primary_image_idx" => $primary_image_idx,
@@ -203,7 +202,6 @@ class PortfolioItemController extends Controller
         $this->portfolioItemModel->dimensions = $dimensions;
         $this->portfolioItemModel->material = $material;
         $this->portfolioItemModel->artist = $artist;
-        $this->portfolioItemModel->price = $this->helper->truncateToThreeDecimals($base_price);
         $this->portfolioItemModel->status = $portfolio_item_status;
         $this->portfolioItemModel->description = $description;
         $this->portfolioItemModel->created_by = $_SESSION['user']['user_id'];
@@ -331,7 +329,6 @@ class PortfolioItemController extends Controller
             "depth" => $depth,
             "material" => $material,
             "artist" => $artist,
-            "base_price" => $base_price,
             "status" => $portfolio_item_status,
             "description" => $description,
         ] = $data;
@@ -347,7 +344,6 @@ class PortfolioItemController extends Controller
         $this->portfolioItemModel->dimensions = $dimensions;
         $this->portfolioItemModel->material = $material;
         $this->portfolioItemModel->artist = $artist;
-        $this->portfolioItemModel->price = $this->helper->truncateToThreeDecimals($base_price);
         $this->portfolioItemModel->status = $portfolio_item_status;
         $this->portfolioItemModel->description = $description;
         $this->portfolioItemModel->updated_by = $_SESSION['user']['user_id'];

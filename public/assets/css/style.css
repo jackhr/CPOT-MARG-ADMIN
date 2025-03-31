@@ -449,6 +449,13 @@ table .shop-item-thumb-td div img {
     max-width      : 200px;
 }
 
+table .sconce-thumb-td,
+table .portfolio-item-thumb-td,
+table .cutout-thumb-td,
+table .shop-item-thumb-td {
+    max-width: 200px;
+}
+
 #showing_on_site {
     width: max-content;
 }
