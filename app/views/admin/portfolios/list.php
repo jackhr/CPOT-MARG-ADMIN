@@ -410,7 +410,7 @@
             const modal = $("#edit-portfolio-item-modal");
             const dimensions = data.dimensions
                 .split(" x ")
-                .map(x => x.replace(/\D+/gi, ""));
+                .map(x => x.match(/[\d.]+/)[0]);
 
             modal.find('#edit-portfolio-item-id').text(id);
             modal.find('input[name="name"]').val(data.name);

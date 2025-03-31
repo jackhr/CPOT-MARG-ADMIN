@@ -528,7 +528,7 @@
             const modal = $("#edit-sconce-modal");
             const dimensions = data.dimensions
                 .split(" x ")
-                .map(x => x.replace(/\D+/gi, ""));
+                .map(x => x.match(/[\d.]+/)[0]);
 
             modal.find('#edit-sconce-id').text(id);
             modal.find('input[name="name"]').val(data.name);
