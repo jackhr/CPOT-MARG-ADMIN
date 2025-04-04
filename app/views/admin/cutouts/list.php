@@ -390,17 +390,19 @@
 
         function renderSconceAssociations() {
             $(".collapsible-container.sconces .collapsible-container-content").html("");
-            Object.values(STATE.sconcesLookup).forEach(sconce => {
-                $(".collapsible-container.sconces .collapsible-container-content").append(`
-                    <div data-id="${sconce.sconce_id}" class="sconce-cutout-container">
-                        <input type="hidden" value="1" name="sconce_ids[${sconce.sconce_id}]" />
-                        <div>
-                            <img src="${sconce.image_url}" />
-                            <span>${sconce.name}</span>
+            Object.values(STATE.sconcesLookup)
+                .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
+                .forEach(sconce => {
+                    $(".collapsible-container.sconces .collapsible-container-content").append(`
+                        <div data-id="${sconce.sconce_id}" class="sconce-cutout-container">
+                            <input type="hidden" value="1" name="sconce_ids[${sconce.sconce_id}]" />
+                            <div>
+                                <img src="${sconce.image_url}" />
+                                <span>${sconce.name}</span>
+                            </div>
                         </div>
-                    </div>
-                `);
-            });
+                    `);
+                });
 
             $(".sconce-cutout-container").on('click', function() {
                 const input = $(this).find("input");

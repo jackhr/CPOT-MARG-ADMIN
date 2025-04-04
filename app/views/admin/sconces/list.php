@@ -463,17 +463,19 @@
 
         function renderCutoutAssociations() {
             $(".collapsible-container.cutouts .collapsible-container-content").html("");
-            Object.values(STATE.cutoutsLookup).forEach(cutout => {
-                $(".collapsible-container.cutouts .collapsible-container-content").append(`
-                    <div data-id="${cutout.cutout_id}" class="sconce-cutout-container">
-                        <input type="hidden" value="1" name="cutout_ids[${cutout.cutout_id}]" />
-                        <div>
-                            <img src="${cutout.image_url}" />
-                            <span>${cutout.code}</span>
+            Object.values(STATE.cutoutsLookup)
+                .sort((a, b) => a.name.localeCompare(b.name)) // Sort alphabetically by name
+                .forEach(cutout => {
+                    $(".collapsible-container.cutouts .collapsible-container-content").append(`
+                        <div data-id="${cutout.cutout_id}" class="sconce-cutout-container">
+                            <input type="hidden" value="1" name="cutout_ids[${cutout.cutout_id}]" />
+                            <div>
+                                <img src="${cutout.image_url}" />
+                                <span>${cutout.name} - ${cutout.code}</span>
+                            </div>
                         </div>
-                    </div>
-                `);
-            });
+                    `);
+                });
 
             $(".sconce-cutout-container").on('click', function() {
                 const input = $(this).find("input");
