@@ -20,6 +20,7 @@
                     <th>Thumb</th>
                     <th>Name</th>
                     <th>Artist</th>
+                    <th>Year Created</th>
                     <th>Dimensions</th>
                     <th>Material</th>
                     <th>Description</th>
@@ -94,6 +95,10 @@
                             <option value="Imogen Margrie">Imogen Margrie</option>
                             <option value="Michael Hunt">Michael Hunt</option>
                         </select>
+                    </div>
+                    <div class="input-container">
+                        <label for="year_created">Year Created</label>
+                        <input type="text" name="year_created" placeholder="<?php echo date('Y'); ?>" required>
                     </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
@@ -217,6 +222,10 @@
                             <option value="Michael Hunt">Michael Hunt</option>
                         </select>
                     </div>
+                    <div class="input-container">
+                        <label for="year_created">Year Created</label>
+                        <input type="text" name="year_created" placeholder="<?php echo date('Y'); ?>" required>
+                    </div>
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="width">Width</label>
@@ -293,6 +302,7 @@
                         res = Object.values(response.data).map(item => {
                             item.price = formatPrice(item.price);
                             item.description = item.description ? item.description : "-";
+                            item.year_created = item.year_created ? item.year_created : "-";
                             item.created_at = item.created_at ? formatReadableDate(item.created_at, false) : "-";
                             item.updated_at = item.updated_at ? formatReadableDate(item.updated_at, false) : "-";
                             item.deleted_at = item.deleted_at ? formatReadableDate(item.deleted_at, false) : "-";
@@ -315,6 +325,9 @@
                 },
                 {
                     data: 'artist'
+                },
+                {
+                    data: 'year_created'
                 },
                 {
                     data: 'dimensions',
@@ -414,6 +427,8 @@
 
             modal.find('#edit-portfolio-item-id').text(id);
             modal.find('input[name="name"]').val(data.name);
+            // populate artist here
+            modal.find('input[name="year_created"]').val(data.year_created);
             modal.find('input[name="width"]').val(dimensions[0]);
             modal.find('input[name="height"]').val(dimensions[1]);
             modal.find('input[name="depth"]').val(dimensions[2]);
@@ -525,6 +540,7 @@
 
         function resetModal(modal) {
             modal.find('input[name="name"]').val("");
+            modal.find('input[name="year_created"]').val("");
             modal.find('input[name="width"]').val("");
             modal.find('input[name="height"]').val("");
             modal.find('input[name="depth"]').val("");
@@ -547,6 +563,8 @@
                     errMsg = "You need to upload at least one image";
                 } else if (!data.name.length) {
                     errMsg = "Please provide your portfolio item with a name.";
+                } else if (!data.year_created.length) {
+                    errMsg = "Please provide your portfolio item with the year it was created.";
                 } else if (!data.width.length) {
                     errMsg = "Please provide your portfolio item with a width.";
                 } else if (!data.width.match(STATE.regEx.decimal)) {
