@@ -71,7 +71,7 @@ class ShopItem extends Model
 
     public function update()
     {
-        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, color = :color, price = :price, status = :status, description = :description, showing_on_site = :showing_on_site, updated_by = :updated_by WHERE shop_item_id = :shop_item_id";
+        $query = "UPDATE {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, color = :color, price = :price, description = :description, showing_on_site = :showing_on_site, updated_by = :updated_by WHERE shop_item_id = :shop_item_id";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -82,11 +82,10 @@ class ShopItem extends Model
         $this->artist = htmlspecialchars($this->artist);
         $this->color = htmlspecialchars($this->color);
         $this->price = htmlspecialchars($this->price);
-        $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
         $this->showing_on_site = htmlspecialchars($this->showing_on_site);
         $this->updated_by = htmlspecialchars($this->updated_by);
-        
+
         // Bind parameters
         $stmt->bindParam(":shop_item_id", $this->shop_item_id, PDO::PARAM_INT);
         $stmt->bindParam(":name", $this->name);
@@ -95,7 +94,6 @@ class ShopItem extends Model
         $stmt->bindParam(":artist", $this->artist);
         $stmt->bindParam(":color", $this->color);
         $stmt->bindParam(":price", $this->price);
-        $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":showing_on_site", $this->showing_on_site, PDO::PARAM_BOOL);
         $stmt->bindParam(":updated_by", $this->updated_by, PDO::PARAM_INT);
@@ -106,7 +104,7 @@ class ShopItem extends Model
 
     public function create()
     {
-        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, color = :color, price = :price, status = :status, description = :description, showing_on_site = :showing_on_site, created_by = :created_by";
+        $query = "INSERT INTO {$this->table_name} SET name = :name, dimensions = :dimensions, material = :material, artist = :artist, color = :color, price = :price, description = :description, showing_on_site = :showing_on_site, created_by = :created_by";
         $stmt = $this->con->prepare($query);
 
         // Sanitize input
@@ -116,7 +114,6 @@ class ShopItem extends Model
         $this->artist = htmlspecialchars($this->artist);
         $this->color = htmlspecialchars($this->color);
         $this->price = htmlspecialchars($this->price);
-        $this->status = htmlspecialchars($this->status);
         $this->description = htmlspecialchars($this->description);
         $this->showing_on_site = htmlspecialchars($this->showing_on_site);
         $this->created_by = htmlspecialchars($this->created_by);
@@ -128,7 +125,6 @@ class ShopItem extends Model
         $stmt->bindParam(":artist", $this->artist);
         $stmt->bindParam(":color", $this->color);
         $stmt->bindParam(":price", $this->price);
-        $stmt->bindParam(":status", $this->status);
         $stmt->bindParam(":description", $this->description);
         $stmt->bindParam(":showing_on_site", $this->showing_on_site, PDO::PARAM_BOOL);
         $stmt->bindParam(":created_by", $this->created_by, PDO::PARAM_INT);

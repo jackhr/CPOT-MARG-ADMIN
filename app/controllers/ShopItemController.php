@@ -190,14 +190,13 @@ class ShopItemController extends Controller
 
         [
             "artist" => $artist,
-            "dimension-units" => $dim_units,
+            // "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
             "depth" => $depth,
             "material" => $material,
             "color" => $color,
             "price" => $price,
-            "status" => $shop_item_status,
             "description" => $description,
             "showing_on_site" => $showing_on_site,
             "primary_image_idx" => $primary_image_idx,
@@ -207,6 +206,7 @@ class ShopItemController extends Controller
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
 
+        $dim_units = "in"; // defaulting to inches for the time being
         $dimensions = "$depth{$dim_units} x $width{$dim_units} x $height{$dim_units}";
 
         $this->shopItemModel->name = $name;
@@ -215,7 +215,6 @@ class ShopItemController extends Controller
         $this->shopItemModel->material = $material;
         $this->shopItemModel->color = $color;
         $this->shopItemModel->price = $this->helper->truncateToThreeDecimals($price);
-        $this->shopItemModel->status = $shop_item_status;
         $this->shopItemModel->description = $description;
         $this->shopItemModel->showing_on_site = $showing_on_site;
         $this->shopItemModel->created_by = $_SESSION['user']['user_id'];
@@ -337,14 +336,13 @@ class ShopItemController extends Controller
 
         [
             "artist" => $artist,
-            "dimension-units" => $dim_units,
+            // "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
             "depth" => $depth,
             "material" => $material,
             "color" => $color,
             "price" => $price,
-            "status" => $shop_item_status,
             "description" => $description,
             "showing_on_site" => $showing_on_site,
         ] = $data;
@@ -353,6 +351,7 @@ class ShopItemController extends Controller
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
 
+        $dim_units = "in"; // defaulting to inches for the time being
         $dimensions = "$depth{$dim_units} x $width{$dim_units} x $height{$dim_units}";
 
         $this->shopItemModel->shop_item_id = $shop_item_id;
@@ -362,7 +361,6 @@ class ShopItemController extends Controller
         $this->shopItemModel->material = $material;
         $this->shopItemModel->color = $color;
         $this->shopItemModel->price = $this->helper->truncateToThreeDecimals($price);
-        $this->shopItemModel->status = $shop_item_status;
         $this->shopItemModel->description = $description;
         $this->shopItemModel->showing_on_site = $showing_on_site;
         $this->shopItemModel->updated_by = $_SESSION['user']['user_id'];

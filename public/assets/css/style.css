@@ -103,6 +103,11 @@ select {
     border-radius: 2px;
 }
 
+.disclaimer-p {
+    margin   : 0 0 18px;
+    font-size: 13px;
+}
+
 #not-found-container {
     position        : fixed;
     display         : flex;

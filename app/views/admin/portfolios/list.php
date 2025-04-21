@@ -114,13 +114,14 @@
                             <input type="text" name="depth" placeholder="6" required>
                         </div>
                     </div>
-                    <div class="input-container">
+                    <p class="disclaimer-p"><sup>*</sup>All dimensions are in inches (in)</p>
+                    <!-- <div class="input-container">
                         <label>Dimension Units</label>
                         <select name="dimension-units">
                             <option value="cm">cm</option>
                             <option value="in">in</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="input-container">
                         <label for="description">Description</label>
                         <textarea name="description" id="description" placeholder="My most valuable portfolio item!" required aria-required /></textarea>
@@ -240,13 +241,14 @@
                             <input type="text" name="depth" placeholder="6" required>
                         </div>
                     </div>
-                    <div class="input-container">
+                    <p class="disclaimer-p"><sup>*</sup>All dimensions are in inches (in)</p>
+                    <!-- <div class="input-container">
                         <label>Dimension Units</label>
                         <select name="dimension-units">
                             <option value="cm">cm</option>
                             <option value="in">in</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="input-container">
                         <label for="description">Description</label>
                         <textarea name="description" id="description" placeholder="My most valuable portfolio item!" required aria-required /></textarea>
@@ -427,7 +429,7 @@
 
             modal.find('#edit-portfolio-item-id').text(id);
             modal.find('input[name="name"]').val(data.name);
-            // populate artist here
+            modal.find('select[name="artist"]').val(data.artist);
             modal.find('input[name="year_created"]').val(data.year_created);
             modal.find('input[name="width"]').val(dimensions[0]);
             modal.find('input[name="height"]').val(dimensions[1]);
@@ -540,6 +542,7 @@
 
         function resetModal(modal) {
             modal.find('input[name="name"]').val("");
+            modal.find('select[name="artist"]').prop('selectedIndex', 0);
             modal.find('input[name="year_created"]').val("");
             modal.find('input[name="width"]').val("");
             modal.find('input[name="height"]').val("");
@@ -812,18 +815,18 @@
             });
         });
 
-        $('[name="dimension-units"]').on('change', function() {
-            const form = $(this).closest('form');
-            const widthEl = form.find('[name="width"]');
-            const heightEl = form.find('[name="height"]');
-            const depthEl = form.find('[name="depth"]');
+        // $('[name="dimension-units"]').on('change', function() {
+        //     const form = $(this).closest('form');
+        //     const widthEl = form.find('[name="width"]');
+        //     const heightEl = form.find('[name="height"]');
+        //     const depthEl = form.find('[name="depth"]');
 
-            const toIn = $(this).val() === "in";
+        //     const toIn = $(this).val() === "in";
 
-            widthEl.val(convertUnits('length', widthEl.val(), toIn));
-            heightEl.val(convertUnits('length', heightEl.val(), toIn));
-            depthEl.val(convertUnits('length', depthEl.val(), toIn));
-        });
+        //     widthEl.val(convertUnits('length', widthEl.val(), toIn));
+        //     heightEl.val(convertUnits('length', heightEl.val(), toIn));
+        //     depthEl.val(convertUnits('length', depthEl.val(), toIn));
+        // });
 
         $("#edit-portfolio-item-modal .modal-close").on("click", function() {
             $(this)

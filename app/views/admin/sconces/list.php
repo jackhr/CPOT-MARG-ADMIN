@@ -97,13 +97,14 @@
                             <input type="text" name="height" placeholder="24" required>
                         </div>
                     </div>
-                    <div class="input-container">
+                    <p class="disclaimer-p"><sup>*</sup>All dimensions are in inches (in)</p>
+                    <!-- <div class="input-container">
                         <label for="dimension-units">Units</label>
                         <select name="dimension-units" id="dimension-units">
                             <option value="in">in</option>
                             <option value="cm">cm</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="material">Material</label>
@@ -247,13 +248,14 @@
                             <input type="text" name="height" placeholder="24" required>
                         </div>
                     </div>
-                    <div class="input-container">
+                    <p class="disclaimer-p"><sup>*</sup>All dimensions are in inches (in)</p>
+                    <!-- <div class="input-container">
                         <label for="dimension-units">Units</label>
                         <select name="dimension-units" id="dimension-units">
                             <option value="in">in</option>
                             <option value="cm">cm</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="mutiple-input-container">
                         <div class="input-container">
                             <label for="material">Material</label>
@@ -966,18 +968,18 @@
             });
         });
 
-        $('[name="dimension-units"]').on('change', function() {
-            const form = $(this).closest('form');
-            const depthEl = form.find('[name="depth"]');
-            const widthEl = form.find('[name="width"]');
-            const heightEl = form.find('[name="height"]');
+        // $('[name="dimension-units"]').on('change', function() {
+        //     const form = $(this).closest('form');
+        //     const depthEl = form.find('[name="depth"]');
+        //     const widthEl = form.find('[name="width"]');
+        //     const heightEl = form.find('[name="height"]');
 
-            const toIn = $(this).val() === "in";
+        //     const toIn = $(this).val() === "in";
 
-            depthEl.val(convertUnits('length', depthEl.val(), toIn));
-            widthEl.val(convertUnits('length', widthEl.val(), toIn));
-            heightEl.val(convertUnits('length', heightEl.val(), toIn));
-        });
+        //     depthEl.val(convertUnits('length', depthEl.val(), toIn));
+        //     widthEl.val(convertUnits('length', widthEl.val(), toIn));
+        //     heightEl.val(convertUnits('length', heightEl.val(), toIn));
+        // });
 
         $("#edit-sconce-modal .modal-close").on("click", function() {
             $(this)

@@ -181,7 +181,7 @@ class PortfolioItemController extends Controller
         }
 
         [
-            "dimension-units" => $dim_units,
+            // "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
             "depth" => $depth,
@@ -196,6 +196,7 @@ class PortfolioItemController extends Controller
         $height = $this->helper->truncateToThreeDecimals($height);
         $depth = $this->helper->truncateToThreeDecimals($depth);
 
+        $dim_units = "in"; // defaulting to inches for the time being
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
 
         $this->portfolioItemModel->name = $name;
@@ -323,7 +324,7 @@ class PortfolioItemController extends Controller
         }
 
         [
-            "dimension-units" => $dim_units,
+            // "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
             "depth" => $depth,
@@ -337,6 +338,7 @@ class PortfolioItemController extends Controller
         $height = $this->helper->truncateToThreeDecimals($height);
         $depth = $this->helper->truncateToThreeDecimals($depth);
 
+        $dim_units = "in"; // defaulting to inches for the time being
         $dimensions = "$width{$dim_units} x $height{$dim_units} x $depth{$dim_units}";
 
         $this->portfolioItemModel->portfolio_item_id = $portfolio_item_id;

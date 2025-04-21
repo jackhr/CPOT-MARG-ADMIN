@@ -202,7 +202,7 @@ class SconceController extends Controller
         }
 
         [
-            "dimension-units" => $dim_units,
+            // "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
             "depth" => $depth,
@@ -218,6 +218,7 @@ class SconceController extends Controller
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
 
+        $dim_units = "in"; // defaulting to inches for the time being
         $dimensions = "$depth{$dim_units} x $width{$dim_units} x $height{$dim_units}";
 
         $this->sconceModel->name = $name;
@@ -353,7 +354,7 @@ class SconceController extends Controller
         }
 
         [
-            "dimension-units" => $dim_units,
+            // "dimension-units" => $dim_units,
             "width" => $width,
             "height" => $height,
             "depth" => $depth,
@@ -371,6 +372,7 @@ class SconceController extends Controller
         $height = $this->helper->truncateToThreeDecimals($height);
         $weight = $this->helper->truncateToThreeDecimals($weight);
 
+        $dim_units = "in"; // defaulting to inches for the time being
         $dimensions = "$depth{$dim_units} x $width{$dim_units} x $height{$dim_units}";
         $weight = "$weight{$weight_units}";
 
