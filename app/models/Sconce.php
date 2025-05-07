@@ -14,7 +14,6 @@ class Sconce extends Model
     public $dimensions;
     public $material;
     public $color;
-    public $weight;
     public $base_price;
     public $status;
     public $installation_type;

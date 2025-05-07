@@ -197,6 +197,7 @@ class ShopItemController extends Controller
             "material" => $material,
             "color" => $color,
             "price" => $price,
+            "status" => $shop_item_status,
             "description" => $description,
             "showing_on_site" => $showing_on_site,
             "primary_image_idx" => $primary_image_idx,
@@ -215,6 +216,7 @@ class ShopItemController extends Controller
         $this->shopItemModel->material = $material;
         $this->shopItemModel->color = $color;
         $this->shopItemModel->price = $this->helper->truncateToThreeDecimals($price);
+        $this->shopItemModel->status = $shop_item_status;
         $this->shopItemModel->description = $description;
         $this->shopItemModel->showing_on_site = $showing_on_site;
         $this->shopItemModel->created_by = $_SESSION['user']['user_id'];
@@ -343,6 +345,7 @@ class ShopItemController extends Controller
             "material" => $material,
             "color" => $color,
             "price" => $price,
+            "status" => $shop_item_status,
             "description" => $description,
             "showing_on_site" => $showing_on_site,
         ] = $data;
@@ -361,6 +364,7 @@ class ShopItemController extends Controller
         $this->shopItemModel->material = $material;
         $this->shopItemModel->color = $color;
         $this->shopItemModel->price = $this->helper->truncateToThreeDecimals($price);
+        $this->shopItemModel->status = $shop_item_status;
         $this->shopItemModel->description = $description;
         $this->shopItemModel->showing_on_site = $showing_on_site;
         $this->shopItemModel->updated_by = $_SESSION['user']['user_id'];

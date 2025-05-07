@@ -18,7 +18,6 @@ class Model
         if ($connection) {
             $this->con = $connection;
         } else {
-            error_log("No PDO connection provided. Creating a new connection.");
             $database = new Database();
             $this->con = $database->getConnection();
         }

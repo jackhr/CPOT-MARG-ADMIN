@@ -360,8 +360,6 @@ class SconceController extends Controller
             "depth" => $depth,
             "material" => $material,
             "color" => $color,
-            "weight" => $weight,
-            "weight-units" => $weight_units,
             "base_price" => $base_price,
             "status" => $sconce_status,
             "description" => $description,
@@ -370,18 +368,15 @@ class SconceController extends Controller
         $depth = $this->helper->truncateToThreeDecimals($depth);
         $width = $this->helper->truncateToThreeDecimals($width);
         $height = $this->helper->truncateToThreeDecimals($height);
-        $weight = $this->helper->truncateToThreeDecimals($weight);
 
         $dim_units = "in"; // defaulting to inches for the time being
         $dimensions = "$depth{$dim_units} x $width{$dim_units} x $height{$dim_units}";
-        $weight = "$weight{$weight_units}";
 
         $this->sconceModel->sconce_id = $sconce_id;
         $this->sconceModel->name = $name;
         $this->sconceModel->dimensions = $dimensions;
         $this->sconceModel->material = $material;
         $this->sconceModel->color = $color;
-        $this->sconceModel->weight = $weight;
         $this->sconceModel->base_price = $this->helper->truncateToThreeDecimals($base_price);
         $this->sconceModel->status = $sconce_status;
         $this->sconceModel->description = $description;
